@@ -25,4 +25,12 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
         Page<Customer> result = customerMapper.selectPage(page, queryWrapper);
         return result;
     }
+
+
+    public Page<CustomerPageDto> getCustomerPage(int pageNum, int pageSize) {
+        Page<CustomerPageDto> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<CustomerPageDto> queryWrapper = new QueryWrapper<>();
+        List<CustomerPageDto> result = customerMapper.getCustomerPage(page);
+        return page.setRecords(result);
+    }
 }
