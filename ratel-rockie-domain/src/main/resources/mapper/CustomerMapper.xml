@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.system.domain.mapper.CustomerMapper">
+<mapper namespace="org.ivipi.ratel.rockie.domain.mapper.CustomerMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.CustomerDo">
+    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.Customer">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="password" property="password"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.domain.dto.CustomerPageDto">
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.domain.dto.CustomerPageDto">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="password" property="password"/>

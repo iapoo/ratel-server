@@ -6,6 +6,7 @@
 
     <groupId>org.ivipi.ratel</groupId>
     <artifactId>ratel-system-server</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <parent>

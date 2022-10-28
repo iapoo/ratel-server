@@ -7,10 +7,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan("org.ivipi.ratel.system.domain.mapper")
-public class SystemServer {
+@MapperScan("org.ivipi.ratel.rockie.domain.mapper")
+public class RockieApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SystemServer.class, args);
+        SpringApplication.run(RockieApplication.class, args);
     }
 }

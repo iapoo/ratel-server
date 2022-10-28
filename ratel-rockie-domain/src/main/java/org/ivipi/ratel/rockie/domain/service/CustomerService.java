@@ -1,12 +1,12 @@
-package org.ivipi.ratel.system.domain.service;
+package org.ivipi.ratel.rockie.domain.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.ivipi.ratel.system.domain.dto.CustomerPageDto;
-import org.ivipi.ratel.system.domain.mapper.CustomerMapper;
-import org.ivipi.ratel.system.domain.entity.CustomerDo;
+import org.ivipi.ratel.rockie.domain.dto.CustomerPageDto;
+import org.ivipi.ratel.rockie.domain.mapper.CustomerMapper;
+import org.ivipi.ratel.rockie.domain.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +14,15 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
+public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
 
     @Autowired
     private CustomerMapper customerMapper;
 
-    public Page<CustomerDo> getPage(int pageNum, int pageSize) {
-        Page<CustomerDo> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
-        Page<CustomerDo> result = customerMapper.selectPage(page, queryWrapper);
+    public Page<Customer> getPage(int pageNum, int pageSize) {
+        Page<Customer> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<Customer> queryWrapper = new QueryWrapper<>();
+        Page<Customer> result = customerMapper.selectPage(page, queryWrapper);
         return result;
     }
 

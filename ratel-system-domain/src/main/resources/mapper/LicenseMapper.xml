@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ivipi.ratel.system.domain.mapper.LicenseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.LicenseDo">
+        <id column="license_id" property="licenseId"/>
+        <result column="license_name" property="licenseName"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.domain.dto.LicensePageDto">
+        <id column="license_id" property="licenseId"/>
+        <result column="license_name" property="licenseName"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        license_id, license_name, remark, is_enabled,is_deleted,is_enabled,
+        effective_date,expire_date,created_by, created_date, updated_by, updated_date
+    </sql>
+
+
+    <select id="getLicensePage" resultMap="PageResultMap">
+        select license_id, license_name, remark, is_enabled,is_deleted,is_enabled,
+               effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        from license
+
+    </select>
+
+</mapper>
