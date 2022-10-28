@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
+        <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.ivipi.ratel</groupId>
@@ -15,10 +15,12 @@
     <version>1.0.0</version>
     <modules>
         <module>ratel-common</module>
+        <module>ratel-system-common</module>
         <module>ratel-system-domain</module>
         <module>ratel-system-service</module>
         <module>ratel-system-server</module>
         <module>ratel-system-client</module>
+        <module>ratel-rockie-common</module>
         <module>ratel-rockie-domain</module>
         <module>ratel-rockie-service</module>
         <module>ratel-rockie-server</module>

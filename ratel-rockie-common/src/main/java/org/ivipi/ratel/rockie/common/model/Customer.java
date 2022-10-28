@@ -1,4 +1,4 @@
-package org.ivipi.ratel.system.domain.model;
+package org.ivipi.ratel.rockie.common.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
