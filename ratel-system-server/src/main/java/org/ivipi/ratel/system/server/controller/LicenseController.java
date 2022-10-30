@@ -1,7 +1,7 @@
 package org.ivipi.ratel.system.server.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.ivipi.ratel.system.domain.dto.LicensePageDto;
+import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
 import org.ivipi.ratel.system.domain.service.LicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,8 @@ public class LicenseController {
     }
 
     @PostMapping("licenses")
-    public Page<LicensePageDto> getLicensePage() {
-        Page<LicensePageDto> licenses = licenseService.getLicensePage(1, 10);
+    public Page<LicensePage> getLicensePage() {
+        Page<LicensePage> licenses = licenseService.getLicensePage(1, 10);
         return licenses;
     }
 }

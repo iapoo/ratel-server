@@ -17,7 +17,7 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.domain.dto.LicensePageDto">
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.LicensePage">
         <id column="license_id" property="licenseId"/>
         <result column="license_name" property="licenseName"/>
         <result column="remark" property="remark"/>

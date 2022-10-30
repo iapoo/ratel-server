@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.ivipi.ratel.system.domain.dto.LicensePageDto;
+import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
 import org.ivipi.ratel.system.domain.mapper.LicenseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
     }
 
 
-    public Page<LicensePageDto> getLicensePage(int pageNum, int pageSize) {
-        Page<LicensePageDto> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<LicensePageDto> queryWrapper = new QueryWrapper<>();
-        List<LicensePageDto> result = licenseMapper.getLicensePage(page);
+    public Page<LicensePage> getLicensePage(int pageNum, int pageSize) {
+        Page<LicensePage> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<LicensePage> queryWrapper = new QueryWrapper<>();
+        List<LicensePage> result = licenseMapper.getLicensePage(page);
         return page.setRecords(result);
     }
 }

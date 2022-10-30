@@ -3,7 +3,7 @@
 <mapper namespace="org.ivipi.ratel.rockie.domain.mapper.CustomerMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.Customer">
+    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.CustomerDo">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="password" property="password"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.domain.dto.CustomerPageDto">
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.common.model.CustomerPage">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="password" property="password"/>

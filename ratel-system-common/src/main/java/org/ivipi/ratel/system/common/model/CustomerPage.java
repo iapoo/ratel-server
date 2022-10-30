@@ -1,15 +1,15 @@
-package org.ivipi.ratel.rockie.domain.dto;
+package org.ivipi.ratel.system.common.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.ivipi.ratel.common.config.StandardLocalDateTime;
-import org.ivipi.ratel.common.dto.PageDto;
+import org.ivipi.ratel.common.model.BasePage;
 
 import java.time.LocalDateTime;
 
 @Data
-public class CustomerPageDto extends PageDto {
+public class CustomerPage extends BasePage {
 
     /**
      * id 自增主键

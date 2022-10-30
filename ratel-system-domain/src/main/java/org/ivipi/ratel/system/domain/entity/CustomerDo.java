@@ -2,6 +2,7 @@ package org.ivipi.ratel.system.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
+@TableName("customer")
 public class CustomerDo implements Serializable {
 
     private static final long serialVersionUID = 1L;

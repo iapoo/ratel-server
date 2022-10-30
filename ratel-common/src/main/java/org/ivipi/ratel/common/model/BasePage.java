@@ -1,9 +1,9 @@
-package org.ivipi.ratel.common.dto;
+package org.ivipi.ratel.common.model;
 
 import lombok.Data;
 
 @Data
-public class PageDto {
+public class BasePage {
     private  static final long serialVersionUID = 1L;
 
 
@@ -14,7 +14,7 @@ public class PageDto {
     private static final int DEFAULT_PAGE_SIZE = 10;
 
 
-    public PageDto() {
+    public BasePage() {
         this.pageNum = DEFAULT_PAGE_NUM;
         this.pageSize = DEFAULT_PAGE_SIZE;
     }

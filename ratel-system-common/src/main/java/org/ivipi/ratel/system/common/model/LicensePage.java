@@ -1,57 +1,25 @@
-package org.ivipi.ratel.system.domain.dto;
+package org.ivipi.ratel.system.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.ivipi.ratel.common.config.StandardLocalDateTime;
-import org.ivipi.ratel.common.dto.PageDto;
+import org.ivipi.ratel.common.model.BasePage;
 
 import java.time.LocalDateTime;
 
 @Data
-public class CustomerPageDto extends PageDto {
+public class LicensePage extends BasePage {
 
     /**
      * id 自增主键
      */
-    private Long customerId;
+    private Long licenseId;
 
     /**
      * 用户名
      */
-    private String customerName;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 昵称
-     */
-    private String nickName;
-
-    /**
-     * 身份证号
-     */
-    private String idCard;
-
-    /**
-     * 固定电话
-     */
-    private String telephone;
-
-    /**
-     * 移动电话电话
-     */
-    private String mobile;
-
-    /**
-     * 电子邮箱
-     */
-    private String email;
+    private String licenseName;
 
     /**
      * 备注说明
