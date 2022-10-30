@@ -2,8 +2,8 @@ package org.ivipi.ratel.rockie.server.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.ivipi.ratel.rockie.domain.dto.CustomerPageDto;
-import org.ivipi.ratel.rockie.domain.entity.Customer;
+import org.ivipi.ratel.rockie.common.model.CustomerPage;
+import org.ivipi.ratel.rockie.domain.entity.CustomerDo;
 import org.ivipi.ratel.rockie.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +18,14 @@ public class RockieController {
     private CustomerService customerService;
 
     @PostMapping("list")
-    public Page<Customer> getCustomers() {
-        Page<Customer> customers = customerService.getPage(1, 10);
+    public Page<CustomerDo> getCustomers() {
+        Page<CustomerDo> customers = customerService.getPage(1, 10);
         return customers;
     }
 
     @PostMapping("customers")
-    public Page<CustomerPageDto> getCustomerPage() {
-        Page<CustomerPageDto> customers = customerService.getCustomerPage(1, 10);
+    public Page<CustomerPage> getCustomerPage() {
+        Page<CustomerPage> customers = customerService.getCustomerPage(1, 10);
         return customers;
     }
 }

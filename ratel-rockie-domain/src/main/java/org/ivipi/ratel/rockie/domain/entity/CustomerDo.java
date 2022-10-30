@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class Customer {
+public class CustomerDo {
 
     private static final long serialVersionUID = 1L;
 
