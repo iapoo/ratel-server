@@ -44,6 +44,11 @@ public class CustomerController {
     public Result addCustomer(@RequestBody Customer customer) {
         customerService.addCustomer(customer);
         return Result.success();
+    }
 
+    @PostMapping("update")
+    public Result updateCustomer(@RequestBody Customer customer) {
+        customerService.updateCustomer(customer);
+        return Result.success();
     }
 }

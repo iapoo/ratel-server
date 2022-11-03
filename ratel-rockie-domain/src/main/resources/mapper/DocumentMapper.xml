@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ivipi.ratel.rockie.domain.mapper.DocumentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.DocumentDo">
+        <id column="document_id" property="documentId"/>
+        <result column="document_name" property="documentName"/>
+        <result column="folder_id" property="folderId"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.common.model.Document">
+        <id column="document_id" property="documentId"/>
+        <result column="document_name" property="documentName"/>
+        <result column="folder_id" property="folderId"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        document_id, document_name, folder_id, remark,
+        is_enabled,is_deleted,is_enable,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+    </sql>
+
+
+    <select id="getDocumentPage" resultMap="PageResultMap">
+        select document_id, document_name, folder_id, remark,
+               is_enabled,is_deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        from document
+
+    </select>
+
+</mapper>
