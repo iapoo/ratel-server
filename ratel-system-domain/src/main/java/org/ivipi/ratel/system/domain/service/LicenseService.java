@@ -16,13 +16,10 @@ import java.util.List;
 @Slf4j
 public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
 
-    @Autowired
-    private LicenseMapper licenseMapper;
-
     public Page<LicenseDo> getPage(int pageNum, int pageSize) {
         Page<LicenseDo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<LicenseDo> queryWrapper = new QueryWrapper<>();
-        Page<LicenseDo> result = licenseMapper.selectPage(page, queryWrapper);
+        Page<LicenseDo> result = baseMapper.selectPage(page, queryWrapper);
         return result;
     }
 
@@ -30,7 +27,7 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
     public Page<LicensePage> getLicensePage(int pageNum, int pageSize) {
         Page<LicensePage> page = new Page<>(pageNum, pageSize);
         QueryWrapper<LicensePage> queryWrapper = new QueryWrapper<>();
-        List<LicensePage> result = licenseMapper.getLicensePage(page);
+        List<LicensePage> result = baseMapper.getLicensePage(page);
         return page.setRecords(result);
     }
 }

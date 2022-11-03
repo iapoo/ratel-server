@@ -2,17 +2,20 @@ package org.ivipi.ratel.common.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class BasePage {
-    private  static final long serialVersionUID = 1L;
+public class BasePage implements Serializable {
+
+    private static final long serialVersionUID = 742555232875013689L;
 
 
     private static final int MAX_PAGE_NUM = 1000;
     private static final int MAX_PAGE_SIZE = 200;
 
+
     private static final int DEFAULT_PAGE_NUM = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
-
 
     public BasePage() {
         this.pageNum = DEFAULT_PAGE_NUM;

@@ -143,6 +143,18 @@ create table if not exists customer_license
     index ix_customer_license (license_id, customer_id)
 );
 
+create table if not exists customer_product
+(
+    customer_id  bigint not null,
+    product_id   bigint not null,
+    created_by   bigint null,
+    created_date bigint null,
+    updated_by   bigint null,
+    updated_date bigint null,
+    primary key (customer_id, product_id),
+    index ix_customer_license (product_id, customer_id)
+);
+
 
 create table if not exists license_product
 (
