@@ -21,6 +21,11 @@
             <version>${ratel-common.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.ivipi.ratel</groupId>
+            <artifactId>ratel-system-common</artifactId>
+            <version>${ratel-system.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

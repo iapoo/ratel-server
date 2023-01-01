@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentPageQuery;
+import org.ivipi.ratel.rockie.common.utils.RockieError;
 import org.ivipi.ratel.rockie.domain.entity.DocumentDo;
 import org.ivipi.ratel.rockie.domain.mapper.DocumentMapper;
+import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,15 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
 
+    public Document getDocument(Long documentId) {
+        DocumentDo documentDo = getById(documentId);
+        if(documentDo == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        return convertDocumentDo(documentDo);
+
+    }
+
     public Page<Document> getDocuments(int pageNum, int pageSize) {
         Page<DocumentDo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
@@ -45,6 +56,18 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         return documentPage;
     }
 
+    public Document addDocument(Document document) {
+        DocumentDo documentDo = convertDocument(document);
+        documentDo.setDocumentId(null);
+        saveOrUpdate(documentDo);
+        return convertDocumentDo(documentDo);
+    }
+
+    public Document updateDocument(Document document) {
+        DocumentDo documentDo = convertDocument(document);
+        saveOrUpdate(documentDo);
+        return convertDocumentDo(documentDo);
+    }
 
     private List<Document> convertDocumentDos(List<DocumentDo> documentDos) {
         List<Document> documents = new ArrayList<>();
@@ -59,4 +82,16 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     }
 
+
+    private Document convertDocumentDo(DocumentDo documentDo) {
+        Document document = new Document();
+        BeanUtils.copyProperties(documentDo, document);
+        return document;
+    }
+
+    private DocumentDo convertDocument(Document document) {
+        DocumentDo documentDo = new DocumentDo();
+        BeanUtils.copyProperties(document, documentDo);
+        return documentDo;
+    }
 }
