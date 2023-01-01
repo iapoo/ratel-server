@@ -5,7 +5,6 @@ import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
-import org.ivipi.ratel.system.common.model.Login;
 import org.ivipi.ratel.system.domain.entity.CustomerDo;
 import org.ivipi.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,30 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("customer")
-public class CustomerController {
+@RequestMapping("/")
+public class SystemController {
 
     @Autowired
     private CustomerService customerService;
-
-    @PostMapping("list")
-    public Result<Page<CustomerDo>> getCustomers() {
-        Page<CustomerDo> customers = customerService.getPage(1, 10);
-        return Result.success(customers);
-    }
-
-    @PostMapping("customers")
-    public Result<Page<CustomerPage>> getCustomerPage() {
-        Page<CustomerPage> customers = customerService.getCustomerPage(1, 10);
-        return Result.success(customers);
-    }
-
-    @PostMapping("customerLicenseList")
-    public Result<List<CustomerLicense>> getCustomerLicenseList() {
-        List<CustomerLicense> customerLicenseList = customerService.getCustomerLicenseList();
-        return Result.success(customerLicenseList);
-    }
-
 
     @PostMapping("register")
     public Result register(@RequestBody Customer customer) {
@@ -50,9 +30,9 @@ public class CustomerController {
 
 
     @PostMapping("login")
-    public Result login(@RequestBody Login login) {
-        Customer customer = customerService.getCustomer(login.getName());
-        return Result.success(customer);
+    public Result login(@RequestBody Customer customer) {
+        customerService.addCustomer(customer);
+        return Result.success();
     }
 
 

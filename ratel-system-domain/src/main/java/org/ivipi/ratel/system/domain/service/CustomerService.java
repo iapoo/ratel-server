@@ -10,6 +10,7 @@ import org.ivipi.ratel.system.common.model.CustomerPage;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.mapper.CustomerMapper;
 import org.ivipi.ratel.system.domain.entity.CustomerDo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,19 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         QueryWrapper<CustomerPage> queryWrapper = new QueryWrapper<>();
         List<CustomerPage> result = baseMapper.getCustomerPage(page);
         return page.setRecords(result);
+    }
+
+
+    public Customer getCustomer(String customerName) {
+        QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_name", customerName);
+        CustomerDo customerDo = this.getOne(queryWrapper);
+        if(customerDo != null) {
+            Customer customer = convertCustomerDo(customerDo);
+            return customer;
+        } else {
+            return null;
+        }
     }
 
     public List<CustomerLicense> getCustomerLicenseList() {
@@ -69,5 +83,11 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         customerDo.setIdCard(customer.getIdCard());
 
         updateById(customerDo);
+    }
+
+    private Customer convertCustomerDo(CustomerDo customerDo) {
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDo, customer);
+        return customer;
     }
 }

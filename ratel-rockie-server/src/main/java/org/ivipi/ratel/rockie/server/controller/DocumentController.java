@@ -2,8 +2,10 @@ package org.ivipi.ratel.rockie.server.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentPageQuery;
+import org.ivipi.ratel.rockie.common.model.DocumentQuery;
 import org.ivipi.ratel.rockie.domain.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,34 +22,34 @@ public class DocumentController {
 
 
     @PostMapping("page")
-    public Page<Document> getDocumentPage(@RequestBody DocumentPageQuery documentPageQuery) {
+    public Result<Page<Document>> getDocumentPage(@RequestBody DocumentPageQuery documentPageQuery) {
         Page<Document> customers = documentService.getDocumentPage(documentPageQuery);
-        return customers;
+        return Result.success(customers);
     }
 
 
     @PostMapping("page2")
-    public Page<Document> getDocumentPage2(@RequestBody DocumentPageQuery documentPageQuery) {
+    public Result<Page<Document>> getDocumentPage2(@RequestBody DocumentPageQuery documentPageQuery) {
         Page<Document> customers = documentService.getDocumentPage2(documentPageQuery);
-        return customers;
+        return Result.success(customers);
     }
 
     @PostMapping("get")
-    public Page<Document> getDocument() {
-        Page<Document> customers = documentService.getDocuments(1, 10);
-        return customers;
+    public Result<Document> getDocument(@RequestBody DocumentQuery documentQuery) {
+        Document document = documentService.getDocument(documentQuery.getDocumentId());
+        return Result.success(document);
     }
 
     @PostMapping("add")
-    public Page<Document> addDocument() {
-        Page<Document> customers = documentService.getDocuments(1, 10);
-        return customers;
+    public Result<Document> addDocument(@RequestBody Document document) {
+        Document newDocument = documentService.addDocument(document);
+        return Result.success(newDocument);
     }
 
     @PostMapping("update")
-    public Page<Document> updateDocument() {
-        Page<Document> customers = documentService.getDocuments(1, 10);
-        return customers;
+    public Result<Document> updateDocument(@RequestBody Document document) {
+        Document newDocument = documentService.updateDocument(document);
+        return Result.success(newDocument);
     }
 
     @PostMapping("delete")
