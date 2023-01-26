@@ -2,6 +2,7 @@ package org.ivipi.ratel.rockie.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
+@TableName("content")
 public class ContentDo implements Serializable {
 
 

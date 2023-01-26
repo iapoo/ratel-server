@@ -39,6 +39,11 @@ public class Document implements Serializable {
     private String remark;
 
     /**
+     * 文档内容
+     */
+    private Content content;
+
+    /**
      * 是否启用
      */
     private Integer isEnabled;

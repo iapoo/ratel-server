@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.DocumentDo">
         <id column="document_id" property="documentId"/>
         <result column="document_name" property="documentName"/>
+        <result column="content_id" property="contentId"/>
         <result column="folder_id" property="folderId"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
@@ -22,6 +23,7 @@
     <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.common.model.Document">
         <id column="document_id" property="documentId"/>
         <result column="document_name" property="documentName"/>
+        <result column="content_id" property="contentId"/>
         <result column="folder_id" property="folderId"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
@@ -36,13 +38,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        document_id, document_name, folder_id, remark,
+        document_id, document_name, content_id, folder_id, remark,
         is_enabled,is_deleted,is_enable,effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
     <select id="getDocumentPage" resultMap="PageResultMap">
-        select document_id, document_name, folder_id, remark,
+        select document_id, document_name, content_id, folder_id, remark,
                is_enabled,is_deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from document
 

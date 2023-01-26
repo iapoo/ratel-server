@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipi.ratel.rockie.common.model.Content;
 import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentPageQuery;
 import org.ivipi.ratel.rockie.common.utils.RockieError;
@@ -11,6 +12,7 @@ import org.ivipi.ratel.rockie.domain.entity.DocumentDo;
 import org.ivipi.ratel.rockie.domain.mapper.DocumentMapper;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import java.util.List;
 @Slf4j
 public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
+    @Autowired
+    private ContentService contentService;
 
     public Page<Document> getDocumentPage(DocumentPageQuery documentPageQuery) {
         Page<DocumentDo> page = new Page<>(documentPageQuery.getPageNum(), documentPageQuery.getPageSize());
@@ -58,6 +62,8 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Document addDocument(Document document) {
         DocumentDo documentDo = convertDocument(document);
+        Content newContent = contentService.addContent(document.getContent());
+        documentDo.setContentId(newContent.getContentId());
         documentDo.setDocumentId(null);
         saveOrUpdate(documentDo);
         return convertDocumentDo(documentDo);
@@ -65,6 +71,8 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Document updateDocument(Document document) {
         DocumentDo documentDo = convertDocument(document);
+        Content newContent = contentService.updateContent(document.getContent());
+        documentDo.setContentId(newContent.getContentId());
         saveOrUpdate(documentDo);
         return convertDocumentDo(documentDo);
     }
