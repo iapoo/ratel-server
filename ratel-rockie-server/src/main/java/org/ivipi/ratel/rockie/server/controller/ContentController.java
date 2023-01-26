@@ -2,6 +2,7 @@ package org.ivipi.ratel.rockie.server.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.ivipi.ratel.rockie.common.model.Content;
 import org.ivipi.ratel.rockie.domain.entity.ContentDo;
 import org.ivipi.ratel.rockie.domain.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +18,26 @@ public class ContentController {
     private ContentService contentServicee;
 
     @PostMapping("get")
-    public Page<ContentDo> getDocuments() {
-        Page<ContentDo> customers = contentServicee.getPage(1, 10);
+    public Page<Content> getDocuments() {
+        Page<Content> customers = contentServicee.getContents(1, 10);
         return customers;
     }
 
     @PostMapping("add")
-    public Page<ContentDo> addDocument() {
-        Page<ContentDo> customers = contentServicee.getPage(1, 10);
+    public Page<Content> addDocument() {
+        Page<Content> customers = contentServicee.getContents(1, 10);
         return customers;
     }
 
     @PostMapping("update")
-    public Page<ContentDo> updateDocument() {
-        Page<ContentDo> customers = contentServicee.getPage(1, 10);
+    public Page<Content> updateDocument() {
+        Page<Content> customers = contentServicee.getContents(1, 10);
         return customers;
     }
 
     @PostMapping("delete")
-    public Page<ContentDo> deleteDocuments() {
-        Page<ContentDo> customers = contentServicee.getPage(1, 10);
+    public Page<Content> deleteDocuments() {
+        Page<Content> customers = contentServicee.getContents(1, 10);
         return customers;
     }
 

@@ -21,6 +21,7 @@ create table if not exists document
 (
     document_id    bigint auto_increment,
     document_name  varchar(64)  not null,
+    content_id     bigint       not null,
     folder_id      bigint       not null,
     remark         varchar(512) null,
     is_enabled     int          not null default 1,

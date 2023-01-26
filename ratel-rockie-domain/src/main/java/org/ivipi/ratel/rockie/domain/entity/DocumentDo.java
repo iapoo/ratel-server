@@ -30,6 +30,11 @@ public class DocumentDo implements Serializable {
     private String documentName;
 
     /**
+     * 文档内容ID
+     */
+    private Long contentId;
+
+    /**
      * 密码
      */
     private Long folderId;
