@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("document")
-public class DocumentController {
+public class DocumentController extends RockieGenericController {
 
     @Autowired
     private DocumentService documentService;
@@ -42,6 +42,7 @@ public class DocumentController {
 
     @PostMapping("add")
     public Result<Document> addDocument(@RequestBody Document document) {
+        boolean isLoggedIn = isLoggedIn();
         Document newDocument = documentService.addDocument(document);
         return Result.success(newDocument);
     }
