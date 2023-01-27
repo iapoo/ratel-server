@@ -6,11 +6,11 @@ import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
 import org.ivipi.ratel.system.common.model.Login;
+import org.ivipi.ratel.system.common.model.LoginCustomer;
 import org.ivipi.ratel.system.common.model.UserToken;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 @Slf4j
-public class SystemController extends GenericController {
+public class SystemController extends SystemGenericController {
 
     @Autowired
     private CustomerService customerService;
@@ -36,22 +36,25 @@ public class SystemController extends GenericController {
         Customer customer = customerService.getCustomer(login.getName(), login.getPassword());
         if(customer != null) {
             String token = IdUtil.simpleUUID();
-
+            LoginCustomer loginCustomer = new LoginCustomer();
+            loginCustomer.setName(login.getName());
             UserToken userToken = new UserToken();
             userToken.setToken(token);
-            putSession(LOGIN_USER_NAME, login.getName());
-            putSession(LOGIN_USER_TOKEN, token);
-            refreshUserToken(token, login.getName());
+            refreshUserToken(token, loginCustomer);
             return Result.success(userToken);
         } else {
             return Result.error(SystemError.SYSTEM_LOGIN_FAILED.newException());
         }
-
     }
 
     @PostMapping("logout")
-    public Result logout(@RequestBody Customer customer) {
-        customerService.addCustomer(customer);
+    public Result logout() {
+        String userToken = getUserToken();
+        if(userToken != null) {
+            removeUserToken(userToken);
+        } else {
+            Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+        }
         return Result.success();
     }
 
