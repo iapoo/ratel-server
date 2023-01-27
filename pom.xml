@@ -36,12 +36,13 @@
         <hutool-core.version>5.3.7</hutool-core.version>
         <hutool-all.version>5.3.7</hutool-all.version>
 
+        <jedis.version>3.9.0</jedis.version>
 
         <!-- mysql&mybatis -->
         <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
         <mybatis-plus-boot-starter.version>3.3.2</mybatis-plus-boot-starter.version>
         <mybatis-plus-generator.version>3.3.2</mybatis-plus-generator.version>
-        
+
         <!-- compile for development -->
         <scope>compile</scope>
     </properties>
@@ -79,6 +80,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
             </dependency>
 
         </dependencies>
