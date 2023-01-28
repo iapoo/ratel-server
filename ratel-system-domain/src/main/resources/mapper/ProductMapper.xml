@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.system.domain.mapper.LicenseMapper">
+<mapper namespace="org.ivipi.ratel.system.domain.mapper.ProductMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.LicenseDo">
-        <id column="license_id" property="licenseId"/>
-        <result column="license_name" property="licenseName"/>
-        <result column="customer_id" property="customerId"/>
-        <result column="product_id" property="productId"/>
+    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.ProductDo">
+        <id column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -19,11 +17,9 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.LicensePage">
-        <id column="license_id" property="licenseId"/>
-        <result column="license_name" property="licenseName"/>
-        <result column="customer_id" property="customerId"/>
-        <result column="product_id" property="productId"/>
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.ProductPage">
+        <id column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -37,15 +33,15 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        license_id, license_name, customer_id, product_id, remark, is_enabled,is_deleted,is_enabled,
+        product_id, product_name,   remark, is_enabled,is_deleted,is_enabled,
         effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
-    <select id="getLicensePage" resultMap="PageResultMap">
-        select license_id, license_name, customer_id, product_id, remark, is_enabled,is_deleted,is_enabled,
+    <select id="getProductPage" resultMap="PageResultMap">
+        select product_id, product_name,   remark, is_enabled,is_deleted,is_enabled,
                effective_date,expire_date,created_by, created_date, updated_by, updated_date
-        from license
+        from product
 
     </select>
 

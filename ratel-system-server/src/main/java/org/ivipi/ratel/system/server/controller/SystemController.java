@@ -4,6 +4,8 @@ import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.model.Customer;
+import org.ivipi.ratel.system.common.model.CustomerAdd;
+import org.ivipi.ratel.system.common.model.CustomerEdit;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
 import org.ivipi.ratel.system.common.model.Login;
 import org.ivipi.ratel.system.common.model.LoginCustomer;
@@ -25,8 +27,8 @@ public class SystemController extends SystemGenericController {
     private CustomerService customerService;
 
     @PostMapping("register")
-    public Result register(@RequestBody Customer customer) {
-        customerService.addCustomer(customer);
+    public Result register(@RequestBody CustomerAdd customerAdd) {
+        customerService.addCustomer(customerAdd);
         return Result.success();
     }
 
@@ -59,8 +61,8 @@ public class SystemController extends SystemGenericController {
     }
 
     @PostMapping("update")
-    public Result updateCustomer(@RequestBody Customer customer) {
-        customerService.updateCustomer(customer);
+    public Result updateCustomer(@RequestBody CustomerEdit customerEdit) {
+        customerService.updateCustomer(customerEdit);
         return Result.success();
     }
 

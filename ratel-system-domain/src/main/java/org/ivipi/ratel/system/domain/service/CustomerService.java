@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Customer;
+import org.ivipi.ratel.system.common.model.CustomerAdd;
+import org.ivipi.ratel.system.common.model.CustomerEdit;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
@@ -50,6 +52,13 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         }
     }
 
+    public CustomerDo getCustomerDo(String customerName) {
+        QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_name", customerName);
+        CustomerDo customerDo = this.getOne(queryWrapper);
+        return customerDo;
+    }
+
     public Customer getCustomer(String customerName, String customerPassword) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_name", customerName);
@@ -71,58 +80,46 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return result;
     }
 
-    public void addCustomer(Customer customer) {
+    public void addCustomer(CustomerAdd customerAdd) {
         CustomerDo customerDo;
 
-        String password = customer.getPassword();
-        if(customer.getCustomerName() == null) {
+        String password = customerAdd.getPassword();
+        if(customerAdd.getCustomerName() == null) {
             throw SystemError.CUSTOMER_CUSTOMER_NAME_IS_NULL.newException();
         }
         if(!SystemUtils.IsValidPassword(password)) {
             throw SystemError.CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID.newException();
         }
-        customerDo = new CustomerDo();
-        customerDo.setCustomerName(customer.getCustomerName());
-        customerDo.setPassword(customer.getPassword());
-        customerDo.setIdCard(customer.getIdCard());
+        customerDo = convertCustomerAdd(customerAdd);
 
         save(customerDo);
     }
 
-    public void updateCustomer(Customer customer) {
-        CustomerDo customerDo;
-
-        if(customer.getCustomerId() == null) {
+    public void updateCustomer(CustomerEdit customerEdit) {
+        if(customerEdit.getCustomerId() == null) {
             throw SystemError.CUSTOMER_CUSTOMER_ID_IS_NULL.newException();
         }
-        CustomerDo oldCustomerDo = getById(customer.getCustomerId());
-        customerDo = new CustomerDo();
-        customerDo.setPassword(oldCustomerDo.getPassword());
-        customerDo.setCustomerId(oldCustomerDo.getCustomerId());
-        customerDo.setCustomerName(oldCustomerDo.getCustomerName());
-
-        customerDo.setIdCard(customer.getIdCard());
-
+        CustomerDo oldCustomerDo = getById(customerEdit.getCustomerId());
+        if(oldCustomerDo == null) {
+            throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
+        }
+        CustomerDo customerDo = convertCustomerEdit(customerEdit, oldCustomerDo);
         updateById(customerDo);
     }
 
     public void updatePassword(String userName, CustomerPassword customerPassword) {
-        CustomerDo customerDo;
-
-        Customer oldCustomer = getCustomer(userName);
-        if(oldCustomer == null) {
+        CustomerDo oldCustomerDo = getCustomerDo(userName);
+        if(oldCustomerDo == null) {
             throw SystemError.CUSTOMER_CUSTOMER_IS_INVALID.newException();
         }
-        if(!oldCustomer.getPassword().equals(customerPassword.getOldPassword())) {
+        if(!oldCustomerDo.getPassword().equals(customerPassword.getOldPassword())) {
             throw SystemError.CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT.newException();
         }
         if(!SystemUtils.IsValidPassword(customerPassword.getNewPassword())) {
             throw SystemError.CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID.newException();
         }
-        customerDo = convertCustomer(oldCustomer);
-        customerDo.setPassword(customerPassword.getNewPassword());
-
-        updateById(customerDo);
+        oldCustomerDo.setPassword(customerPassword.getNewPassword());
+        updateById(oldCustomerDo);
     }
 
     private Customer convertCustomerDo(CustomerDo customerDo) {
@@ -131,9 +128,14 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customer;
     }
 
-    private CustomerDo convertCustomer(Customer customer) {
+    private CustomerDo convertCustomerAdd(CustomerAdd customerAdd) {
         CustomerDo customerDo = new CustomerDo();
-        BeanUtils.copyProperties(customer, customerDo);
+        BeanUtils.copyProperties(customerAdd, customerDo);
+        return customerDo;
+    }
+
+    private CustomerDo convertCustomerEdit(CustomerEdit customerEdit, CustomerDo customerDo) {
+        BeanUtils.copyProperties(customerEdit, customerDo);
         return customerDo;
     }
 }

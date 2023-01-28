@@ -21,6 +21,10 @@ public class LicensePage extends BasePage {
      */
     private String licenseName;
 
+    private Long customerId;
+
+    private Long productId;
+
     /**
      * 备注说明
      */

@@ -119,6 +119,8 @@ create table if not exists license
 (
     license_id     bigint auto_increment,
     license_name   varchar(64)  not null,
+    customer_id    bigint       not null,
+    product_id     bigint       not null,
     remark         varchar(512) null,
     is_enabled     int          not null default 1,
     is_deleted     int          not null default 0,

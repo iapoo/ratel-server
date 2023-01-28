@@ -23,40 +23,11 @@ public class License implements Serializable {
      */
     private Long licenseId;
 
-    /**
-     * 用户名
-     */
-    private String roleName;
+    private String licenseName;
 
-    /**
-     * 密码
-     */
-    private String password;
+    private Long customerId;
 
-    /**
-     * 昵称
-     */
-    private String nickName;
-
-    /**
-     * 身份证号
-     */
-    private String idCard;
-
-    /**
-     * 固定电话
-     */
-    private String telephone;
-
-    /**
-     * 移动电话电话
-     */
-    private String mobile;
-
-    /**
-     * 电子邮箱
-     */
-    private String email;
+    private Long productId;
 
     /**
      * 备注说明

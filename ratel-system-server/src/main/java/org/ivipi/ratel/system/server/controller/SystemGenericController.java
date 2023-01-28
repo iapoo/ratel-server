@@ -62,11 +62,12 @@ public abstract class SystemGenericController {
     }
 
     protected String getUserName(String userToken) {
-        LoginCustomer loginCustomer = getLoginCustomer(userToken);
-        if(loginCustomer != null) {
-            return loginCustomer.getName();
-        } else {
-            return null;
+        if(userToken != null) {
+            LoginCustomer loginCustomer = getLoginCustomer(userToken);
+            if(loginCustomer != null) {
+                return loginCustomer.getName();
+            }
         }
+        return null;
     }
 }
