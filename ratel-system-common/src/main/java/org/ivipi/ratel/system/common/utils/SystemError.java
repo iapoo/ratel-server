@@ -16,7 +16,11 @@ public enum SystemError {
     CUSTOMER_CUSTOMER_NAME_IS_NULL("System", "001003", "名称不可为空"),
     CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID("System", "001004", "密码无效, 必须同时包含大写字母、小写字母、数字或特殊符号（_、#、$)四类中至少3类"),
     CUSTOMER_CUSTOMER_IS_INVALID("System", "001005", "用户无效"),
-    CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT("System", "001004", "密码无效"),
+    CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT("System", "001006", "密码无效"),
+    CUSTOMER_CUSTOMER_NOT_FOUND("System", "001007", "用户未找到"),
+
+    PRODUCT_PRODUCT_NOT_FOUND("System", "003001", "Product未找到"),
+    PRODUCT_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空")
     ;
 
     private String service;

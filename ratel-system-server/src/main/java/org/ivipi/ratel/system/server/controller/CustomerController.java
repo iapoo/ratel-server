@@ -3,6 +3,7 @@ package org.ivipi.ratel.system.server.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.model.Customer;
+import org.ivipi.ratel.system.common.model.CustomerEdit;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
 import org.ivipi.ratel.system.common.model.Login;
@@ -41,31 +42,4 @@ public class CustomerController {
         return Result.success(customerLicenseList);
     }
 
-
-    @PostMapping("register")
-    public Result register(@RequestBody Customer customer) {
-        customerService.addCustomer(customer);
-        return Result.success();
-    }
-
-
-    @PostMapping("login")
-    public Result login(@RequestBody Login login) {
-        Customer customer = customerService.getCustomer(login.getName());
-        return Result.success(customer);
-    }
-
-
-
-    @PostMapping("logout")
-    public Result logout(@RequestBody Customer customer) {
-        customerService.addCustomer(customer);
-        return Result.success();
-    }
-
-    @PostMapping("update")
-    public Result updateCustomer(@RequestBody Customer customer) {
-        customerService.updateCustomer(customer);
-        return Result.success();
-    }
 }

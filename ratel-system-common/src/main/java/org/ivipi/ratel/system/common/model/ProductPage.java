@@ -1,7 +1,5 @@
 package org.ivipi.ratel.system.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -13,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class Product implements Serializable {
+public class ProductPage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +20,9 @@ public class Product implements Serializable {
      */
     private Long productId;
 
+    /**
+     * 用户名
+     */
     private String productName;
 
     /**
