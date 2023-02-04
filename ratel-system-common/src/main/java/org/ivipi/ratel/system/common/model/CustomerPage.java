@@ -22,11 +22,6 @@ public class CustomerPage extends BasePage {
     private String customerName;
 
     /**
-     * 密码
-     */
-    private String password;
-
-    /**
      * 昵称
      */
     private String nickName;
@@ -60,11 +55,6 @@ public class CustomerPage extends BasePage {
      * 是否启用
      */
     private Integer isEnabled;
-
-    /**
-     * 是否删除
-     */
-    private Integer isDeleted;
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
     @JsonSerialize(using =  StandardLocalDateTime.StandardLocalDateTimeSerializer.class)

@@ -81,16 +81,15 @@ public class ControllerAdvice {
                 if (StrUtil.isEmpty(token)) {
                     throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
                 }
-
+                LoginCustomer loginCustomer = (LoginCustomer)systemRedisTemplate.opsForValue().get(token);
+                if (loginCustomer == null) {
+                    throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
+                }
+                customerId = loginCustomer.getCustomerId();
+                customerName = loginCustomer.getCustomerName();
                 DefaultParameters parameters = new DefaultParameters(method);
                 if (parameters.getNumberOfParameters() > 0) {
                     if (Auth.class == parameters.getParameter(0).getType()) {
-                        LoginCustomer loginCustomer = (LoginCustomer)systemRedisTemplate.opsForValue().get(token);
-                        if (loginCustomer == null) {
-                            throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
-                        }
-                        customerId = loginCustomer.getCustomerId();
-                        customerName = loginCustomer.getCustomerName();
                         auth = new Auth();
                         auth.setToken(token);
                         auth.setLoginCustomer(loginCustomer);
@@ -98,7 +97,7 @@ public class ControllerAdvice {
                     }
                 }
             }
-            log.info("Token: [customerId={}, customerName={}, token={}, resource={}, ipAddress={}]", customerId, customerName, token, resource, ipAddress);
+            log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
             result = joinPoint.proceed(joinPoint.getArgs());
             if (isLog) {
                 log(customerId, customerName, token, resource,ipAddress ,  true);

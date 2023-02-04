@@ -24,7 +24,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.CustomerPage">
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.Customer">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="password" property="password"/>
@@ -35,7 +35,6 @@
         <result column="email" property="email"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
-        <result column="is_deleted" property="isDeleted"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -51,11 +50,13 @@
     </sql>
 
 
-    <select id="getCustomerPage" resultMap="PageResultMap">
-        select customer_id, customer_name, password, nick_name, id_card, telephone, mobile, email, remark,
-               is_enabled,is_deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+    <select id="getCustomers" resultMap="PageResultMap">
+        select customer_id, customer_name, '********' as password, nick_name, id_card, telephone, mobile, email, remark,
+               is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from customer
-
+        <if test="customerName != null">
+            and customer_name like '%customerName%'
+        </if>
     </select>
 
 
