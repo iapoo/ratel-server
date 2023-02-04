@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class UserToken implements Serializable {
+public class Auth implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,6 +16,9 @@ public class UserToken implements Serializable {
      * Token
      */
     private String token;
+
+
+    private LoginCustomer loginCustomer;
 
 
 
