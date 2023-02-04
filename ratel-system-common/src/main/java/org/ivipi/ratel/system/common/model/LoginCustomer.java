@@ -11,10 +11,10 @@ public class LoginCustomer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 用户名
-     */
-    private String name;
+    private Long customerId;
+
+    private String customerName;
+
 
 
 }

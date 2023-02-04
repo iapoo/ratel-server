@@ -107,8 +107,8 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         updateById(customerDo);
     }
 
-    public void updatePassword(String userName, CustomerPassword customerPassword) {
-        CustomerDo oldCustomerDo = getCustomerDo(userName);
+    public void updatePassword(Long customerId, CustomerPassword customerPassword) {
+        CustomerDo oldCustomerDo = getById(customerId);
         if(oldCustomerDo == null) {
             throw SystemError.CUSTOMER_CUSTOMER_IS_INVALID.newException();
         }
