@@ -32,10 +32,9 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
     }
 
 
-    public Page<CustomerPage> getCustomerPage(int pageNum, int pageSize) {
-        Page<CustomerPage> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<CustomerPage> queryWrapper = new QueryWrapper<>();
-        List<CustomerPage> result = baseMapper.getCustomerPage(page);
+    public Page<Customer> getCustomers(CustomerPage customerPage) {
+        Page<Customer> page = new Page<>(customerPage.getPageNum(), customerPage.getPageSize());
+        List<Customer> result = baseMapper.getCustomers(page, customerPage.getCustomerName());
         return page.setRecords(result);
     }
 
@@ -51,6 +50,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
             return null;
         }
     }
+
 
     public CustomerDo getCustomerDo(String customerName) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
