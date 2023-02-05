@@ -1,4 +1,4 @@
-package org.ivipi.ratel.system.server.utils;
+package org.ivipi.ratel.system.common.utils;
 
 public class SystemConstants {
 

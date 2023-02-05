@@ -1,7 +1,8 @@
-package org.ivipi.ratel.rockie.server.controller;
+package org.ivipi.ratel.system.common.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.LoginCustomer;
+import org.ivipi.ratel.system.common.utils.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 
 @Slf4j
-public abstract class RockieGenericController {
-
-    protected final static String USER_TOKEN = "Token";
+public abstract class GenericController {
 
 
     @Value("${ratel.system.token.timeout}")
@@ -30,7 +29,7 @@ public abstract class RockieGenericController {
     }
 
     protected String getToken() {
-        return request.getHeader(USER_TOKEN);
+        return request.getHeader(SystemConstants.TOKEN);
     }
 
     protected String getCustomerName() {
@@ -50,7 +49,7 @@ public abstract class RockieGenericController {
     }
 
     protected  void removeLoginCustomer(String token) {
-        systemRedisTemplate.opsForValue().getAndDelete(token);
+    systemRedisTemplate.opsForValue().getAndDelete(token);
     }
 
     protected LoginCustomer getLoginCustomer(String token) {
