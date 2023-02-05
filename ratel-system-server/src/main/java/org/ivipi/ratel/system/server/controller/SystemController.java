@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.annoation.Audit;
+import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 @Slf4j
-public class SystemController extends SystemGenericController {
+public class SystemController extends GenericController {
 
     @Autowired
     private CustomerService customerService;

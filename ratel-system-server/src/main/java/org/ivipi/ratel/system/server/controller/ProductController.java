@@ -3,6 +3,7 @@ package org.ivipi.ratel.system.server.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.annoation.Audit;
+import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("product")
-public class ProductController extends SystemGenericController {
+public class ProductController extends GenericController {
 
     @Autowired
     private ProductService productService;

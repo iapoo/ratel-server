@@ -7,6 +7,7 @@ import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentPageQuery;
 import org.ivipi.ratel.rockie.common.model.DocumentQuery;
 import org.ivipi.ratel.rockie.domain.service.DocumentService;
+import org.ivipi.ratel.system.common.controller.GenericController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("document")
-public class DocumentController extends RockieGenericController {
+public class DocumentController extends GenericController {
 
     @Autowired
     private DocumentService documentService;

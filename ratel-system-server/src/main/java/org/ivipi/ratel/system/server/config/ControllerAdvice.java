@@ -11,7 +11,7 @@ import org.ivipi.ratel.system.common.annoation.Audit;
 import org.ivipi.ratel.system.common.model.LoginCustomer;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.utils.SystemError;
-import org.ivipi.ratel.system.server.utils.SystemConstants;
+import org.ivipi.ratel.system.common.utils.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;

@@ -3,13 +3,12 @@ package org.ivipi.ratel.system.server.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.system.common.annoation.Audit;
+import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
 import org.ivipi.ratel.system.common.model.LicenseAdd;
 import org.ivipi.ratel.system.common.model.LicenseEdit;
 import org.ivipi.ratel.system.common.model.LicensePage;
-import org.ivipi.ratel.system.common.utils.SystemError;
-import org.ivipi.ratel.system.domain.entity.LicenseDo;
 import org.ivipi.ratel.system.domain.service.LicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("license")
-public class LicenseController extends SystemGenericController {
+public class LicenseController extends GenericController {
 
     @Autowired
     private LicenseService licenseService;
