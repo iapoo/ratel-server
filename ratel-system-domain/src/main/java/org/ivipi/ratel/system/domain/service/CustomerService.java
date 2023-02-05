@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
 import org.ivipi.ratel.system.common.model.CustomerEdit;
@@ -95,9 +96,12 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         save(customerDo);
     }
 
-    public void updateCustomer(CustomerEdit customerEdit) {
+    public void updateCustomer(Auth auth, CustomerEdit customerEdit) {
         if(customerEdit.getCustomerId() == null) {
             throw SystemError.CUSTOMER_CUSTOMER_ID_IS_NULL.newException();
+        }
+        if(!auth.getLoginCustomer().getCustomerId().equals(customerEdit.getCustomerId())) {
+            throw SystemError.SYSTEM_ID_IS_INVALID.newException();
         }
         CustomerDo oldCustomerDo = getById(customerEdit.getCustomerId());
         if(oldCustomerDo == null) {

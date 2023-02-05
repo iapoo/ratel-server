@@ -2,12 +2,12 @@ package org.ivipi.ratel.system.server.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
+import org.ivipi.ratel.system.common.annoation.Audit;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
 import org.ivipi.ratel.system.common.model.ProductEdit;
 import org.ivipi.ratel.system.common.model.ProductPage;
-import org.ivipi.ratel.system.common.utils.SystemError;
-import org.ivipi.ratel.system.domain.entity.ProductDo;
 import org.ivipi.ratel.system.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,35 +22,24 @@ public class ProductController extends SystemGenericController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("list")
-    public Page<ProductDo> getProducts() {
-        Page<ProductDo> products = productService.getPage(1, 10);
-        return products;
-    }
-
     @PostMapping("products")
-    public Page<ProductPage> getProductPage() {
-        Page<ProductPage> products = productService.getProductPage(1, 10);
-        return products;
+    @Audit
+    public Result<Page<Product>> getProducts(Auth auth, @RequestBody ProductPage productPage) {
+        Page<Product> products = productService.getProducts(auth, productPage);
+        return Result.success(products);
     }
 
     @PostMapping("add")
-    public Result addProduct(@RequestBody ProductAdd productAdd) {
-        boolean isLoggedIn = isLoggedIn();
-        if(isLoggedIn) {
-            productService.addProduct(productAdd);
-            return Result.success();
-        }
-        return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+    @Audit
+    public Result addProduct(Auth auth, @RequestBody ProductAdd productAdd) {
+        productService.addProduct(auth, productAdd);
+        return Result.success();
     }
 
     @PostMapping("update")
-    public Result updateProduct(@RequestBody ProductEdit productEdit) {
-        boolean isLoggedIn = isLoggedIn();
-        if(isLoggedIn) {
-            productService.updateProduct(productEdit);
-            return Result.success();
-        }
-        return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+    @Audit
+    public Result updateProduct(Auth auth, @RequestBody ProductEdit productEdit) {
+        productService.updateProduct(auth, productEdit);
+        return Result.success();
     }
 }

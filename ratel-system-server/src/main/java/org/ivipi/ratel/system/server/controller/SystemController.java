@@ -3,6 +3,7 @@ package org.ivipi.ratel.system.server.controller;
 import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.common.model.Result;
+import org.ivipi.ratel.system.common.annoation.Audit;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
@@ -27,6 +28,7 @@ public class SystemController extends SystemGenericController {
     private CustomerService customerService;
 
     @PostMapping("register")
+    @Audit
     public Result register(@RequestBody CustomerAdd customerAdd) {
         customerService.addCustomer(customerAdd);
         return Result.success();
@@ -34,6 +36,7 @@ public class SystemController extends SystemGenericController {
 
 
     @PostMapping("login")
+    @Audit
     public Result login(@RequestBody Login login) {
         Customer customer = customerService.getCustomer(login.getName(), login.getPassword());
         if(customer != null) {
@@ -49,6 +52,7 @@ public class SystemController extends SystemGenericController {
     }
 
     @PostMapping("logout")
+    @Audit
     public Result logout() {
         String token = getToken();
         if(token != null) {
@@ -65,15 +69,14 @@ public class SystemController extends SystemGenericController {
     }
 
     @PostMapping("update")
+    @Audit
     public Result updateCustomer(Auth auth, @RequestBody CustomerEdit customerEdit) {
-        Long customerId = auth.getLoginCustomer().getCustomerId();
-        if(customerId.equals(customerEdit.getCustomerId())) {
-            customerService.updateCustomer(customerEdit);
-        }
+       customerService.updateCustomer(auth, customerEdit);
         return Result.success();
     }
 
     @PostMapping("updatePassword")
+    @Audit
     public Result updateCustomerPassword(Auth auth, @RequestBody CustomerPassword customerPassword) {
         Long customerId = auth.getLoginCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);

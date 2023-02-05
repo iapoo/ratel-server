@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.ivipi.ratel.common.config.StandardLocalDateTime;
+import org.ivipi.ratel.common.model.BasePage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class ProductPage implements Serializable {
+public class ProductPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 

@@ -10,6 +10,7 @@ public enum SystemError {
     SYSTEM_ID_NOT_FOUND("System", "999003", "ID未找到"),
     SYSTEM_LOGIN_FAILED("System", "999004", "用户名或密码错误"),
     SYSTEM_TOKEN_NOT_FOUND("System", "999003", "Token未找到"),
+    SYSTEM_ID_IS_INVALID("System", "999003", "ID无效"),
 
     CUSTOMER_CUSTOMER_ID_IS_NOT_NULL("System", "001001", "非空ID"),
     CUSTOMER_CUSTOMER_ID_IS_NULL("System", "001002", "空的ID"),
@@ -20,7 +21,12 @@ public enum SystemError {
     CUSTOMER_CUSTOMER_NOT_FOUND("System", "001007", "用户未找到"),
 
     PRODUCT_PRODUCT_NOT_FOUND("System", "003001", "Product未找到"),
-    PRODUCT_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空")
+    PRODUCT_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),
+
+    LICENSE_LICENSE_ID_IS_NULL("System", "003002", "License ID为空"),
+    LICENSE_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),
+    LICENSE_LICENSE_NOT_FOUND("System", "003002", "License未找到")
+
     ;
 
     private String service;

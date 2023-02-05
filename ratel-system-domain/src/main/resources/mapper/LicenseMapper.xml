@@ -19,14 +19,13 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.LicensePage">
+    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.License">
         <id column="license_id" property="licenseId"/>
         <result column="license_name" property="licenseName"/>
         <result column="customer_id" property="customerId"/>
         <result column="product_id" property="productId"/>
         <result column="remark" property="remark"/>
         <result column="is_enabled" property="isEnabled"/>
-        <result column="is_deleted" property="isDeleted"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -42,8 +41,8 @@
     </sql>
 
 
-    <select id="getLicensePage" resultMap="PageResultMap">
-        select license_id, license_name, customer_id, product_id, remark, is_enabled,is_deleted,is_enabled,
+    <select id="getLicenses" resultMap="PageResultMap">
+        select license_id, license_name, customer_id, product_id, remark, is_enabled,
                effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from license
 
