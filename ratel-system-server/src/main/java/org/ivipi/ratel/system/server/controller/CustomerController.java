@@ -2,7 +2,7 @@ package org.ivipi.ratel.system.server.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
-import org.ivipi.ratel.system.common.annoation.Log;
+import org.ivipi.ratel.system.common.annoation.Audit;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
@@ -29,14 +29,14 @@ public class CustomerController {
     //}
 
     @PostMapping("customers")
-    @Log
+    @Audit
     public Result<Page<Customer>> getCustomers(@RequestBody CustomerPage customerPage) {
         Page<Customer> customers = customerService.getCustomers(customerPage);
         return Result.success(customers);
     }
 
     @PostMapping("customerLicenses")
-    @Log
+    @Audit
     public Result<List<CustomerLicense>> getCustomerLicenses() {
         List<CustomerLicense> customerLicenseList = customerService.getCustomerLicenseList();
         return Result.success(customerLicenseList);

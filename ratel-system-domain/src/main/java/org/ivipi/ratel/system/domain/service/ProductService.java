@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
 import org.ivipi.ratel.system.common.model.ProductEdit;
@@ -28,20 +29,19 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
     }
 
 
-    public Page<ProductPage> getProductPage(int pageNum, int pageSize) {
-        Page<ProductPage> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<ProductPage> queryWrapper = new QueryWrapper<>();
-        List<ProductPage> result = baseMapper.getProductPage(page);
+    public Page<Product> getProducts(Auth auth, ProductPage productPage) {
+        Page<Product> page = new Page<>(productPage.getPageNum(), productPage.getPageSize());
+        List<Product> result = baseMapper.getProducts(page);
         return page.setRecords(result);
     }
 
-    public void addProduct(ProductAdd productAdd) {
+    public void addProduct(Auth auth, ProductAdd productAdd) {
         ProductDo productDo = convertProductAdd(productAdd);
         productDo.setProductId(null);
         save(productDo);
     }
 
-    public void updateProduct(ProductEdit productEdit) {
+    public void updateProduct(Auth auth, ProductEdit productEdit) {
         if(productEdit.getProductId() == null) {
             throw SystemError.PRODUCT_PRODUCT_ID_IS_NULL.newException();
         }
@@ -64,8 +64,6 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
         BeanUtils.copyProperties(productAdd, productDo);
         return productDo;
     }
-
-
 
     private ProductDo convertProductEdit(ProductEdit productEdit, ProductDo productDo) {
         BeanUtils.copyProperties(productEdit, productDo);

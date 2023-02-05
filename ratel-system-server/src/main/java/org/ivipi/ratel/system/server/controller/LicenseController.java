@@ -2,7 +2,11 @@ package org.ivipi.ratel.system.server.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
+import org.ivipi.ratel.system.common.annoation.Audit;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
+import org.ivipi.ratel.system.common.model.LicenseAdd;
+import org.ivipi.ratel.system.common.model.LicenseEdit;
 import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
@@ -20,35 +24,24 @@ public class LicenseController extends SystemGenericController {
     @Autowired
     private LicenseService licenseService;
 
-    @PostMapping("list")
-    public Page<LicenseDo> getLicenses() {
-        Page<LicenseDo> licenses = licenseService.getPage(1, 10);
-        return licenses;
-    }
-
     @PostMapping("licenses")
-    public Page<LicensePage> getLicensePage() {
-        Page<LicensePage> licenses = licenseService.getLicensePage(1, 10);
-        return licenses;
+    @Audit
+    public Result<Page<License>> getLicenses(Auth auth, @RequestBody LicensePage licensePage) {
+        Page<License> licenses = licenseService.getLicenses(auth, licensePage);
+        return Result.success(licenses);
     }
 
     @PostMapping("add")
-    public Result addLicense(@RequestBody License license) {
-        boolean isLoggedIn = isLoggedIn();
-        if(isLoggedIn) {
-            licenseService.addLicense(license);
-            return Result.success();
-        }
-        return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+    @Audit
+    public Result addLicense(Auth auth, @RequestBody LicenseAdd licenseAdd) {
+        licenseService.addLicense(auth, licenseAdd);
+        return Result.success();
     }
 
     @PostMapping("update")
-    public Result updateLicense(@RequestBody License license) {
-        boolean isLoggedIn = isLoggedIn();
-        if(isLoggedIn) {
-            licenseService.updateLicense(license);
-            return Result.success();
-        }
-        return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+    @Audit
+    public Result updateLicense(Auth auth, @RequestBody LicenseEdit licenseEdit) {
+        licenseService.updateLicense(auth, licenseEdit);
+        return Result.success();
     }
 }

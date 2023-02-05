@@ -4,14 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
-import org.ivipi.ratel.system.common.model.License;
+import org.ivipi.ratel.system.common.model.LicenseAdd;
+import org.ivipi.ratel.system.common.model.LicenseEdit;
 import org.ivipi.ratel.system.common.model.LicensePage;
-import org.ivipi.ratel.system.domain.entity.LicenseDo;
+import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
 import org.ivipi.ratel.system.domain.mapper.LicenseMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,22 +29,34 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
     }
 
 
-    public Page<LicensePage> getLicensePage(int pageNum, int pageSize) {
-        Page<LicensePage> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<LicensePage> queryWrapper = new QueryWrapper<>();
-        List<LicensePage> result = baseMapper.getLicensePage(page);
+    public Page<License> getLicenses(Auth auth, LicensePage licensePage) {
+        Page<License> page = new Page<>(licensePage.getPageNum(), licensePage.getPageSize());
+        List<License> result = baseMapper.getLicenses(page);
         return page.setRecords(result);
     }
 
-    public void addLicense(License license) {
-        LicenseDo licenseDo = convertLicense(license);
+    public void addLicense(Auth auth, LicenseAdd licenseAdd) {
+        LicenseDo licenseDo = convertLicenseAdd(licenseAdd);
         licenseDo.setLicenseId(null);
         save(licenseDo);
     }
 
-    public void updateLicense(License license) {
-        LicenseDo licenseDo = convertLicense(license);
-        LicenseDo oldLicenseDo = getById(license.getLicenseId());
+    public void updateLicense(Auth auth, LicenseEdit licenseEdit) {
+        Long customerId = auth.getLoginCustomer().getCustomerId();
+        if (!customerId.equals(licenseEdit.getCustomerId())) {
+            throw SystemError.SYSTEM_ID_IS_INVALID.newException();
+        }
+        if (licenseEdit.getLicenseId() == null) {
+            throw SystemError.LICENSE_LICENSE_ID_IS_NULL.newException();
+        }
+        if(licenseEdit.getProductId() == null) {
+            throw SystemError.LICENSE_PRODUCT_ID_IS_NULL.newException();
+        }
+        LicenseDo oldLicenseDo = getById(licenseEdit.getLicenseId());
+        if(oldLicenseDo == null) {
+            throw  SystemError.LICENSE_LICENSE_NOT_FOUND.newException();
+        }
+        LicenseDo licenseDo = convertLicenseEdit(licenseEdit, oldLicenseDo);
         updateById(licenseDo);
     }
 
@@ -53,9 +66,14 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
         return license;
     }
 
-    private LicenseDo convertLicense(License license) {
+    private LicenseDo convertLicenseAdd(LicenseAdd license) {
         LicenseDo licenseDo = new LicenseDo();
         BeanUtils.copyProperties(license, licenseDo);
         return licenseDo;
+    }
+
+    private LicenseDo convertLicenseEdit(LicenseEdit licenseEdit, LicenseDo oldLicenseDo) {
+        BeanUtils.copyProperties(licenseEdit, oldLicenseDo);
+        return oldLicenseDo;
     }
 }
