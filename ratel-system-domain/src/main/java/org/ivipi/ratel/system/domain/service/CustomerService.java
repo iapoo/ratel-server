@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
-import org.ivipi.ratel.system.common.model.CustomerEdit;
+import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
@@ -96,18 +96,18 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         save(customerDo);
     }
 
-    public void updateCustomer(Auth auth, CustomerEdit customerEdit) {
-        if(customerEdit.getCustomerId() == null) {
+    public void updateCustomer(Auth auth, CustomerUpdate customerUpdate) {
+        if(customerUpdate.getCustomerId() == null) {
             throw SystemError.CUSTOMER_CUSTOMER_ID_IS_NULL.newException();
         }
-        if(!auth.getLoginCustomer().getCustomerId().equals(customerEdit.getCustomerId())) {
+        if(!auth.getOnlineCustomer().getCustomerId().equals(customerUpdate.getCustomerId())) {
             throw SystemError.SYSTEM_ID_IS_INVALID.newException();
         }
-        CustomerDo oldCustomerDo = getById(customerEdit.getCustomerId());
+        CustomerDo oldCustomerDo = getById(customerUpdate.getCustomerId());
         if(oldCustomerDo == null) {
             throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
         }
-        CustomerDo customerDo = convertCustomerEdit(customerEdit, oldCustomerDo);
+        CustomerDo customerDo = convertCustomerEdit(customerUpdate, oldCustomerDo);
         updateById(customerDo);
     }
 
@@ -138,8 +138,8 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customerDo;
     }
 
-    private CustomerDo convertCustomerEdit(CustomerEdit customerEdit, CustomerDo customerDo) {
-        BeanUtils.copyProperties(customerEdit, customerDo);
+    private CustomerDo convertCustomerEdit(CustomerUpdate customerUpdate, CustomerDo customerDo) {
+        BeanUtils.copyProperties(customerUpdate, customerDo);
         return customerDo;
     }
 }

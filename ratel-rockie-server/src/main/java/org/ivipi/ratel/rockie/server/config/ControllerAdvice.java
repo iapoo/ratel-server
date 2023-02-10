@@ -1,4 +1,4 @@
-package org.ivipi.ratel.system.server.config;
+package org.ivipi.ratel.rockie.server.config;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +8,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.ivipi.ratel.system.common.annoation.Audit;
-import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.model.Auth;
-import org.ivipi.ratel.system.common.utils.SystemError;
+import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.utils.SystemConstants;
+import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -38,7 +38,7 @@ import java.net.UnknownHostException;
 @Order(2)
 public class ControllerAdvice {
 
-    private final static String[] AUTH_IGNORE_LIST = {"/login", "/register"};
+    private final static String[] AUTH_IGNORE_LIST = {};
     private final static String[] AUDIT_IGNORE_LIST = {};
 
     @Value("${ratel.system.token.timeout}")
@@ -50,7 +50,7 @@ public class ControllerAdvice {
     @Autowired
     private HttpServletRequest request;
 
-    @Pointcut(value = "execution(public * org.ivipi.ratel.system.server.controller..*.*(..))")
+    @Pointcut(value = "execution(public * org.ivipi.ratel.rockie.server.controller..*.*(..))")
     public void executePackage() {
     }
 

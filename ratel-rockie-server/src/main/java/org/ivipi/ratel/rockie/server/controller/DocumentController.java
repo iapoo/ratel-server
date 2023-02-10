@@ -4,10 +4,14 @@ package org.ivipi.ratel.rockie.server.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.rockie.common.model.Document;
-import org.ivipi.ratel.rockie.common.model.DocumentPageQuery;
+import org.ivipi.ratel.rockie.common.model.DocumentAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentPage;
 import org.ivipi.ratel.rockie.common.model.DocumentQuery;
+import org.ivipi.ratel.rockie.common.model.DocumentUpdate;
 import org.ivipi.ratel.rockie.domain.service.DocumentService;
+import org.ivipi.ratel.system.common.annoation.Audit;
 import org.ivipi.ratel.system.common.controller.GenericController;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,40 +26,38 @@ public class DocumentController extends GenericController {
     private DocumentService documentService;
 
 
-    @PostMapping("page")
-    public Result<Page<Document>> getDocumentPage(@RequestBody DocumentPageQuery documentPageQuery) {
-        Page<Document> customers = documentService.getDocumentPage(documentPageQuery);
+    @PostMapping("documents")
+    @Audit
+    public Result<Page<Document>> getDocuments(Auth auth, @RequestBody DocumentPage documentPage) {
+        Page<Document> customers = documentService.getDocuments(auth, documentPage);
         return Result.success(customers);
     }
 
-
-    @PostMapping("page2")
-    public Result<Page<Document>> getDocumentPage2(@RequestBody DocumentPageQuery documentPageQuery) {
-        Page<Document> customers = documentService.getDocumentPage2(documentPageQuery);
-        return Result.success(customers);
-    }
-
-    @PostMapping("get")
-    public Result<Document> getDocument(@RequestBody DocumentQuery documentQuery) {
-        Document document = documentService.getDocument(documentQuery.getDocumentId());
+    @PostMapping("document")
+    @Audit
+    public Result<Document> getDocument(Auth auth, @RequestBody DocumentQuery documentQuery) {
+        Document document = documentService.getDocument(auth, documentQuery);
         return Result.success(document);
     }
 
     @PostMapping("add")
-    public Result<Document> addDocument(@RequestBody Document document) {
+    @Audit
+    public Result<Document> addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
         boolean isLoggedIn = isLoggedIn();
-        Document newDocument = documentService.addDocument(document);
+        Document newDocument = documentService.addDocument(auth, documentAdd);
         return Result.success(newDocument);
     }
 
     @PostMapping("update")
-    public Result<Document> updateDocument(@RequestBody Document document) {
-        Document newDocument = documentService.updateDocument(document);
+    @Audit
+    public Result<Document> updateDocument(Auth auth, @RequestBody DocumentUpdate documentUpdate) {
+        Document newDocument = documentService.updateDocument(auth, documentUpdate);
         return Result.success(newDocument);
     }
 
     @PostMapping("delete")
-    public Page<Document> deleteDocuments() {
+    @Audit
+    public Page<Document> deleteDocuments(Auth auth) {
         Page<Document> customers = documentService.getDocuments(1, 10);
         return customers;
     }

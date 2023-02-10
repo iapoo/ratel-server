@@ -1,6 +1,5 @@
 package org.ivipi.ratel.system.common.model;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -12,20 +11,16 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class LicenseEdit implements Serializable {
+public class ProductUpdate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * id 自增主键
      */
-    private Long licenseId;
-
-    private String licenseName;
-
-    private Long customerId;
-
     private Long productId;
+
+    private String productName;
 
     /**
      * 备注说明
@@ -36,4 +31,5 @@ public class LicenseEdit implements Serializable {
      * 是否启用
      */
     private Integer isEnabled;
+
 }

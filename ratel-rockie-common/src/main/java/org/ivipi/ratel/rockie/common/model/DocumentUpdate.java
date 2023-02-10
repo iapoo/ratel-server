@@ -1,4 +1,4 @@
-package org.ivipi.ratel.system.common.model;
+package org.ivipi.ratel.rockie.common.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -11,16 +11,26 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class ProductEdit implements Serializable {
+public class DocumentUpdate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * id 自增主键
      */
-    private Long productId;
+    private Long documentId;
 
-    private String productName;
+    /**
+     * 用户名
+     */
+    private String documentName;
+
+
+    private Long customerId;
+    /**
+     * 密码
+     */
+    private Long folderId;
 
     /**
      * 备注说明
@@ -28,8 +38,10 @@ public class ProductEdit implements Serializable {
     private String remark;
 
     /**
-     * 是否启用
+     * 文档内容
      */
-    private Integer isEnabled;
+    private Content content;
 
+
+    private Long contentId;
 }

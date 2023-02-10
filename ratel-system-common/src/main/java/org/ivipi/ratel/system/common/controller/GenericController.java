@@ -1,7 +1,7 @@
 package org.ivipi.ratel.system.common.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ivipi.ratel.system.common.model.LoginCustomer;
+import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.utils.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,26 +38,26 @@ public abstract class GenericController {
         return customerName;
     }
 
-    protected void refreshLoginCustomer(String token, LoginCustomer loginCustomer) {
+    protected void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
         //HashOperations hashOperations = systemRedisTemplate.opsForHash();
-        systemRedisTemplate.opsForValue().set(token, loginCustomer, Duration.ofSeconds(tokenTimeout));
+        systemRedisTemplate.opsForValue().set(token, onlineCustomer, Duration.ofSeconds(tokenTimeout));
     }
 
     protected boolean hasLoginCustomer(String token) {
-        LoginCustomer loginCustomer = (LoginCustomer) systemRedisTemplate.opsForValue().get(token);
-        return loginCustomer != null;
+        OnlineCustomer onlineCustomer = (OnlineCustomer) systemRedisTemplate.opsForValue().get(token);
+        return onlineCustomer != null;
     }
 
     protected  void removeLoginCustomer(String token) {
     systemRedisTemplate.opsForValue().getAndDelete(token);
     }
 
-    protected LoginCustomer getLoginCustomer(String token) {
+    protected OnlineCustomer getLoginCustomer(String token) {
         Object loginCustomerValue = systemRedisTemplate.opsForValue().get(token);
         if(loginCustomerValue != null) {
-            LoginCustomer loginCustomer = (LoginCustomer)loginCustomerValue;
-            refreshLoginCustomer(token, loginCustomer);
-            return loginCustomer;
+            OnlineCustomer onlineCustomer = (OnlineCustomer)loginCustomerValue;
+            refreshLoginCustomer(token, onlineCustomer);
+            return onlineCustomer;
         } else {
             return null;
         }
@@ -65,9 +65,9 @@ public abstract class GenericController {
 
     protected String getCustomerName(String token) {
         if(token != null) {
-            LoginCustomer loginCustomer = getLoginCustomer(token);
-            if(loginCustomer != null) {
-                return loginCustomer.getCustomerName();
+            OnlineCustomer onlineCustomer = getLoginCustomer(token);
+            if(onlineCustomer != null) {
+                return onlineCustomer.getCustomerName();
             }
         }
         return null;

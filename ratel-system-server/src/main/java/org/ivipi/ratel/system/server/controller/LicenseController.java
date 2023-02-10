@@ -7,7 +7,7 @@ import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
 import org.ivipi.ratel.system.common.model.LicenseAdd;
-import org.ivipi.ratel.system.common.model.LicenseEdit;
+import org.ivipi.ratel.system.common.model.LicenseUpdate;
 import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.domain.service.LicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class LicenseController extends GenericController {
 
     @PostMapping("update")
     @Audit
-    public Result updateLicense(Auth auth, @RequestBody LicenseEdit licenseEdit) {
-        licenseService.updateLicense(auth, licenseEdit);
+    public Result updateLicense(Auth auth, @RequestBody LicenseUpdate licenseUpdate) {
+        licenseService.updateLicense(auth, licenseUpdate);
         return Result.success();
     }
 }

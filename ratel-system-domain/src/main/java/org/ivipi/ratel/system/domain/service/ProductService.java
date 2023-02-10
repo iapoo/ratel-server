@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
-import org.ivipi.ratel.system.common.model.ProductEdit;
+import org.ivipi.ratel.system.common.model.ProductUpdate;
 import org.ivipi.ratel.system.common.model.ProductPage;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.entity.ProductDo;
@@ -41,15 +41,15 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
         save(productDo);
     }
 
-    public void updateProduct(Auth auth, ProductEdit productEdit) {
-        if(productEdit.getProductId() == null) {
+    public void updateProduct(Auth auth, ProductUpdate productUpdate) {
+        if(productUpdate.getProductId() == null) {
             throw SystemError.PRODUCT_PRODUCT_ID_IS_NULL.newException();
         }
-        ProductDo oldProductDo = getById(productEdit.getProductId());
+        ProductDo oldProductDo = getById(productUpdate.getProductId());
         if(oldProductDo == null) {
             throw SystemError.PRODUCT_PRODUCT_NOT_FOUND.newException();
         }
-        ProductDo productDo = convertProductEdit(productEdit, oldProductDo);
+        ProductDo productDo = convertProductUpdate(productUpdate, oldProductDo);
         updateById(productDo);
     }
 
@@ -65,8 +65,8 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
         return productDo;
     }
 
-    private ProductDo convertProductEdit(ProductEdit productEdit, ProductDo productDo) {
-        BeanUtils.copyProperties(productEdit, productDo);
+    private ProductDo convertProductUpdate(ProductUpdate productUpdate, ProductDo productDo) {
+        BeanUtils.copyProperties(productUpdate, productDo);
         return productDo;
     }
 }
