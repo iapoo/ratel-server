@@ -29,6 +29,8 @@ public class DocumentDo implements Serializable {
      */
     private String documentName;
 
+    private Long customerId;
+
     /**
      * 文档内容ID
      */

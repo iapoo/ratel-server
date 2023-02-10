@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
-import org.ivipi.ratel.system.common.model.CustomerPage;
 import org.ivipi.ratel.system.domain.entity.CustomerDo;
 
 import java.util.List;

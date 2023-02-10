@@ -7,7 +7,7 @@ import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
-import org.ivipi.ratel.system.common.model.ProductEdit;
+import org.ivipi.ratel.system.common.model.ProductUpdate;
 import org.ivipi.ratel.system.common.model.ProductPage;
 import org.ivipi.ratel.system.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class ProductController extends GenericController {
 
     @PostMapping("update")
     @Audit
-    public Result updateProduct(Auth auth, @RequestBody ProductEdit productEdit) {
-        productService.updateProduct(auth, productEdit);
+    public Result updateProduct(Auth auth, @RequestBody ProductUpdate productUpdate) {
+        productService.updateProduct(auth, productUpdate);
         return Result.success();
     }
 }

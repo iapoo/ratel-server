@@ -8,5 +8,5 @@ import org.ivipi.ratel.rockie.domain.entity.DocumentDo;
 import java.util.List;
 
 public interface DocumentMapper extends BaseMapper<DocumentDo> {
-    List<Document> getDocumentPage(IPage<Document> page);
+    List<Document> getDocuments(IPage<Document> page);
 }

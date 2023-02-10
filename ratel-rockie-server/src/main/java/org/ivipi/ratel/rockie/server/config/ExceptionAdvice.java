@@ -1,4 +1,4 @@
-package org.ivipi.ratel.system.server.config;
+package org.ivipi.ratel.rockie.server.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.common.model.Result;

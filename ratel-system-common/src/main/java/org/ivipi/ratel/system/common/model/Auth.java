@@ -18,7 +18,7 @@ public class Auth implements Serializable {
     private String token;
 
 
-    private LoginCustomer loginCustomer;
+    private OnlineCustomer onlineCustomer;
 
 
 

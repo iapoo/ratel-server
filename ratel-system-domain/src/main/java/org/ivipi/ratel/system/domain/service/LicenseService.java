@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
 import org.ivipi.ratel.system.common.model.LicenseAdd;
-import org.ivipi.ratel.system.common.model.LicenseEdit;
+import org.ivipi.ratel.system.common.model.LicenseUpdate;
 import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
@@ -41,22 +41,22 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
         save(licenseDo);
     }
 
-    public void updateLicense(Auth auth, LicenseEdit licenseEdit) {
-        Long customerId = auth.getLoginCustomer().getCustomerId();
-        if (!customerId.equals(licenseEdit.getCustomerId())) {
+    public void updateLicense(Auth auth, LicenseUpdate licenseUpdate) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        if (!customerId.equals(licenseUpdate.getCustomerId())) {
             throw SystemError.SYSTEM_ID_IS_INVALID.newException();
         }
-        if (licenseEdit.getLicenseId() == null) {
+        if (licenseUpdate.getLicenseId() == null) {
             throw SystemError.LICENSE_LICENSE_ID_IS_NULL.newException();
         }
-        if(licenseEdit.getProductId() == null) {
+        if(licenseUpdate.getProductId() == null) {
             throw SystemError.LICENSE_PRODUCT_ID_IS_NULL.newException();
         }
-        LicenseDo oldLicenseDo = getById(licenseEdit.getLicenseId());
+        LicenseDo oldLicenseDo = getById(licenseUpdate.getLicenseId());
         if(oldLicenseDo == null) {
             throw  SystemError.LICENSE_LICENSE_NOT_FOUND.newException();
         }
-        LicenseDo licenseDo = convertLicenseEdit(licenseEdit, oldLicenseDo);
+        LicenseDo licenseDo = convertLicenseEdit(licenseUpdate, oldLicenseDo);
         updateById(licenseDo);
     }
 
@@ -72,8 +72,8 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
         return licenseDo;
     }
 
-    private LicenseDo convertLicenseEdit(LicenseEdit licenseEdit, LicenseDo oldLicenseDo) {
-        BeanUtils.copyProperties(licenseEdit, oldLicenseDo);
+    private LicenseDo convertLicenseEdit(LicenseUpdate licenseUpdate, LicenseDo oldLicenseDo) {
+        BeanUtils.copyProperties(licenseUpdate, oldLicenseDo);
         return oldLicenseDo;
     }
 }

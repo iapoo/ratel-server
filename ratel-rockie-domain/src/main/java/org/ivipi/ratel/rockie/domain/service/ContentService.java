@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.rockie.common.model.Content;
-import org.ivipi.ratel.rockie.common.model.ContentPageQuery;
+import org.ivipi.ratel.rockie.common.model.ContentPage;
 import org.ivipi.ratel.rockie.common.utils.RockieError;
 import org.ivipi.ratel.rockie.domain.entity.ContentDo;
-import org.ivipi.ratel.rockie.domain.entity.ContentDo;
 import org.ivipi.ratel.rockie.domain.mapper.ContentMapper;
+import org.ivipi.ratel.system.common.model.Auth;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
 
-    public Page<Content> getContentPage(ContentPageQuery contentPageQuery) {
+    public Page<Content> getContentPage(ContentPage contentPageQuery) {
         Page<ContentDo> page = new Page<>(contentPageQuery.getPageNum(), contentPageQuery.getPageSize());
         QueryWrapper<ContentDo> queryWrapper = new QueryWrapper<>();
         Page<ContentDo> result = baseMapper.selectPage(page, queryWrapper);
@@ -55,7 +55,10 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return convertContentDo(contentDo);
     }
 
-    public Content updateContent(Content content) {
+    public Content updateContent(Auth auth, Content content) {
+        if(content.getContentId() == null) {
+
+        }
         ContentDo contentDo = convertContent(content);
         saveOrUpdate(contentDo);
         return convertContentDo(contentDo);
@@ -73,7 +76,6 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return contents;
 
     }
-
 
     private Content convertContentDo(ContentDo contentDo) {
         Content content = new Content();

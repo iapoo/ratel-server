@@ -8,10 +8,10 @@ import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
-import org.ivipi.ratel.system.common.model.CustomerEdit;
+import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
 import org.ivipi.ratel.system.common.model.Login;
-import org.ivipi.ratel.system.common.model.LoginCustomer;
+import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +42,10 @@ public class SystemController extends GenericController {
         Customer customer = customerService.getCustomer(login.getName(), login.getPassword());
         if(customer != null) {
             String token = IdUtil.simpleUUID();
-            LoginCustomer loginCustomer = new LoginCustomer();
-            loginCustomer.setCustomerName(login.getName());
-            loginCustomer.setCustomerId(1L);
-            refreshLoginCustomer(token, loginCustomer);
+            OnlineCustomer onlineCustomer = new OnlineCustomer();
+            onlineCustomer.setCustomerName(login.getName());
+            onlineCustomer.setCustomerId(1L);
+            refreshLoginCustomer(token, onlineCustomer);
             return Result.success(token);
         } else {
             return Result.error(SystemError.SYSTEM_LOGIN_FAILED.newException());
@@ -61,25 +61,25 @@ public class SystemController extends GenericController {
             if(hasToken) {
                 removeLoginCustomer(token);
             } else {
-                return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+                throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
             }
         } else {
-            return Result.error(SystemError.SYSTEM_TOKEN_NOT_FOUND.newException());
+            throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
         }
         return Result.success();
     }
 
     @PostMapping("update")
     @Audit
-    public Result updateCustomer(Auth auth, @RequestBody CustomerEdit customerEdit) {
-       customerService.updateCustomer(auth, customerEdit);
+    public Result updateCustomer(Auth auth, @RequestBody CustomerUpdate customerUpdate) {
+       customerService.updateCustomer(auth, customerUpdate);
         return Result.success();
     }
 
     @PostMapping("updatePassword")
     @Audit
     public Result updateCustomerPassword(Auth auth, @RequestBody CustomerPassword customerPassword) {
-        Long customerId = auth.getLoginCustomer().getCustomerId();
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);
         return Result.success();
     }

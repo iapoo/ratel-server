@@ -4,7 +4,7 @@ import lombok.Data;
 import org.ivipi.ratel.common.model.BasePage;
 
 @Data
-public class DocumentPageQuery extends BasePage {
+public class ContentPage extends BasePage {
 
-    private static final long serialVersionUID = 3905614198292431469L;
+    private static final long serialVersionUID = -6436862335964771960L;
 }
