@@ -1,5 +1,7 @@
 package org.ivipi.ratel.system.domain.service;
 
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -91,8 +93,12 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         if(!SystemUtils.IsValidPassword(password)) {
             throw SystemError.CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID.newException();
         }
+        CustomerDo oldCustomerDo = getCustomerDo(customerAdd.getCustomerName());
+        if(oldCustomerDo != null) {
+            throw SystemError.CUSTOMER_CUSTOMER_NAME_EXISTS.newException();
+        }
         customerDo = convertCustomerAdd(customerAdd);
-
+        customerDo.setCustomerCode(IdUtil.simpleUUID());
         save(customerDo);
     }
 
@@ -102,6 +108,9 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         }
         if(!auth.getOnlineCustomer().getCustomerId().equals(customerUpdate.getCustomerId())) {
             throw SystemError.SYSTEM_ID_IS_INVALID.newException();
+        }
+        if(!auth.getOnlineCustomer().getCustomerName().equals(customerUpdate.getCustomerName())) {
+            throw SystemError.CUSTOMER_CUSTOMER_NAME_CHANGE_NOT_ALLOWED.newException();
         }
         CustomerDo oldCustomerDo = getById(customerUpdate.getCustomerId());
         if(oldCustomerDo == null) {

@@ -68,7 +68,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Document addDocument(Auth auth, DocumentAdd documentAdd) {
         DocumentDo documentDo = convertDocumentAdd(documentAdd);
-        Content newContent = contentService.addContent(documentAdd.getContent());
+        Content newContent = contentService.addContent(auth,documentAdd.getContent());
         documentDo.setContentId(newContent.getContentId());
         documentDo.setDocumentId(null);
         saveOrUpdate(documentDo);

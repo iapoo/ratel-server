@@ -19,6 +19,8 @@ public enum SystemError {
     CUSTOMER_CUSTOMER_IS_INVALID("System", "001005", "用户无效"),
     CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT("System", "001006", "密码无效"),
     CUSTOMER_CUSTOMER_NOT_FOUND("System", "001007", "用户未找到"),
+    CUSTOMER_CUSTOMER_NAME_EXISTS("System", "001003", "名称已存在"),
+    CUSTOMER_CUSTOMER_NAME_CHANGE_NOT_ALLOWED("System", "001003", "名称不可修改"),
 
     PRODUCT_PRODUCT_NOT_FOUND("System", "003001", "Product未找到"),
     PRODUCT_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),

@@ -27,6 +27,8 @@ public class Customer implements Serializable {
      */
     private String customerName;
 
+    private String customerCode;
+
     /**
      * 密码
      */

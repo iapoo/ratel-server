@@ -5,6 +5,10 @@ import org.ivipi.ratel.common.utils.BaseException;
 public enum RockieError {
 
     DOCUMENT_DOCUMENT_NOT_FOUND("Rockie", "101001", "文档未找到"),
+
+
+    STORAGE_CREATE_DOCUMENT_EXCEPTION("Rockie", "1002001", "文件创建失败异常"),
+    STORAGE_GET_DOCUMENT_EXCEPTION("Rockie", "1002001", "文件读取失败异常"),
     ;
 
     private String service;

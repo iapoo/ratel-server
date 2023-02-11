@@ -45,6 +45,7 @@ public class SystemController extends GenericController {
             OnlineCustomer onlineCustomer = new OnlineCustomer();
             onlineCustomer.setCustomerName(login.getName());
             onlineCustomer.setCustomerId(1L);
+            onlineCustomer.setCustomerCode(customer.getCustomerCode());
             refreshLoginCustomer(token, onlineCustomer);
             return Result.success(token);
         } else {
