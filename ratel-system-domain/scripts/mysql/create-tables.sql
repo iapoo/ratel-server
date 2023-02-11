@@ -97,6 +97,7 @@ create table if not exists customer
 (
     customer_id    bigint auto_increment,
     customer_name  varchar(64)  not null,
+    customer_code  varchar(64)  not null,
     password       varchar(256) not null,
     nick_name      varchar(128) null,
     id_card        varchar(64)  null,

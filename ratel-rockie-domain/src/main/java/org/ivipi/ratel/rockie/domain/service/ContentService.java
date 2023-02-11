@@ -11,6 +11,7 @@ import org.ivipi.ratel.rockie.domain.entity.ContentDo;
 import org.ivipi.ratel.rockie.domain.mapper.ContentMapper;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.List;
 @Slf4j
 public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
+    @Autowired
+    private StorageService storageService;
 
     public Page<Content> getContentPage(ContentPage contentPageQuery) {
         Page<ContentDo> page = new Page<>(contentPageQuery.getPageNum(), contentPageQuery.getPageSize());
@@ -48,10 +51,11 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return contentPage;
     }
 
-    public Content addContent(Content content) {
+    public Content addContent(Auth auth, Content content) {
         ContentDo contentDo = convertContent(content);
         contentDo.setContentId(null);
         saveOrUpdate(contentDo);
+        storageService.createObject(content.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), content.getContentName().getBytes());
         return convertContentDo(contentDo);
     }
 

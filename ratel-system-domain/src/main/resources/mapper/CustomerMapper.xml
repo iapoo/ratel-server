@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.CustomerDo">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
+        <result column="customer_code" property="customerCode"/>
         <result column="password" property="password"/>
         <result column="nick_name" property="nickName"/>
         <result column="id_card" property="idCard"/>
@@ -27,6 +28,7 @@
     <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.Customer">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
+        <result column="customer_code" property="customerCode"/>
         <result column="password" property="password"/>
         <result column="nick_name" property="nickName"/>
         <result column="id_card" property="idCard"/>
@@ -45,13 +47,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        customer_id, customer_name, password, nick_name, id_card, telephone, mobile, email, remark,
+        customer_id, customer_name, customer_code, password, nick_name, id_card, telephone, mobile, email, remark,
         is_enabled,is_deleted,is_enable,effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
     <select id="getCustomers" resultMap="PageResultMap">
-        select customer_id, customer_name, '********' as password, nick_name, id_card, telephone, mobile, email, remark,
+        select customer_id, customer_name, customer_code, '********' as password, nick_name, id_card, telephone, mobile, email, remark,
                is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from customer
         <if test="customerName != null">
