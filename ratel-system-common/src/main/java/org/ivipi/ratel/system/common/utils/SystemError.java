@@ -31,7 +31,8 @@ public enum SystemError {
 
     DOCUMENT_DOCUMENT_NOT_FOUND("System", "003001", "Document未找到"),
     DOCUMENT_DOCUMENT_ID_IS_NULL("System", "003002", "Document ID为空"),
-    DOCUMENT_CUSTOMER_IS_INVALID("System", "003002", "用户无效"),
+    DOCUMENT_CUSTOMER_IS_INVALID("System", "003003", "用户无效"),
+    DOCUMENT_CONTENT_IS_INVALID("System", "003004", "内容无效"),
 
     CONTENT_CONTENT_NOT_FOUND("System", "003001", "Document内容未找到"),
     CONTENT_CONTENT_ID_IS_NULL("System", "003002", "Document内容ID为空"),

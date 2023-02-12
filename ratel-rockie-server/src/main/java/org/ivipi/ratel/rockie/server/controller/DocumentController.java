@@ -42,17 +42,16 @@ public class DocumentController extends GenericController {
 
     @PostMapping("add")
     @Audit
-    public Result<Document> addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
-        boolean isLoggedIn = isLoggedIn();
-        Document newDocument = documentService.addDocument(auth, documentAdd);
-        return Result.success(newDocument);
+    public Result addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
+        documentService.addDocument(auth, documentAdd);
+        return Result.success();
     }
 
     @PostMapping("update")
     @Audit
-    public Result<Document> updateDocument(Auth auth, @RequestBody DocumentUpdate documentUpdate) {
-        Document newDocument = documentService.updateDocument(auth, documentUpdate);
-        return Result.success(newDocument);
+    public Result updateDocument(Auth auth, @RequestBody DocumentUpdate documentUpdate) {
+        documentService.updateDocument(auth, documentUpdate);
+        return Result.success();
     }
 
     @PostMapping("delete")

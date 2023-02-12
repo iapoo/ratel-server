@@ -66,22 +66,19 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         return documentPage;
     }
 
-    public Document addDocument(Auth auth, DocumentAdd documentAdd) {
+    public void addDocument(Auth auth, DocumentAdd documentAdd) {
         DocumentDo documentDo = convertDocumentAdd(documentAdd);
         Content newContent = contentService.addContent(auth,documentAdd.getContent());
         documentDo.setContentId(newContent.getContentId());
+        documentDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         documentDo.setDocumentId(null);
-        saveOrUpdate(documentDo);
-        return convertDocumentDo(documentDo);
+        save(documentDo);
     }
 
-    public Document updateDocument(Auth auth, DocumentUpdate documentUpdate) {
+    public void updateDocument(Auth auth, DocumentUpdate documentUpdate) {
         if(documentUpdate.getDocumentId() == null) {
             throw SystemError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
 
-        }
-        if(!auth.getOnlineCustomer().getCustomerId().equals(documentUpdate.getCustomerId())) {
-            throw  SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
         if(oldDocumentDo == null) {
@@ -91,10 +88,9 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
             throw  SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
-        Content newContent = contentService.updateContent(auth, documentUpdate.getContent());
+        Content newContent = contentService.updateContent(auth, oldDocumentDo.getContentId(), documentUpdate.getContent());
         documentDo.setContentId(newContent.getContentId());
-        saveOrUpdate(documentDo);
-        return convertDocumentDo(documentDo);
+        updateById(documentDo);
     }
 
     private List<Document> convertDocumentDos(List<DocumentDo> documentDos) {

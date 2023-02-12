@@ -25,8 +25,6 @@ public class DocumentUpdate implements Serializable {
      */
     private String documentName;
 
-
-    private Long customerId;
     /**
      * 密码
      */
@@ -40,8 +38,5 @@ public class DocumentUpdate implements Serializable {
     /**
      * 文档内容
      */
-    private Content content;
-
-
-    private Long contentId;
+    private ContentUpdate content;
 }
