@@ -32,9 +32,4 @@ public class ContentAdd implements Serializable {
      */
     private String remark;
 
-    /**
-     * 是否启用
-     */
-    private Integer isEnabled;
-
 }
