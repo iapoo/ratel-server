@@ -21,7 +21,6 @@ public class DocumentAdd implements Serializable {
      */
     private String documentName;
 
-    private Long customerId;
     /**
      * 密码
      */
@@ -35,7 +34,7 @@ public class DocumentAdd implements Serializable {
     /**
      * 文档内容
      */
-    private Content content;
+    private ContentAdd content;
 
 
 }

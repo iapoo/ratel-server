@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.rockie.common.model.Content;
+import org.ivipi.ratel.rockie.common.model.ContentAdd;
 import org.ivipi.ratel.rockie.common.model.ContentPage;
+import org.ivipi.ratel.rockie.common.model.ContentUpdate;
 import org.ivipi.ratel.rockie.common.utils.RockieError;
 import org.ivipi.ratel.rockie.domain.entity.ContentDo;
 import org.ivipi.ratel.rockie.domain.mapper.ContentMapper;
 import org.ivipi.ratel.system.common.model.Auth;
+import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +38,7 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
     public Content getContent(Long contentId) {
         ContentDo contentDo = getById(contentId);
-        if(contentDo == null) {
+        if (contentDo == null) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         return convertContentDo(contentDo);
@@ -51,20 +54,21 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return contentPage;
     }
 
-    public Content addContent(Auth auth, Content content) {
-        ContentDo contentDo = convertContent(content);
-        contentDo.setContentId(null);
-        saveOrUpdate(contentDo);
-        storageService.createObject(content.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), content.getContentName().getBytes());
+    public Content addContent(Auth auth, ContentAdd contentAdd) {
+        ContentDo contentDo = convertContentAdd(contentAdd);
+        storageService.createObject(contentAdd.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        save(contentDo);
         return convertContentDo(contentDo);
     }
 
-    public Content updateContent(Auth auth, Content content) {
-        if(content.getContentId() == null) {
-
+    public Content updateContent(Auth auth, Long contentId, ContentUpdate contentUpdate) {
+        ContentDo oldContentDo =  getById(contentId);
+        if(oldContentDo == null) {
+            throw SystemError.CONTENT_CONTENT_NOT_FOUND.newException();
         }
-        ContentDo contentDo = convertContent(content);
-        saveOrUpdate(contentDo);
+        ContentDo contentDo = convertContentUpdate(contentUpdate, oldContentDo);
+        storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+        updateById(contentDo);
         return convertContentDo(contentDo);
     }
 
@@ -81,15 +85,20 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
     }
 
+    private ContentDo convertContentUpdate(ContentUpdate contentUpdate, ContentDo contentDo) {
+        BeanUtils.copyProperties(contentUpdate, contentDo);
+        return contentDo;
+    }
+
     private Content convertContentDo(ContentDo contentDo) {
         Content content = new Content();
         BeanUtils.copyProperties(contentDo, content);
         return content;
     }
 
-    private ContentDo convertContent(Content content) {
+    private ContentDo convertContentAdd(ContentAdd contentAdd) {
         ContentDo contentDo = new ContentDo();
-        BeanUtils.copyProperties(content, contentDo);
+        BeanUtils.copyProperties(contentAdd, contentDo);
         return contentDo;
     }
 
