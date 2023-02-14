@@ -103,16 +103,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
     }
 
     public void updateCustomer(Auth auth, CustomerUpdate customerUpdate) {
-        if(customerUpdate.getCustomerId() == null) {
-            throw SystemError.CUSTOMER_CUSTOMER_ID_IS_NULL.newException();
-        }
-        if(!auth.getOnlineCustomer().getCustomerId().equals(customerUpdate.getCustomerId())) {
-            throw SystemError.SYSTEM_ID_IS_INVALID.newException();
-        }
-        if(!auth.getOnlineCustomer().getCustomerName().equals(customerUpdate.getCustomerName())) {
-            throw SystemError.CUSTOMER_CUSTOMER_NAME_CHANGE_NOT_ALLOWED.newException();
-        }
-        CustomerDo oldCustomerDo = getById(customerUpdate.getCustomerId());
+        CustomerDo oldCustomerDo = getById(auth.getOnlineCustomer().getCustomerId());
         if(oldCustomerDo == null) {
             throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
         }

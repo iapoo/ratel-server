@@ -16,16 +16,6 @@ public class CustomerUpdate implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * id 自增主键
-     */
-    private Long customerId;
-
-    /**
-     * 用户名
-     */
-    private String customerName;
-
-    /**
      * 昵称
      */
     private String nickName;
@@ -55,8 +45,4 @@ public class CustomerUpdate implements Serializable {
      */
     private String remark;
 
-    /**
-     * 是否启用
-     */
-    private Integer isEnabled;
 }

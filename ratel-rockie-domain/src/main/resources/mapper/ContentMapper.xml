@@ -8,8 +8,8 @@
         <result column="content_name" property="contentName"/>
         <result column="content" property="content"/>
         <result column="remark" property="remark"/>
-        <result column="is_enabled" property="isEnabled"/>
-        <result column="is_deleted" property="isDeleted"/>
+        <result column="enabled" property="enabled"/>
+        <result column="deleted" property="deleted"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -24,8 +24,8 @@
         <result column="content_name" property="contentName"/>
         <result column="content" property="content"/>
         <result column="remark" property="remark"/>
-        <result column="is_enabled" property="isEnabled"/>
-        <result column="is_deleted" property="isDeleted"/>
+        <result column="enabled" property="enabled"/>
+        <result column="deleted" property="deleted"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -37,13 +37,13 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         content_id, content_name, content, remark,
-        is_enabled,is_deleted,is_enable,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
     <select id="getCustomerPage" resultMap="PageResultMap">
         select content_id, content_name, content, remark,
-               is_enabled,is_deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+               enabled,deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from content
 
     </select>

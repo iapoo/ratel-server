@@ -10,10 +10,13 @@ import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
 import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
+import org.ivipi.ratel.system.common.model.Order;
 import org.ivipi.ratel.system.common.model.Login;
 import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.service.CustomerService;
+import org.ivipi.ratel.system.domain.service.LicenseService;
+import org.ivipi.ratel.system.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,13 +31,18 @@ public class SystemController extends GenericController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private LicenseService licenseService;
+
+    @Autowired
+    private ProductService productService;
+
     @PostMapping("register")
     @Audit
     public Result register(@RequestBody CustomerAdd customerAdd) {
         customerService.addCustomer(customerAdd);
         return Result.success();
     }
-
 
     @PostMapping("login")
     @Audit
@@ -44,7 +52,7 @@ public class SystemController extends GenericController {
             String token = IdUtil.simpleUUID();
             OnlineCustomer onlineCustomer = new OnlineCustomer();
             onlineCustomer.setCustomerName(login.getName());
-            onlineCustomer.setCustomerId(1L);
+            onlineCustomer.setCustomerId(customer.getCustomerId());
             onlineCustomer.setCustomerCode(customer.getCustomerCode());
             refreshLoginCustomer(token, onlineCustomer);
             return Result.success(token);
@@ -80,6 +88,53 @@ public class SystemController extends GenericController {
     @PostMapping("updatePassword")
     @Audit
     public Result updateCustomerPassword(Auth auth, @RequestBody CustomerPassword customerPassword) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        customerService.updatePassword(customerId, customerPassword);
+        return Result.success();
+    }
+
+    @PostMapping("subscribe")
+    @Audit
+    public Result subscribe(Auth auth, @RequestBody Order order) {
+        licenseService.subscribe(auth, order);
+        return Result.success();
+    }
+
+
+    @PostMapping("renew")
+    @Audit
+    public Result renew(Auth auth, @RequestBody Order order) {
+        licenseService.renewLicense(auth, order);
+        return Result.success();
+    }
+
+    @PostMapping("getLicenses")
+    @Audit
+    public Result getLicenses(Auth auth, @RequestBody CustomerPassword customerPassword) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        customerService.updatePassword(customerId, customerPassword);
+        return Result.success();
+    }
+
+    @PostMapping("getLicense")
+    @Audit
+    public Result getLicense(Auth auth, @RequestBody CustomerPassword customerPassword) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        customerService.updatePassword(customerId, customerPassword);
+        return Result.success();
+    }
+
+    @PostMapping("getProducts")
+    @Audit
+    public Result getProducts(Auth auth, @RequestBody CustomerPassword customerPassword) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        customerService.updatePassword(customerId, customerPassword);
+        return Result.success();
+    }
+
+    @PostMapping("getProduct")
+    @Audit
+    public Result getProduct(Auth auth, @RequestBody CustomerPassword customerPassword) {
         Long customerId = auth.getOnlineCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);
         return Result.success();

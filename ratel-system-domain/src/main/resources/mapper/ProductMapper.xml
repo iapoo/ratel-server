@@ -7,8 +7,8 @@
         <id column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
-        <result column="is_enabled" property="isEnabled"/>
-        <result column="is_deleted" property="isDeleted"/>
+        <result column="enabled" property="enabled"/>
+        <result column="deleted" property="deleted"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -21,7 +21,7 @@
         <id column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
-        <result column="is_enabled" property="isEnabled"/>
+        <result column="enabled" property="enabled"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -32,13 +32,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        product_id, product_name,   remark, is_enabled,is_deleted,is_enabled,
+        product_id, product_name,   remark, is_enabled,deleted,enabled,
         effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
     <select id="getProducts" resultMap="PageResultMap">
-        select product_id, product_name, remark, is_enabled,is_deleted,is_enabled,
+        select product_id, product_name, remark, enabled,deleted,
                effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from product
 
