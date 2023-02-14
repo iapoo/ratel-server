@@ -26,10 +26,10 @@ public class ProductUpdate implements Serializable {
      * 备注说明
      */
     private String remark;
-
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
+
 
 }

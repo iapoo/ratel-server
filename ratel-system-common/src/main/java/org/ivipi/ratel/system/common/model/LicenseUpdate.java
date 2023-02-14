@@ -21,8 +21,6 @@ public class LicenseUpdate implements Serializable {
      */
     private Long licenseId;
 
-    private String licenseName;
-
     private Long customerId;
 
     private Long productId;
@@ -31,9 +29,9 @@ public class LicenseUpdate implements Serializable {
      * 备注说明
      */
     private String remark;
-
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
+
 }

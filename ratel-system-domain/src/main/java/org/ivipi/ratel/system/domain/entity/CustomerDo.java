@@ -70,12 +70,12 @@ public class CustomerDo implements Serializable {
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
 
     /**
      * 是否删除
      */
-    private Integer isDeleted;
+    private Boolean deleted;
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
     @JsonSerialize(using =  StandardLocalDateTime.StandardLocalDateTimeSerializer.class)

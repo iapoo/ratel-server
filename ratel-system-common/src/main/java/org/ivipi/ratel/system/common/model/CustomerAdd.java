@@ -53,5 +53,6 @@ public class CustomerAdd implements Serializable {
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
+
 }

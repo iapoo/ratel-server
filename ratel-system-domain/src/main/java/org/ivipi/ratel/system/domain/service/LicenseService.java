@@ -7,12 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.License;
 import org.ivipi.ratel.system.common.model.LicenseAdd;
-import org.ivipi.ratel.system.common.model.LicenseUpdate;
+import org.ivipi.ratel.system.common.model.Order;
 import org.ivipi.ratel.system.common.model.LicensePage;
+import org.ivipi.ratel.system.common.model.LicenseUpdate;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
+import org.ivipi.ratel.system.domain.entity.ProductDo;
 import org.ivipi.ratel.system.domain.mapper.LicenseMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
+
+    @Autowired
+    private ProductService productService;
 
     public Page<LicenseDo> getPage(int pageNum, int pageSize) {
         Page<LicenseDo> page = new Page<>(pageNum, pageSize);
@@ -40,6 +46,24 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
         licenseDo.setLicenseId(null);
         save(licenseDo);
     }
+
+    public void subscribe(Auth auth, Order order) {
+        ProductDo product = productService.getById(order.getProductId());
+        if(product == null) {
+            throw SystemError.PRODUCT_PRODUCT_NOT_FOUND.newException();
+        }
+        LicenseDo licenseDo = convertLicenseBuy(order);
+        licenseDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
+        save(licenseDo);
+    }
+
+    public void renewLicense(Auth auth, Order order) {
+        LicenseDo licenseDo = convertLicenseBuy(order);
+        licenseDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
+        licenseDo.setLicenseId(null);
+        save(licenseDo);
+    }
+
 
     public void updateLicense(Auth auth, LicenseUpdate licenseUpdate) {
         Long customerId = auth.getOnlineCustomer().getCustomerId();
@@ -69,6 +93,12 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
     private LicenseDo convertLicenseAdd(LicenseAdd license) {
         LicenseDo licenseDo = new LicenseDo();
         BeanUtils.copyProperties(license, licenseDo);
+        return licenseDo;
+    }
+
+    private LicenseDo convertLicenseBuy(Order order) {
+        LicenseDo licenseDo = new LicenseDo();
+        BeanUtils.copyProperties(order, licenseDo);
         return licenseDo;
     }
 

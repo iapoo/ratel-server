@@ -16,11 +16,6 @@ public class LicensePage extends BasePage {
      */
     private Long licenseId;
 
-    /**
-     * 用户名
-     */
-    private String licenseName;
-
     private Long customerId;
 
     private Long productId;
@@ -33,12 +28,13 @@ public class LicensePage extends BasePage {
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
 
     /**
      * 是否删除
      */
-    private Integer isDeleted;
+    private Boolean deleted;
+
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
     @JsonSerialize(using =  StandardLocalDateTime.StandardLocalDateTimeSerializer.class)

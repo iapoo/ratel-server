@@ -54,7 +54,7 @@ public class CustomerPage extends BasePage {
     /**
      * 是否启用
      */
-    private Integer isEnabled;
+    private Boolean enabled;
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
     @JsonSerialize(using =  StandardLocalDateTime.StandardLocalDateTimeSerializer.class)
