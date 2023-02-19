@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
+    private final static int MAX_PAGE_SIZE = 99999999;
     @Autowired
     private ContentService contentService;
 
@@ -48,13 +49,24 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Document getDocument(Auth auth, DocumentQuery documentQuery) {
         DocumentDo documentDo = getById(documentQuery.getDocumentId());
-        if(documentDo == null) {
+        if (documentDo == null) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         Document document = convertDocumentDo(documentDo);
         Content content = contentService.getContent(document.getContentId());
         document.setContent(content);
         return document;
+    }
+
+    public Page<Document> getDocuments(Long customerId, Long folderId) {
+        Page<DocumentDo> page = new Page<>(1, MAX_PAGE_SIZE);
+        QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id", customerId);
+        queryWrapper.eq("folder_id", folderId);
+        Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
+        Page<Document> documentPage = new Page<>(1, MAX_PAGE_SIZE);
+        documentPage.setRecords(convertDocumentDos(result.getRecords()));
+        return documentPage;
     }
 
     public Page<Document> getDocuments(int pageNum, int pageSize) {
@@ -67,8 +79,17 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
     public void addDocument(Auth auth, DocumentAdd documentAdd) {
+        if (documentAdd.getFolderId() == null) {
+            throw SystemError.DOCUMENT_FOLDER_NOT_FOUND.newException();
+        }
+        Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentAdd.getFolderId());
+        documents.getRecords().forEach(document -> {
+            if(document.getDocumentName().equalsIgnoreCase(documentAdd.getDocumentName())) {
+                throw  SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+            }
+        });
         DocumentDo documentDo = convertDocumentAdd(documentAdd);
-        Content newContent = contentService.addContent(auth,documentAdd.getContent());
+        Content newContent = contentService.addContent(auth,documentAdd.getFolderId(), documentAdd.getContent());
         documentDo.setContentId(newContent.getContentId());
         documentDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         documentDo.setDocumentId(null);
@@ -76,16 +97,16 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
     public void updateDocument(Auth auth, DocumentUpdate documentUpdate) {
-        if(documentUpdate.getDocumentId() == null) {
+        if (documentUpdate.getDocumentId() == null) {
             throw SystemError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
 
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
-        if(oldDocumentDo == null) {
+        if (oldDocumentDo == null) {
             throw SystemError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
-        if(!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
-            throw  SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+        if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
+            throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
         Content newContent = contentService.updateContent(auth, oldDocumentDo.getContentId(), documentUpdate.getContent());

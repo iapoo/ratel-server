@@ -34,6 +34,8 @@ public class Folder implements Serializable {
      */
     private Long parentId;
 
+    private Long customerId;
+
     /**
      * 昵称
      */
