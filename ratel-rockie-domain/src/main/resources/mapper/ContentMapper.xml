@@ -43,7 +43,7 @@
 
     <select id="getCustomerPage" resultMap="PageResultMap">
         select content_id, content_name, content, remark,
-               enabled,deleted,is_enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+               enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from content
 
     </select>

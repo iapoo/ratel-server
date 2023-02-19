@@ -15,6 +15,7 @@ import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,12 @@ import java.util.List;
 @Service
 @Slf4j
 public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
+
+    @Value("${ratel.rockie.storage.enable-database}")
+    private boolean enableDatabase;
+
+    @Value("${ratel.rockie.storage.enable-minio}")
+    private boolean enableMinio;
 
     @Autowired
     private StorageService storageService;
@@ -54,9 +61,12 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return contentPage;
     }
 
-    public Content addContent(Auth auth, ContentAdd contentAdd) {
+    public Content addContent(Auth auth, Long folderId, ContentAdd contentAdd) {
         ContentDo contentDo = convertContentAdd(contentAdd);
-        storageService.createObject(contentAdd.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        storageService.createObject(contentAdd.getContentName(), String.valueOf(folderId), auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        if(!enableDatabase) {
+            contentDo.setContent("Content is disabled");
+        }
         save(contentDo);
         return convertContentDo(contentDo);
     }
@@ -68,6 +78,9 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         }
         ContentDo contentDo = convertContentUpdate(contentUpdate, oldContentDo);
         storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+        if(!enableDatabase) {
+            contentDo.setContent("Content is disabled");
+        }
         updateById(contentDo);
         return convertContentDo(contentDo);
     }
