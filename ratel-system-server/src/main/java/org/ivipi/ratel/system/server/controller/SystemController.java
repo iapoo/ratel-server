@@ -80,14 +80,14 @@ public class SystemController extends GenericController {
 
     @PostMapping("update")
     @Audit
-    public Result updateCustomer(Auth auth, @RequestBody CustomerUpdate customerUpdate) {
+    public Result update(Auth auth, @RequestBody CustomerUpdate customerUpdate) {
        customerService.updateCustomer(auth, customerUpdate);
         return Result.success();
     }
 
     @PostMapping("updatePassword")
     @Audit
-    public Result updateCustomerPassword(Auth auth, @RequestBody CustomerPassword customerPassword) {
+    public Result updatePassword(Auth auth, @RequestBody CustomerPassword customerPassword) {
         Long customerId = auth.getOnlineCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);
         return Result.success();
