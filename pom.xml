@@ -38,6 +38,7 @@
 
         <jedis.version>3.9.0</jedis.version>
         <minio.version>8.4.3</minio.version>
+        <retrofit-boot.version>2.2.22</retrofit-boot.version>
 
         <!-- mysql&mybatis -->
         <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
@@ -91,6 +92,22 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.lianjiatech</groupId>
+                <artifactId>retrofit-spring-boot-starter</artifactId>
+                <version>${retrofit-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.squareup.okio</groupId>
+                        <artifactId>okio</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio</artifactId>
+                <version>3.2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
