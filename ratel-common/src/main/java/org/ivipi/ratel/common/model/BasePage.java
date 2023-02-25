@@ -11,7 +11,7 @@ public class BasePage implements Serializable {
 
 
     private static final int MAX_PAGE_NUM = 1000;
-    private static final int MAX_PAGE_SIZE = 200;
+    private static final int MAX_PAGE_SIZE = 999999;
 
 
     private static final int DEFAULT_PAGE_NUM = 1;

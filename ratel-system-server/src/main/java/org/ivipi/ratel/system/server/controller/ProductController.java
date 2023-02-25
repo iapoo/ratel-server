@@ -7,6 +7,8 @@ import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
+import org.ivipi.ratel.system.common.model.ProductDelete;
+import org.ivipi.ratel.system.common.model.ProductQuery;
 import org.ivipi.ratel.system.common.model.ProductUpdate;
 import org.ivipi.ratel.system.common.model.ProductPage;
 import org.ivipi.ratel.system.domain.service.ProductService;
@@ -41,6 +43,20 @@ public class ProductController extends GenericController {
     @Audit
     public Result updateProduct(Auth auth, @RequestBody ProductUpdate productUpdate) {
         productService.updateProduct(auth, productUpdate);
+        return Result.success();
+    }
+
+    @PostMapping("delete")
+    @Audit
+    public Result deleteProduct(Auth auth, @RequestBody ProductDelete productDelete) {
+        productService.deleteProduct(auth, productDelete);
+        return Result.success();
+    }
+
+    @PostMapping("product")
+    @Audit
+    public Result getProduct(Auth auth, @RequestBody ProductQuery productQuery) {
+        Product product = productService.getProduct(auth, productQuery);
         return Result.success();
     }
 }
