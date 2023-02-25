@@ -44,6 +44,7 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
     public void addLicense(Auth auth, LicenseAdd licenseAdd) {
         LicenseDo licenseDo = convertLicenseAdd(licenseAdd);
         licenseDo.setLicenseId(null);
+        licenseDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         save(licenseDo);
     }
 

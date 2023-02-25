@@ -8,6 +8,7 @@ import org.ivipi.ratel.system.common.controller.GenericController;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
+import org.ivipi.ratel.system.common.model.CustomerInfo;
 import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
 import org.ivipi.ratel.system.common.model.Order;
@@ -100,12 +101,19 @@ public class SystemController extends GenericController {
         return Result.success();
     }
 
-
     @PostMapping("renew")
     @Audit
     public Result renew(Auth auth, @RequestBody Order order) {
         licenseService.renewLicense(auth, order);
         return Result.success();
+    }
+
+
+    @PostMapping("info")
+    @Audit
+    public Result<CustomerInfo> info(Auth auth) {
+        CustomerInfo customerInfo = customerService.getCustomerInfo(auth);
+        return Result.success(customerInfo);
     }
 
     @PostMapping("getLicenses")

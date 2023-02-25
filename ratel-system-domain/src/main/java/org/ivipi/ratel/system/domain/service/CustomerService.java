@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
+import org.ivipi.ratel.system.common.model.CustomerInfo;
 import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
@@ -54,13 +55,19 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         }
     }
 
-
     public CustomerDo getCustomerDo(String customerName) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_name", customerName);
         CustomerDo customerDo = this.getOne(queryWrapper);
         return customerDo;
     }
+
+    public CustomerInfo getCustomerInfo(Auth auth) {
+        CustomerDo customerDo = getById(auth.getOnlineCustomer().getCustomerId());
+        CustomerInfo customerInfo = convertCustomerDoToCustomerInfo(customerDo);
+        return customerInfo;
+    }
+
 
     public Customer getCustomer(String customerName, String customerPassword) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
@@ -130,6 +137,13 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDo, customer);
         return customer;
+    }
+
+
+    private CustomerInfo convertCustomerDoToCustomerInfo(CustomerDo customerDo) {
+        CustomerInfo customerInfo = new CustomerInfo();
+        BeanUtils.copyProperties(customerDo, customerInfo);
+        return customerInfo;
     }
 
     private CustomerDo convertCustomerAdd(CustomerAdd customerAdd) {

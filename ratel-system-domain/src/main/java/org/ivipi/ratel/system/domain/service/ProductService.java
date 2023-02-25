@@ -8,6 +8,8 @@ import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
+import org.ivipi.ratel.system.common.model.ProductDelete;
+import org.ivipi.ratel.system.common.model.ProductQuery;
 import org.ivipi.ratel.system.common.model.ProductUpdate;
 import org.ivipi.ratel.system.common.model.ProductPage;
 import org.ivipi.ratel.system.common.utils.SystemError;
@@ -39,6 +41,12 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
 
     public Product getProduct(Long productId) {
         ProductDo productDo = getById(productId);
+        Product product = convertProductDo(productDo);
+        return product;
+    }
+
+    public Product getProduct(Auth auth, ProductQuery productQuery) {
+        ProductDo productDo = getById(productQuery.getProductId());
         Product product = convertProductDo(productDo);
         return product;
     }
@@ -83,6 +91,19 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
         }
         ProductDo productDo = convertProductUpdate(productUpdate, oldProductDo);
         updateById(productDo);
+    }
+
+
+
+    public void deleteProduct(Auth auth, ProductDelete productDelete) {
+        if(productDelete.getProductId() == null) {
+            throw SystemError.PRODUCT_PRODUCT_ID_IS_NULL.newException();
+        }
+        ProductDo oldProductDo = getById(productDelete.getProductId());
+        if(oldProductDo == null) {
+            throw SystemError.PRODUCT_PRODUCT_NOT_FOUND.newException();
+        }
+        baseMapper.deleteById(productDelete.getProductId());
     }
 
     private Product convertProductDo(ProductDo productDo) {
