@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.Auth;
+import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.License;
 import org.ivipi.ratel.system.common.model.LicenseAdd;
 import org.ivipi.ratel.system.common.model.Order;
 import org.ivipi.ratel.system.common.model.LicensePage;
 import org.ivipi.ratel.system.common.model.LicenseUpdate;
 import org.ivipi.ratel.system.common.utils.SystemError;
+import org.ivipi.ratel.system.domain.entity.CustomerDo;
 import org.ivipi.ratel.system.domain.entity.LicenseDo;
 import org.ivipi.ratel.system.domain.entity.ProductDo;
 import org.ivipi.ratel.system.domain.mapper.LicenseMapper;
@@ -37,7 +39,7 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
 
     public Page<License> getLicenses(Auth auth, LicensePage licensePage) {
         Page<License> page = new Page<>(licensePage.getPageNum(), licensePage.getPageSize());
-        List<License> result = baseMapper.getLicenses(page);
+        List<License> result = baseMapper.getLicenses(page, auth.getOnlineCustomer().getCustomerId());
         return page.setRecords(result);
     }
 
