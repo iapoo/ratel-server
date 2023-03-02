@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentDelete;
 import org.ivipi.ratel.rockie.common.model.DocumentPage;
 import org.ivipi.ratel.rockie.common.model.DocumentQuery;
 import org.ivipi.ratel.rockie.common.model.DocumentUpdate;
@@ -56,7 +57,7 @@ public class DocumentController extends GenericController {
 
     @PostMapping("delete")
     @Audit
-    public Page<Document> deleteDocuments(Auth auth) {
+    public Page<Document> deleteDocuments(Auth auth, @RequestBody DocumentDelete documentDelete) {
         Page<Document> customers = documentService.getDocuments(1, 10);
         return customers;
     }

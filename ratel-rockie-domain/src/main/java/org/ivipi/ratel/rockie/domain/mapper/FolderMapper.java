@@ -10,5 +10,8 @@ import org.ivipi.ratel.rockie.domain.entity.FolderDo;
 import java.util.List;
 
 public interface FolderMapper extends BaseMapper<FolderDo> {
-    List<Folder> getFolders(IPage<Folder> page, @Param("customerId") Long customerId);
+    List<Folder> getFolders(IPage<Folder> page, @Param("customerId") Long customerId, @Param("parentId") Long parentId);
+
+    List<Folder> getAllFolders(IPage<Folder> page, @Param("customerId") Long customerId);
+
 }

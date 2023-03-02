@@ -19,10 +19,9 @@ public class FolderPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id 自增主键
-     */
-    private Long folderId;
+    private Long parentId;
+
+    private Boolean allFolders;
 
 
 }

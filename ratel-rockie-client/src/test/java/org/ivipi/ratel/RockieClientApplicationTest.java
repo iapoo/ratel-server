@@ -1,11 +1,21 @@
 package org.ivipi.ratel;
 
-
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.common.model.Result;
+import org.ivipi.ratel.rockie.client.api.RockieApi;
+import org.ivipi.ratel.rockie.common.model.Content;
+import org.ivipi.ratel.rockie.common.model.ContentAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentAdd;
+import org.ivipi.ratel.rockie.common.model.Folder;
+import org.ivipi.ratel.rockie.common.model.FolderAdd;
+import org.ivipi.ratel.rockie.common.model.FolderDelete;
+import org.ivipi.ratel.rockie.common.model.FolderPage;
+import org.ivipi.ratel.rockie.common.model.FolderUpdate;
+import org.ivipi.ratel.system.client.api.SystemApi;
+import org.ivipi.ratel.system.client.api.TokenSignService;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
 import org.ivipi.ratel.system.common.model.CustomerInfo;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
@@ -19,8 +29,6 @@ import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
 import org.ivipi.ratel.system.common.model.ProductDelete;
 import org.ivipi.ratel.system.common.model.ProductPage;
-import org.ivipi.ratel.system.server.api.SystemApi;
-import org.ivipi.ratel.system.server.api.TokenSignService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,10 +45,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RetrofitScan("org.ivipi.ratel")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SystemControllerTest {
+public class RockieClientApplicationTest {
 
     @Autowired
     private SystemApi systemApi;
+
+    @Autowired
+    private RockieApi rockieApi;
 
     @Autowired
     private TokenSignService tokenSignService;
@@ -53,6 +64,8 @@ public class SystemControllerTest {
 
     private Long customerId;
 
+    private Long folderId;
+
     @BeforeAll
     public void beforeAll(){
         log.info("Start test now ...");
@@ -63,6 +76,7 @@ public class SystemControllerTest {
         login(name, password);
         addProducts();
         addLicenses();
+        addFolder();
     }
 
     @BeforeEach
@@ -193,6 +207,31 @@ public class SystemControllerTest {
         }
         assertTrue(checkLicense);
     }
+
+    private void addFolder() {
+        FolderAdd folderAdd = new FolderAdd();
+        folderAdd.setFolderName("Folder Test");
+        Result result = rockieApi.addFolder(folderAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        FolderPage folderPage = new FolderPage();
+        folderPage.setPageSize(99999);
+        Result<Page<Folder>> folderResult = rockieApi.getFolders(folderPage);
+        assertNotNull(folderResult);
+        assertTrue(folderResult.isSuccess());
+        int folderCount = folderResult.getData().getRecords().size();
+        Folder testFolder = null;
+        for(int i = 0; i< folderCount; i ++) {
+            Folder folder = folderResult.getData().getRecords().get(i);
+            if("Folder Test".equals(folder.getFolderName())) {
+                testFolder = folder;
+                break;
+            }
+        }
+        assertNotNull(testFolder);
+        folderId = testFolder.getFolderId();
+
+    }
     @Test
     public void testUpdate() {
         CustomerUpdate customerUpdate = new CustomerUpdate();
@@ -233,6 +272,88 @@ public class SystemControllerTest {
     }
 
     @Test
+    public void testAddFolder() {
+        FolderAdd folderAdd = new FolderAdd();
+        folderAdd.setFolderName("Test Add Folder");
+        Result result = rockieApi.addFolder(folderAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void testUpdateFolder() {
+        FolderAdd folderAdd = new FolderAdd();
+        folderAdd.setFolderName("Test Update Folder");
+        Result result = rockieApi.addFolder(folderAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        FolderPage folderPage = new FolderPage();
+        folderPage.setPageSize(99999);
+        Result<Page<Folder>> folderResult = rockieApi.getFolders(folderPage);
+        assertNotNull(folderResult);
+        assertTrue(folderResult.isSuccess());
+        int folderCount = folderResult.getData().getRecords().size();
+        Folder updateFolder = null;
+        for(int i = 0; i< folderCount; i ++) {
+            Folder folder = folderResult.getData().getRecords().get(i);
+            if("Test Update Folder".equals(folder.getFolderName())) {
+                updateFolder = folder;
+                break;
+            }
+        }
+        assertNotNull(updateFolder);
+        FolderUpdate folderUpdate = new FolderUpdate();
+        folderUpdate.setFolderId(updateFolder.getFolderId());
+        folderUpdate.setFolderName("Test Update Folder is updated");
+        Result updateFolderResult = rockieApi.updateFolder(folderUpdate);
+        assertNotNull(updateFolderResult);
+        assertTrue(updateFolderResult.isSuccess());
+    }
+
+    @Test
+    public void testGetFolders() {
+        FolderAdd folderAdd = new FolderAdd();
+        folderAdd.setFolderName("Test Get Folders");
+        Result result = rockieApi.addFolder(folderAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        FolderPage folderPage = new FolderPage();
+        folderPage.setPageSize(99999);
+        Result<Page<Folder>> folderResult = rockieApi.getFolders(folderPage);
+        assertNotNull(folderResult);
+        assertTrue(folderResult.isSuccess());
+    }
+
+    @Test
+    public void testDeleteFolder() {
+        FolderAdd folderAdd = new FolderAdd();
+        folderAdd.setFolderName("Test Delete Folder");
+        Result result = rockieApi.addFolder(folderAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        FolderPage folderPage = new FolderPage();
+        folderPage.setPageSize(99999);
+        Result<Page<Folder>> folderResult = rockieApi.getFolders(folderPage);
+        assertNotNull(folderResult);
+        assertTrue(folderResult.isSuccess());
+        int folderCount = folderResult.getData().getRecords().size();
+        Folder deleteFolder = null;
+        for(int i = 0; i< folderCount; i ++) {
+            Folder folder = folderResult.getData().getRecords().get(i);
+            if("Test Delete Folder".equals(folder.getFolderName())) {
+                deleteFolder = folder;
+                break;
+            }
+        }
+        assertNotNull(deleteFolder);
+        FolderDelete folderDelete = new FolderDelete();
+        folderDelete.setFolderId(deleteFolder.getFolderId());
+        Result deleteFolderResult = rockieApi.deleteFolder(folderDelete);
+        assertNotNull(deleteFolderResult);
+        assertTrue(deleteFolderResult.isSuccess());
+    }
+
+    @Test
     public void testAddProduct() {
         ProductAdd productAdd = new ProductAdd();
         productAdd.setProductName("Test Product" + getTimeString());
@@ -258,5 +379,19 @@ public class SystemControllerTest {
             }
         }
         assertTrue(checkProduct);
+    }
+
+    @Test
+    public void testAddDocument() {
+        ContentAdd contentAdd = new ContentAdd();
+        contentAdd.setContentName("Test Content");
+        contentAdd.setContent("Test Content");
+        DocumentAdd documentAdd = new DocumentAdd();
+        documentAdd.setDocumentName("Test Add Document");
+        documentAdd.setContent(contentAdd);
+        documentAdd.setFolderId(folderId);
+        Result result = rockieApi.addDocument(documentAdd);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
     }
 }

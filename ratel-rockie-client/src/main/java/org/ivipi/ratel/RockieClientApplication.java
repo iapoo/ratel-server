@@ -1,5 +1,4 @@
-package org.ivipi.ratel.system;
-
+package org.ivipi.ratel;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -8,10 +7,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan("org.ivipi.ratel.system.domain.mapper")
-public class SystemClient {
+@MapperScan("org.ivipi.ratel.rockie.domain.mapper")
+public class RockieClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SystemClient.class, args);
+        SpringApplication.run(RockieClientApplication.class, args);
     }
 }

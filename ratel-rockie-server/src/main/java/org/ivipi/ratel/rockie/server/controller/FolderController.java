@@ -26,7 +26,6 @@ public class FolderController extends GenericController {
     @Autowired
     private FolderService folderService;
 
-
     @PostMapping("folders")
     @Audit
     public Result<Page<Folder>> getFolders(Auth auth, @RequestBody FolderPage folderPage) {
