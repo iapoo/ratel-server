@@ -50,7 +50,17 @@
                enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from folder
         where
-              customer_id = #{customerId}
+            customer_id = #{customerId}
+            and parent_id = #{parentId}
+    </select>
+
+
+    <select id="getAllFolders" resultMap="PageResultMap">
+        select folder_id, folder_name, parent_id, customer_id, path, remark,
+               enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        from folder
+        where
+            customer_id = #{customerId}
     </select>
 
 </mapper>

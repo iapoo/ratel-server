@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RetrofitScan("org.ivipi.ratel")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SystemClientTest {
+public class RatelSystemClientTest {
 
     @Autowired
     private SystemApi systemApi;

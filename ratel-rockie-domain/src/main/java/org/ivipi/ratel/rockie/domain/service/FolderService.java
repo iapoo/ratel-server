@@ -33,7 +33,12 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
 
     public Page<Folder> getFolders(Auth auth, FolderPage folderPage) {
         Page<Folder> page = new Page<>(folderPage.getPageNum(), folderPage.getPageSize());
-        List<Folder> result = baseMapper.getFolders(page, auth.getOnlineCustomer().getCustomerId());
+        List<Folder> result;
+        if(Boolean.TRUE.equals(folderPage.getAllFolders())) {
+            result = baseMapper.getAllFolders(page, auth.getOnlineCustomer().getCustomerId());
+        } else {
+            result = baseMapper.getFolders(page, auth.getOnlineCustomer().getCustomerId(), folderPage.getParentId());
+        }
         return page.setRecords(result);
     }
 
