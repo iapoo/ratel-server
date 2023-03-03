@@ -21,6 +21,7 @@ import org.ivipi.ratel.system.common.model.Product;
 import org.ivipi.ratel.system.common.model.ProductAdd;
 import org.ivipi.ratel.system.common.model.ProductDelete;
 import org.ivipi.ratel.system.common.model.ProductPage;
+import org.ivipi.ratel.system.common.model.ProductUpdate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RetrofitScan("org.ivipi.ratel")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RatelSystemClientTest {
+public class RatelSystemClientApplicationTest {
 
     @Autowired
     private SystemApi systemApi;
@@ -45,35 +47,30 @@ public class RatelSystemClientTest {
     @Autowired
     private TokenSignService tokenSignService;
 
-    private String productName;
-
-    private Long productId;
-
-    private Long licenseId;
-
-    private Long customerId;
+    private CustomerInfo testCustomerInfo;
+    private Product testProduct;
+    private License testLicense;
 
     @BeforeAll
-    public void beforeAll(){
+    public void beforeAll() {
         log.info("Start test now ...");
         String name = generateName();
         String password = generatePassword();
 
         register(name, password);
         login(name, password);
-        addProducts();
-        addLicenses();
+        addTestProduct();
+        addTestLicense();
     }
 
     @BeforeEach
-    public  void beforeEach(){
+    public void beforeEach() {
 
     }
 
     @AfterAll
-    public void afterAll(){
+    public void afterAll() {
         log.info("End test now ...");
-        deleteProducts();
         Result result = systemApi.logout();
         assertNotNull(result);
         assertTrue(result.isSuccess());
@@ -81,7 +78,7 @@ public class RatelSystemClientTest {
     }
 
     @AfterEach
-    public void afterEach(){
+    public void afterEach() {
 
     }
 
@@ -97,12 +94,13 @@ public class RatelSystemClientTest {
         Result<CustomerInfo> customerInfoResult = systemApi.info();
         assertNotNull(result);
         assertTrue(result.isSuccess());
-        customerId = customerInfoResult.getData().getCustomerId();
-
+        testCustomerInfo = customerInfoResult.getData();
     }
 
     private String getTimeString() {
-        return DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss");
+        String timeString;
+        timeString = DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss");
+        return timeString;
     }
 
     private String generateName() {
@@ -125,74 +123,17 @@ public class RatelSystemClientTest {
         return "Password1";
     }
 
-    private void addProducts() {
+    private void addTestProduct() {
         String productName = "Product" + getTimeString();
-        this.productName = productName;
-        ProductAdd productAdd = new ProductAdd();
-        productAdd.setProductName(productName);
-        Result result = systemApi.addProduct(productAdd);
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
-        ProductPage productPage = new ProductPage();
-        productPage.setPageSize(99999);
-        Result<Page<Product>> productResult = systemApi.getProducts(productPage);
-        long size = productResult.getData().getRecords().size();
-        boolean checkProduct = false;
-        for(long i = size - 1; i >= 0; i --) {
-            Product product = productResult.getData().getRecords().get((int)i);
-            if(product.getProductName().equals(productName)) {
-                checkProduct = true;
-                productId = product.getProductId();
-                break;
-            }
-        }
-        assertTrue(checkProduct);
+        addProduct(productName, true);
+        testProduct = checkProduct(productName);
     }
 
-    private void deleteProducts() {
-        ProductPage productPage = new ProductPage();
-        productPage.setPageSize(99999);
-        Result<Page<Product>> productResult = systemApi.getProducts(productPage);
-        assertNotNull(productResult);
-        assertTrue(productResult.isSuccess());
-        long size = productResult.getData().getRecords().size();
-        boolean checkProduct = false;
-        for(long i = size - 1; i >= 0; i --) {
-            Product product = productResult.getData().getRecords().get((int)i);
-            if(product.getProductName().equals(productName)) {
-                checkProduct = true;
-                ProductDelete productDelete = new ProductDelete();
-                productDelete.setProductId(product.getProductId());
-                Result deleteResult = systemApi.deleteProduct(productDelete);
-                assertNotNull(deleteResult);
-                assertTrue(deleteResult.isSuccess());
-            }
-        }
-        assertTrue(checkProduct);
+    private void addTestLicense() {
+        addLicense(testProduct.getProductId(), true);
+        testLicense = checkLicense(testProduct.getProductId());
     }
 
-    private void addLicenses() {
-        LicenseAdd licenseAdd = new LicenseAdd();
-        licenseAdd.setProductId(productId);
-        licenseAdd.setRemark("License Test");
-        Result result = systemApi.addLicense(licenseAdd);
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
-        LicensePage licensePage = new LicensePage();
-        licensePage.setPageSize(99999);
-        Result<Page<License>> licenseResult = systemApi.getLicenses(licensePage);
-        long size = licenseResult.getData().getRecords().size();
-        boolean checkLicense = false;
-        for(long i = size - 1; i >= 0; i --) {
-            License license = licenseResult.getData().getRecords().get((int)i);
-            if(license.getProductId().equals(productId) && license.getCustomerId().equals(customerId) ) {
-                checkLicense = true;
-                licenseId = license.getLicenseId();
-                break;
-            }
-        }
-        assertTrue(checkLicense);
-    }
     @Test
     public void testUpdate() {
         CustomerUpdate customerUpdate = new CustomerUpdate();
@@ -215,7 +156,7 @@ public class RatelSystemClientTest {
     @Test
     public void testSubscribe() {
         Order order = new Order();
-        order.setProductId(productId);
+        order.setProductId(testProduct.getProductId());
         order.setRemark("Subscribe");
         Result result = systemApi.subscribe(order);
         assertNotNull(result);
@@ -225,20 +166,26 @@ public class RatelSystemClientTest {
     @Test
     public void testRenew() {
         Order order = new Order();
-        order.setProductId(productId);
+        order.setProductId(testProduct.getProductId());
         order.setRemark("Renew");
         Result result = systemApi.renew(order);
         assertNotNull(result);
         assertTrue(result.isSuccess());
     }
 
-    @Test
-    public void testAddProduct() {
+    private void addProduct(String productName, boolean expectedResult) {
         ProductAdd productAdd = new ProductAdd();
-        productAdd.setProductName("Test Product" + getTimeString());
+        productAdd.setProductName(productName);
         Result result = systemApi.addProduct(productAdd);
         assertNotNull(result);
-        assertTrue(result.isSuccess());
+        if (expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private Product checkProduct(String productName) {
         ProductPage productPage = new ProductPage();
         productPage.setPageSize(99999);
         Result<Page<Product>> productResult = systemApi.getProducts(productPage);
@@ -246,17 +193,96 @@ public class RatelSystemClientTest {
         assertTrue(productResult.isSuccess());
         long size = productResult.getData().getRecords().size();
         boolean checkProduct = false;
-        for(long i = size - 1; i >= 0; i --) {
-            Product product = productResult.getData().getRecords().get((int)i);
-            if(product.getProductName().equals(productAdd.getProductName())) {
+        Product product = null;
+        for (long i = size - 1; i >= 0; i--) {
+            Product theProduct = productResult.getData().getRecords().get((int) i);
+            if (theProduct.getProductName().equals(productName)) {
                 checkProduct = true;
-                ProductDelete productDelete = new ProductDelete();
-                productDelete.setProductId(product.getProductId());
-                Result deleteResult = systemApi.deleteProduct(productDelete);
-                assertNotNull(deleteResult);
-                assertTrue(deleteResult.isSuccess());
+                product = theProduct;
             }
         }
         assertTrue(checkProduct);
+        return product;
     }
+
+    @Test
+    public void testAddProduct() {
+        log.info("Add product with new product name");
+        String testProductName = "Test Add Product" + getTimeString();
+        addProduct(testProductName, true);
+        Product product = checkProduct(testProductName);
+        assertNotNull(product);
+        log.info("Add product with existing product name");
+        addProduct(testProductName, false);
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        log.info("Test delete product");
+        String testProductName = "Test Delete Product" + getTimeString();
+        addProduct(testProductName, true);
+        Product product = checkProduct(testProductName);
+        assertNotNull(product);
+        ProductDelete productDelete = new ProductDelete();
+        productDelete.setProductId(product.getProductId());
+        Result deleteResult = systemApi.deleteProduct(productDelete);
+        assertNotNull(deleteResult);
+        assertTrue(deleteResult.isSuccess());
+    }
+
+    @Test
+    public void testUpdateProduct() {
+        log.info("Test update product");
+        String testProductName = "Test Update Product" + getTimeString();
+        addProduct(testProductName, true);
+        Product product = checkProduct(testProductName);
+        assertNotNull(product);
+        ProductUpdate productUpdate = new ProductUpdate();
+        productUpdate.setProductId(product.getProductId());
+        productUpdate.setProductName(testProductName + " is updated");
+        Result updateResult = systemApi.updateProduct(productUpdate);
+        assertNotNull(updateResult);
+        assertTrue(updateResult.isSuccess());
+    }
+
+    private void addLicense(Long productId, boolean expectedResult) {
+        LicenseAdd licenseAdd = new LicenseAdd();
+        licenseAdd.setProductId(productId);
+        licenseAdd.setRemark("Add License Test");
+        Result result = systemApi.addLicense(licenseAdd);
+        assertNotNull(result);
+        if (expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private License checkLicense(Long productId) {
+        LicensePage licensePage = new LicensePage();
+        licensePage.setPageSize(99999);
+        Result<Page<License>> licenseResult = systemApi.getLicenses(licensePage);
+        long size = licenseResult.getData().getRecords().size();
+        boolean checkLicense = false;
+        License license = null;
+        for (long i = size - 1; i >= 0; i--) {
+            License theLicense = licenseResult.getData().getRecords().get((int) i);
+            if (theLicense.getProductId().equals(productId) && theLicense.getCustomerId().equals(testCustomerInfo.getCustomerId())) {
+                checkLicense = true;
+                license = theLicense;
+                break;
+            }
+        }
+        assertTrue(checkLicense);
+        return license;
+    }
+
+    @Test
+    public void testAddLicense() {
+        log.info("Test add license");
+        addLicense(testProduct.getProductId(), true);
+        //log.info("Test add license with existing product id");
+        //addLicense(testProduct.getProductId(), false);
+    }
+
 }

@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @MapperScan("org.ivipi.ratel.system.domain.mapper")
-public class RatelSystemClient {
+public class RatelSystemClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RatelSystemClient.class, args);
+        SpringApplication.run(RatelSystemClientApplication.class, args);
     }
 }

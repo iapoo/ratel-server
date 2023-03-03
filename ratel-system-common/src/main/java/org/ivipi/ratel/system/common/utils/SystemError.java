@@ -25,6 +25,7 @@ public enum SystemError {
     PRODUCT_PRODUCT_NOT_FOUND("System", "003001", "Product未找到"),
     PRODUCT_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),
     PRODUCT_PRODUCT_NAME_EXISTS("System", "003003", "名称已存在"),
+    PRODUCT_PRODUCT_ENABLED_NOT_FOUND("System", "003003", "Enabled not setup"),
 
     LICENSE_LICENSE_ID_IS_NULL("System", "003002", "License ID为空"),
     LICENSE_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),
