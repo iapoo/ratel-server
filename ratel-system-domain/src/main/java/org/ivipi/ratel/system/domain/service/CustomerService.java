@@ -1,6 +1,5 @@
 package org.ivipi.ratel.system.domain.service;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -114,7 +113,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         if(oldCustomerDo == null) {
             throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
         }
-        CustomerDo customerDo = convertCustomerEdit(customerUpdate, oldCustomerDo);
+        CustomerDo customerDo = convertCustomerUpdate(customerUpdate, oldCustomerDo);
         updateById(customerDo);
     }
 
@@ -152,7 +151,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customerDo;
     }
 
-    private CustomerDo convertCustomerEdit(CustomerUpdate customerUpdate, CustomerDo customerDo) {
+    private CustomerDo convertCustomerUpdate(CustomerUpdate customerUpdate, CustomerDo customerDo) {
         BeanUtils.copyProperties(customerUpdate, customerDo);
         return customerDo;
     }
