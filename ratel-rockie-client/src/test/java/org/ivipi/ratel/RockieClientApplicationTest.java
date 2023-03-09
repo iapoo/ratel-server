@@ -8,7 +8,9 @@ import org.ivipi.ratel.common.model.Result;
 import org.ivipi.ratel.rockie.client.api.RockieApi;
 import org.ivipi.ratel.rockie.common.model.Content;
 import org.ivipi.ratel.rockie.common.model.ContentAdd;
+import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentPage;
 import org.ivipi.ratel.rockie.common.model.Folder;
 import org.ivipi.ratel.rockie.common.model.FolderAdd;
 import org.ivipi.ratel.rockie.common.model.FolderDelete;
@@ -298,18 +300,53 @@ public class RockieClientApplicationTest {
         assertNotNull(folder);
     }
 
-
-    @Test
-    public void testAddDocument() {
+    private void addDocument(String documentName, String contentName, String content, boolean expectedResult) {
         ContentAdd contentAdd = new ContentAdd();
-        contentAdd.setContentName("Test Content");
-        contentAdd.setContent("Test Content");
+        contentAdd.setContentName(contentName);
+        contentAdd.setContent(content);
         DocumentAdd documentAdd = new DocumentAdd();
-        documentAdd.setDocumentName("Test Add Document");
+        documentAdd.setDocumentName(documentName);
         documentAdd.setContent(contentAdd);
         documentAdd.setFolderId(testFolder.getFolderId());
         Result result = rockieApi.addDocument(documentAdd);
         assertNotNull(result);
-        assertTrue(result.isSuccess());
+        if (expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private Document checkDocument(String documentName) {
+        DocumentPage documentPage = new DocumentPage();
+        documentPage.setPageSize(99999);
+        Result<Page<Document>> documentResult = rockieApi.getDocuments(documentPage);
+        assertNotNull(documentResult);
+        assertTrue(documentResult.isSuccess());
+        long size = documentResult.getData().getRecords().size();
+        boolean checkDocument = false;
+        Document document = null;
+        for (long i = size - 1; i >= 0; i--) {
+            Document theDocument = documentResult.getData().getRecords().get((int) i);
+            if (theDocument.getDocumentName().equals(documentName)) {
+                checkDocument = true;
+                document = theDocument;
+            }
+        }
+        assertTrue(checkDocument);
+        return document;
+    }
+
+    @Test
+    public void testAddDocument() {
+        log.info("Add document with new document name");
+        String testDocumentName = "Test Add Document" + getTimeString();
+        String testContentName = "Test Content Name";
+        String testContent = "Test Content of document";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+        log.info("Add document with existing document name");
+        addDocument(testDocumentName, testContentName, testContent, false);
     }
 }
