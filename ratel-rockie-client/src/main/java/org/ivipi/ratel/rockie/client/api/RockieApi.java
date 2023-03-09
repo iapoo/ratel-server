@@ -35,7 +35,7 @@ public interface RockieApi {
     Result deleteFolder(@Body FolderDelete folderDelete);
 
     @POST("document/documents")
-    Result<Page<Document>> getDocument(@Body DocumentPage documentPage);
+    Result<Page<Document>> getDocuments(@Body DocumentPage documentPage);
 
     @POST("document/add")
     Result addDocument(@Body DocumentAdd documentAdd);
