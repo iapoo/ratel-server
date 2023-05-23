@@ -151,8 +151,8 @@ public class RockieClientApplicationTest {
 
     private void addTestFolder() {
         String folderName = "Folder" + getTimeString();
-        addFolder(folderName, true);
-        testFolder = checkFolder(folderName);
+        addFolder(folderName, null, true);
+        testFolder = checkFolder(folderName, null);
     }
 
     private void addProduct(String productName, boolean expectedResult) {
@@ -220,9 +220,10 @@ public class RockieClientApplicationTest {
     }
 
 
-    private void addFolder(String folderName, boolean expectedResult) {
+    private void addFolder(String folderName, Long parentFolderId, boolean expectedResult) {
         FolderAdd folderAdd = new FolderAdd();
         folderAdd.setFolderName(folderName);
+        folderAdd.setParentId(parentFolderId);
         Result result = rockieApi.addFolder(folderAdd);
         assertNotNull(result);
         if (expectedResult) {
@@ -232,9 +233,10 @@ public class RockieClientApplicationTest {
         }
     }
 
-    private Folder checkFolder(String folderName) {
+    private Folder checkFolder(String folderName, Long parentId) {
         FolderPage folderPage = new FolderPage();
         folderPage.setPageSize(99999);
+        folderPage.setParentId(parentId);
         Result<Page<Folder>> folderResult = rockieApi.getFolders(folderPage);
         assertNotNull(folderResult);
         assertTrue(folderResult.isSuccess());
@@ -255,19 +257,32 @@ public class RockieClientApplicationTest {
     public void testAddFolder() {
        log.info("Add Folder with new folder name");
        String testFolderName = "Test Add Folder" + getTimeString();
-       addFolder(testFolderName, true);
-       Folder folder = checkFolder(testFolderName);
+       addFolder(testFolderName,  null,true);
+       Folder folder = checkFolder(testFolderName, null);
        assertNotNull(folder);
        log.info("Add folder with existing folder name");
-       addFolder(testFolderName, false);
+       addFolder(testFolderName, null,false);
+    }
+
+    @Test
+    public void testAddSubFolder() {
+        log.info("Add Sub Folder with new folder name");
+        String testFolderName = "Test Sub Add Folder" + getTimeString();
+        addFolder(testFolderName, null,true);
+        Folder folder = checkFolder(testFolderName, null);
+        assertNotNull(folder);
+        testFolderName = "Test Add Child Folder" + getTimeString();
+        addFolder(testFolderName, folder.getFolderId(),true);
+        Folder subFolder = checkFolder(testFolderName, folder.getFolderId());
+        assertNotNull(folder);
     }
 
     @Test
     public void testDeleteFolder() {
         log.info("Test delete folder");
         String testFolderName = "Test Delete Folder" + getTimeString();
-        addFolder(testFolderName, true);
-        Folder folder = checkFolder(testFolderName);
+        addFolder(testFolderName, null,true);
+        Folder folder = checkFolder(testFolderName, null);
         assertNotNull(folder);
         FolderDelete folderDelete = new FolderDelete();
         folderDelete.setFolderId(folder.getFolderId());
@@ -280,8 +295,8 @@ public class RockieClientApplicationTest {
     public void testUpdateFolder() {
         log.info("Test update folder");
         String testFolderName = "Test Update Folder" + getTimeString();
-        addFolder(testFolderName, true);
-        Folder folder = checkFolder(testFolderName);
+        addFolder(testFolderName, null,true);
+        Folder folder = checkFolder(testFolderName, null);
         assertNotNull(folder);
         FolderUpdate folderUpdate = new FolderUpdate();
         folderUpdate.setFolderId(folder.getFolderId());
@@ -295,8 +310,8 @@ public class RockieClientApplicationTest {
     public void testGetFolders() {
         log.info("Test get folder");
         String testFolderName = "Test Get Folder" + getTimeString();
-        addFolder(testFolderName, true);
-        Folder folder = checkFolder(testFolderName);
+        addFolder(testFolderName, null,true);
+        Folder folder = checkFolder(testFolderName, null);
         assertNotNull(folder);
     }
 
