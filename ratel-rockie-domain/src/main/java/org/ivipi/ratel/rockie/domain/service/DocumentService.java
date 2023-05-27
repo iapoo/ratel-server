@@ -42,7 +42,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Page<Document> getDocuments(Auth auth, DocumentPage documentPage) {
         Page<Document> page = new Page<>(documentPage.getPageNum(), documentPage.getPageSize());
-        List<Document> result = baseMapper.getDocuments(page);
+        List<Document> result = baseMapper.getDocuments(page, auth.getOnlineCustomer().getCustomerId(), documentPage.getFolderId());
         return page.setRecords(result);
     }
 

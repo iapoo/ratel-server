@@ -48,6 +48,14 @@
         select document_id, document_name, customer_id, content_id, folder_id, remark,
                enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from document
+        where
+        customer_id = #{customerId}
+        <if test="folderId == null ">
+            and folder_id is null
+        </if>
+        <if test="folderId != null ">
+            and folder_id = #{parentId}
+        </if>
 
     </select>
 

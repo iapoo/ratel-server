@@ -7,4 +7,6 @@ import org.ivipi.ratel.common.model.BasePage;
 public class DocumentPage extends BasePage {
 
     private static final long serialVersionUID = 3905614198292431469L;
+
+    private Long folderId;
 }
