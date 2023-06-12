@@ -54,7 +54,7 @@
             and folder_id is null
         </if>
         <if test="folderId != null ">
-            and folder_id = #{parentId}
+            and folder_id = #{folderId}
         </if>
 
     </select>
