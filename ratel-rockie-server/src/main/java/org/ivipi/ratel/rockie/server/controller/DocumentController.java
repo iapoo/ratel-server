@@ -57,9 +57,9 @@ public class DocumentController extends GenericController {
 
     @PostMapping("delete")
     @Audit
-    public Page<Document> deleteDocuments(Auth auth, @RequestBody DocumentDelete documentDelete) {
-        Page<Document> customers = documentService.getDocuments(1, 10);
-        return customers;
+    public Result deleteDocuments(Auth auth, @RequestBody DocumentDelete documentDelete) {
+        documentService.deleteDocument(auth, documentDelete);
+        return Result.success();
     }
 
 }

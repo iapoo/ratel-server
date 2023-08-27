@@ -156,8 +156,20 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         updateById(folderDo);
     }
 
-    public void deleteFolders(Auth auth, FolderDelete folderDelete) {
-
+    public void deleteFolder(Auth auth, FolderDelete folderDelete) {
+        if (folderDelete.getFolderId() == null) {
+            throw SystemError.FOLDER_FOLDER_ID_IS_NULL.newException();
+        }
+        FolderDo oldFolderDo = getById(folderDelete.getFolderId());
+        if (oldFolderDo == null) {
+            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+        }
+        if (oldFolderDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
+            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+        }
+        FolderDo folderDo = oldFolderDo;
+        folderDo.setDeleted(true);
+        updateById(folderDo);
     }
 
     private Folder convertFolderDo(FolderDo folderDo) {
