@@ -49,7 +49,7 @@
                enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from document
         where
-        customer_id = #{customerId}
+        customer_id = #{customerId} and deleted = 0
         <if test="folderId == null ">
             and folder_id is null
         </if>

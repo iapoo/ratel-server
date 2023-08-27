@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.rockie.common.model.Content;
 import org.ivipi.ratel.rockie.common.model.Document;
 import org.ivipi.ratel.rockie.common.model.DocumentAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentDelete;
 import org.ivipi.ratel.rockie.common.model.DocumentPage;
 import org.ivipi.ratel.rockie.common.model.DocumentQuery;
 import org.ivipi.ratel.rockie.common.model.DocumentUpdate;
@@ -108,9 +109,34 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
             throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
+        Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentUpdate.getFolderId());
+        documents.getRecords().forEach(document -> {
+            if(!document.getDocumentId().equals(documentUpdate.getDocumentId()) &&
+                    document.getDocumentName().equalsIgnoreCase(documentUpdate.getDocumentName())) {
+                throw  SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+            }
+        });
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
         Content newContent = contentService.updateContent(auth, oldDocumentDo.getContentId(), documentUpdate.getContent());
         documentDo.setContentId(newContent.getContentId());
+        updateById(documentDo);
+    }
+
+
+    public void deleteDocument(Auth auth, DocumentDelete documentUpdate) {
+        if (documentUpdate.getDocumentId() == null) {
+            throw SystemError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+
+        }
+        DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
+        if (oldDocumentDo == null) {
+            throw SystemError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
+            throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+        }
+        DocumentDo documentDo = oldDocumentDo;
+        documentDo.setDeleted(true);
         updateById(documentDo);
     }
 

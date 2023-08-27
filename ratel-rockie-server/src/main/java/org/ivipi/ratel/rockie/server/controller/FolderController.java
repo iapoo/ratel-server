@@ -56,8 +56,8 @@ public class FolderController extends GenericController {
 
     @PostMapping("delete")
     @Audit
-    public Result deleteFolders(Auth auth, FolderDelete folderDelete) {
-        folderService.deleteFolders(auth, folderDelete);
+    public Result deleteFolder(Auth auth, @RequestBody FolderDelete folderDelete) {
+        folderService.deleteFolder(auth, folderDelete);
         return Result.success();
     }
 
