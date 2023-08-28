@@ -42,9 +42,9 @@ public class FolderController extends GenericController {
 
     @PostMapping("add")
     @Audit
-    public Result addFolder(Auth auth, @RequestBody FolderAdd folderAdd) {
-        folderService.addFolder(auth, folderAdd);
-        return Result.success();
+    public Result<Folder> addFolder(Auth auth, @RequestBody FolderAdd folderAdd) {
+        Folder folder = folderService.addFolder(auth, folderAdd);
+        return Result.success(folder);
     }
 
     @PostMapping("update")

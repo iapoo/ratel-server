@@ -79,22 +79,24 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         return documentPage;
     }
 
-    public void addDocument(Auth auth, DocumentAdd documentAdd) {
+    public Document addDocument(Auth auth, DocumentAdd documentAdd) {
         if (documentAdd.getFolderId() == null) {
             throw SystemError.DOCUMENT_FOLDER_NOT_FOUND.newException();
         }
         Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentAdd.getFolderId());
         documents.getRecords().forEach(document -> {
-            if(document.getDocumentName().equalsIgnoreCase(documentAdd.getDocumentName())) {
-                throw  SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+            if (document.getDocumentName().equalsIgnoreCase(documentAdd.getDocumentName()) && !document.getDeleted()) {
+                throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
             }
         });
         DocumentDo documentDo = convertDocumentAdd(documentAdd);
-        Content newContent = contentService.addContent(auth,documentAdd.getFolderId(), documentAdd.getContent());
+        Content newContent = contentService.addContent(auth, documentAdd.getFolderId(), documentAdd.getContent());
         documentDo.setContentId(newContent.getContentId());
         documentDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         documentDo.setDocumentId(null);
         save(documentDo);
+        Document document = convertDocumentDo(documentDo);
+        return document;
     }
 
     public void updateDocument(Auth auth, DocumentUpdate documentUpdate) {
@@ -111,9 +113,8 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         }
         Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentUpdate.getFolderId());
         documents.getRecords().forEach(document -> {
-            if(!document.getDocumentId().equals(documentUpdate.getDocumentId()) &&
-                    document.getDocumentName().equalsIgnoreCase(documentUpdate.getDocumentName())) {
-                throw  SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+            if (!document.getDocumentId().equals(documentUpdate.getDocumentId()) && document.getDocumentName().equalsIgnoreCase(documentUpdate.getDocumentName()) && !document.getDeleted()) {
+                throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
             }
         });
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
