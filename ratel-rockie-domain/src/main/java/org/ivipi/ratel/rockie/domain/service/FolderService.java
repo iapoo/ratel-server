@@ -88,10 +88,13 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         return null;
     }
 
-    public Folder getFolder(String folderName, Long parentId) {
+    public Folder getFolder(String folderName, Long parentId, boolean excludeDeleted) {
         QueryWrapper<FolderDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("folder_name", folderName);
         queryWrapper.eq("parent_id", parentId);
+        if(excludeDeleted) {
+            queryWrapper.eq("deleted", false);
+        }
         FolderDo folderDo = this.getOne(queryWrapper);
         if (folderDo != null) {
             Folder folder = convertFolderDo(folderDo);
@@ -101,13 +104,13 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         }
     }
 
-    public void addFolder(Auth auth, FolderAdd folderAdd) {
+    public Folder addFolder(Auth auth, FolderAdd folderAdd) {
         if (folderAdd.getParentId() != null) {
             Folder parentFolder = getFolder(folderAdd.getParentId());
             if (parentFolder == null || !parentFolder.getCustomerId().equals(auth.getOnlineCustomer().getCustomerId())) {
                 throw SystemError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
-            Folder oldFolder = getFolder(folderAdd.getFolderName(), folderAdd.getParentId());
+            Folder oldFolder = getFolder(folderAdd.getFolderName(), folderAdd.getParentId(), true);
             if (oldFolder != null) {
                 throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
@@ -121,6 +124,8 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         folderDo.setFolderId(null);
         folderDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         save(folderDo);
+        Folder folder = convertFolderDo(folderDo);
+        return folder;
     }
 
     public void updateFolder(Auth auth, FolderUpdate folderUpdate) {
@@ -142,7 +147,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             if (parentFolder == null) {
                 throw SystemError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
-            Folder oldFolder = getFolder(folderUpdate.getFolderName(), oldFolderDo.getParentId());
+            Folder oldFolder = getFolder(folderUpdate.getFolderName(), oldFolderDo.getParentId(), true);
             if (oldFolder != null) {
                 throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }

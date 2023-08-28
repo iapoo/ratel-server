@@ -43,9 +43,9 @@ public class DocumentController extends GenericController {
 
     @PostMapping("add")
     @Audit
-    public Result addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
-        documentService.addDocument(auth, documentAdd);
-        return Result.success();
+    public Result<Document> addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
+        Document document = documentService.addDocument(auth, documentAdd);
+        return Result.success(document);
     }
 
     @PostMapping("update")
