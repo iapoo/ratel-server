@@ -70,6 +70,17 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         return documentPage;
     }
 
+    public Page<Document> getDocumentsInRootFolder(Long customerId) {
+        Page<DocumentDo> page = new Page<>(1, MAX_PAGE_SIZE);
+        QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id", customerId);
+        queryWrapper.isNull("folder_id");
+        Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
+        Page<Document> documentPage = new Page<>(1, MAX_PAGE_SIZE);
+        documentPage.setRecords(convertDocumentDos(result.getRecords()));
+        return documentPage;
+    }
+
     public Page<Document> getDocuments(int pageNum, int pageSize) {
         Page<DocumentDo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
@@ -80,10 +91,14 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
     public Document addDocument(Auth auth, DocumentAdd documentAdd) {
+        Page<Document> documents;
         if (documentAdd.getFolderId() == null) {
-            throw SystemError.DOCUMENT_FOLDER_NOT_FOUND.newException();
+            //throw SystemError.DOCUMENT_FOLDER_NOT_FOUND.newException();
+            //Check root folder of customer
+            documents = getDocumentsInRootFolder(auth.getOnlineCustomer().getCustomerId());
+        } else {
+            documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentAdd.getFolderId());
         }
-        Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentAdd.getFolderId());
         documents.getRecords().forEach(document -> {
             if (document.getDocumentName().equalsIgnoreCase(documentAdd.getDocumentName()) && !document.getDeleted()) {
                 throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
@@ -111,7 +126,12 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
             throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
-        Page<Document> documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentUpdate.getFolderId());
+        Page<Document> documents;
+        if(documentUpdate.getFolderId() != null) {
+            documents = getDocuments(auth.getOnlineCustomer().getCustomerId(), documentUpdate.getFolderId());
+        } else {
+            documents = getDocumentsInRootFolder(auth.getOnlineCustomer().getCustomerId());
+        }
         documents.getRecords().forEach(document -> {
             if (!document.getDocumentId().equals(documentUpdate.getDocumentId()) && document.getDocumentName().equalsIgnoreCase(documentUpdate.getDocumentName()) && !document.getDeleted()) {
                 throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
