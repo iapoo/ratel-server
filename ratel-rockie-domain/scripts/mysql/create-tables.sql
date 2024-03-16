@@ -24,7 +24,7 @@ create table if not exists document
     document_name  varchar(64)  not null,
     customer_id    bigint       not null,
     content_id     bigint       not null,
-    folder_id      bigint       not null,
+    folder_id      bigint       null,
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
