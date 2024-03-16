@@ -17,6 +17,7 @@ import org.ivipi.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -123,6 +124,8 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         FolderDo folderDo = convertFolderAdd(folderAdd);
         folderDo.setFolderId(null);
         folderDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
+        folderDo.setCreatedDate(LocalDateTime.now());
+        folderDo.setUpdatedDate(LocalDateTime.now());
         save(folderDo);
         Folder folder = convertFolderDo(folderDo);
         return folder;
@@ -158,6 +161,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             }
         }
         FolderDo folderDo = convertFolderUpdate(folderUpdate, oldFolderDo);
+        folderDo.setUpdatedDate(LocalDateTime.now());
         updateById(folderDo);
     }
 

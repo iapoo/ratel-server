@@ -20,6 +20,7 @@ import org.ivipi.ratel.system.domain.entity.CustomerDo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -105,6 +106,8 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         }
         customerDo = convertCustomerAdd(customerAdd);
         customerDo.setCustomerCode(IdUtil.simpleUUID());
+        customerDo.setCreatedDate(LocalDateTime.now());
+        customerDo.setUpdatedDate(LocalDateTime.now());
         save(customerDo);
     }
 
@@ -114,6 +117,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
             throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
         }
         CustomerDo customerDo = convertCustomerUpdate(customerUpdate, oldCustomerDo);
+        customerDo.setUpdatedDate(LocalDateTime.now());
         updateById(customerDo);
     }
 
@@ -129,6 +133,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
             throw SystemError.CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID.newException();
         }
         oldCustomerDo.setPassword(customerPassword.getNewPassword());
+        oldCustomerDo.setUpdatedDate(LocalDateTime.now());
         updateById(oldCustomerDo);
     }
 

@@ -11,12 +11,12 @@ create table if not exists user
     remark         varchar(512) null,
     is_enabled     int          not null default 1,
     is_deleted     int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (user_id)
 );
 
@@ -27,12 +27,12 @@ create table if not exists role
     remark         varchar(512) null,
     is_enabled     int          not null default 1,
     is_deleted     int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (role_id)
 );
 
@@ -56,12 +56,12 @@ create table if not exists resource
     remark         varchar(512) null,
     is_enabled     int          not null default 1,
     is_deleted     int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (resource_id)
 );
 
