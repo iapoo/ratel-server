@@ -19,6 +19,7 @@ import org.ivipi.ratel.system.domain.mapper.ProductMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -78,6 +79,8 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
         }
         ProductDo productDo = convertProductAdd(productAdd);
         productDo.setProductId(null);
+        productDo.setCreatedDate(LocalDateTime.now());
+        productDo.setUpdatedDate(LocalDateTime.now());
         save(productDo);
     }
 
@@ -90,6 +93,7 @@ public class ProductService extends ServiceImpl<ProductMapper, ProductDo> {
             throw SystemError.PRODUCT_PRODUCT_NOT_FOUND.newException();
         }
         ProductDo productDo = convertProductUpdate(productUpdate, oldProductDo);
+        productDo.setUpdatedDate(LocalDateTime.now());
         updateById(productDo);
     }
 

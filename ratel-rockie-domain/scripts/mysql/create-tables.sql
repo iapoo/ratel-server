@@ -8,12 +8,12 @@ create table if not exists folder
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (folder_id)
 );
 
@@ -28,12 +28,12 @@ create table if not exists document
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (document_id)
 );
 
@@ -45,11 +45,11 @@ create table if not exists content
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (content_id)
 );

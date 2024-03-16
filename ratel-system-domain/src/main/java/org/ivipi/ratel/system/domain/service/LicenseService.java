@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -47,6 +48,8 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
         LicenseDo licenseDo = convertLicenseAdd(licenseAdd);
         licenseDo.setLicenseId(null);
         licenseDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
+        licenseDo.setCreatedDate(LocalDateTime.now());
+        licenseDo.setUpdatedDate(LocalDateTime.now());
         save(licenseDo);
     }
 
@@ -84,6 +87,7 @@ public class LicenseService extends ServiceImpl<LicenseMapper, LicenseDo> {
             throw  SystemError.LICENSE_LICENSE_NOT_FOUND.newException();
         }
         LicenseDo licenseDo = convertLicenseEdit(licenseUpdate, oldLicenseDo);
+        licenseDo.setUpdatedDate(LocalDateTime.now());
         updateById(licenseDo);
     }
 

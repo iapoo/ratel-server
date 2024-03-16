@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,8 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
     public Content addContent(Auth auth, Long folderId, ContentAdd contentAdd) {
         ContentDo contentDo = convertContentAdd(contentAdd);
+        contentDo.setCreatedDate(LocalDateTime.now());
+        contentDo.setUpdatedDate(LocalDateTime.now());
         storageService.createObject(contentAdd.getContentName(), String.valueOf(folderId), auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");
@@ -77,6 +80,7 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
             throw SystemError.CONTENT_CONTENT_NOT_FOUND.newException();
         }
         ContentDo contentDo = convertContentUpdate(contentUpdate, oldContentDo);
+        contentDo.setUpdatedDate(LocalDateTime.now());
         storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");

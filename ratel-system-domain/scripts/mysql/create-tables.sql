@@ -6,12 +6,12 @@ create table if not exists product
     remark         varchar(512) null,
     enabled        bit          not null default 1,
     deleted        bit          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (product_id)
 );
 
@@ -29,12 +29,12 @@ create table if not exists customer
     remark         varchar(512) null,
     enabled        bit          not null default 1,
     deleted        bit          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (customer_id)
 );
 
@@ -46,11 +46,11 @@ create table if not exists license
     remark         varchar(512) null,
     enabled        bit          not null default 1,
     deleted        bit          not null default 0,
-    effective_date bigint       null,
-    expire_date    bigint       null,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
     created_by     bigint       null,
-    created_date   bigint       null,
+    created_date   timestamp    null,
     updated_by     bigint       null,
-    updated_date   bigint       null,
+    updated_date   timestamp    null,
     primary key (license_id)
 );

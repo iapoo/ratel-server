@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +110,8 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         documentDo.setContentId(newContent.getContentId());
         documentDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         documentDo.setDocumentId(null);
+        documentDo.setCreatedDate(LocalDateTime.now());
+        documentDo.setUpdatedDate(LocalDateTime.now());
         save(documentDo);
         Document document = convertDocumentDo(documentDo);
         return document;
@@ -140,6 +143,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
         Content newContent = contentService.updateContent(auth, oldDocumentDo.getContentId(), documentUpdate.getContent());
         documentDo.setContentId(newContent.getContentId());
+        documentDo.setUpdatedDate(LocalDateTime.now());
         updateById(documentDo);
     }
 
