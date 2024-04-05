@@ -9,6 +9,11 @@ import org.ivipi.ratel.rockie.client.api.RockieApi;
 import org.ivipi.ratel.rockie.common.model.Content;
 import org.ivipi.ratel.rockie.common.model.ContentAdd;
 import org.ivipi.ratel.rockie.common.model.Document;
+import org.ivipi.ratel.rockie.common.model.DocumentAccess;
+import org.ivipi.ratel.rockie.common.model.DocumentAccessAdd;
+import org.ivipi.ratel.rockie.common.model.DocumentAccessDelete;
+import org.ivipi.ratel.rockie.common.model.DocumentAccessPage;
+import org.ivipi.ratel.rockie.common.model.DocumentAccessUpdate;
 import org.ivipi.ratel.rockie.common.model.DocumentAdd;
 import org.ivipi.ratel.rockie.common.model.DocumentPage;
 import org.ivipi.ratel.rockie.common.model.Folder;
@@ -40,6 +45,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -335,6 +342,7 @@ public class RockieClientApplicationTest {
     private Document checkDocument(String documentName) {
         DocumentPage documentPage = new DocumentPage();
         documentPage.setPageSize(99999);
+        documentPage.setFolderId(testFolder.getFolderId());
         Result<Page<Document>> documentResult = rockieApi.getDocuments(documentPage);
         assertNotNull(documentResult);
         assertTrue(documentResult.isSuccess());
@@ -363,5 +371,104 @@ public class RockieClientApplicationTest {
         assertNotNull(document);
         log.info("Add document with existing document name");
         addDocument(testDocumentName, testContentName, testContent, false);
+    }
+
+    private List<DocumentAccess> addDocumentAccesses() {
+      return null;
+    }
+
+    @Test
+    public void testAddDocumentAccesses() {
+        log.info("Test Add document access");
+        String testDocumentName = "DocumentAccessTest" + getTimeString();
+        String testContentName = "DocumentAccessTest Content Name";
+        String testContent = "DocumentAccessTest Content";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+        DocumentAccessAdd documentAccessAdd = new DocumentAccessAdd();
+        documentAccessAdd.setDocumentId(document.getDocumentId());
+        documentAccessAdd.setAccessMode(1L);
+        Long customerIds[] = {1L, 2L, 3L};
+        documentAccessAdd.setCustomerIds(customerIds);
+        Result<List<DocumentAccess>> result = rockieApi.addDocumentAccesses(documentAccessAdd);
+        assertNotNull(result);
+        assertNotNull(result.getData().size() == 3);
+    }
+
+    @Test
+    public void testGetDocumentAccesses() {
+        log.info("Test Get document access");
+        String testDocumentName = "DocumentAccessTest" + getTimeString();
+        String testContentName = "DocumentAccessTest Content Name";
+        String testContent = "DocumentAccessTest Content";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+        DocumentAccessAdd documentAccessAdd = new DocumentAccessAdd();
+        documentAccessAdd.setDocumentId(document.getDocumentId());
+        documentAccessAdd.setAccessMode(1L);
+        Long customerIds[] = {1L, 2L, 3L};
+        documentAccessAdd.setCustomerIds(customerIds);
+        Result<List<DocumentAccess>> addResult = rockieApi.addDocumentAccesses(documentAccessAdd);
+        assertNotNull(addResult);
+        assertNotNull(addResult.getData().size() == 3);
+        DocumentAccessPage  documentAccessPage = new DocumentAccessPage();
+        documentAccessPage.setDocumentId(document.getDocumentId());
+        Result<Page<DocumentAccess>> getResult = rockieApi.getDocumentAccesses(documentAccessPage);
+        assertNotNull(getResult);
+        assertNotNull(getResult.getData().getSize() == 3);
+    }
+    @Test
+    public void testUpdateDocumentAccesses() {
+        log.info("Test Update document access");
+        String testDocumentName = "DocumentAccessTest" + getTimeString();
+        String testContentName = "DocumentAccessTest Content Name";
+        String testContent = "DocumentAccessTest Content";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+        DocumentAccessAdd documentAccessAdd = new DocumentAccessAdd();
+        documentAccessAdd.setDocumentId(document.getDocumentId());
+        documentAccessAdd.setAccessMode(1L);
+        Long customerIds[] = {1L, 2L, 3L};
+        documentAccessAdd.setCustomerIds(customerIds);
+        Result<List<DocumentAccess>> addResult = rockieApi.addDocumentAccesses(documentAccessAdd);
+        assertNotNull(addResult);
+        assertTrue(addResult.getData().size() == 3);
+        DocumentAccessUpdate documentAccessUpdate = new DocumentAccessUpdate();
+        documentAccessUpdate.setDocumentId(document.getDocumentId());
+        documentAccessUpdate.setAccessMode(0L);
+        Long updateCustomerIds[] = {2L, 3L, 4L};
+        documentAccessUpdate.setCustomerIds(customerIds);
+        Result<List<DocumentAccess>> updateResult = rockieApi.updateDocumentAccesses(documentAccessUpdate);
+        assertNotNull(updateResult);
+        assertTrue(updateResult.getData().size() == 3);
+        assertTrue(updateResult.getData().get(0).getAccessMode().longValue() == 0L);
+    }
+
+
+    @Test
+    public void testDeleteDocumentAccesses() {
+        log.info("Test Delete document access");
+        String testDocumentName = "DocumentAccessTest" + getTimeString();
+        String testContentName = "DocumentAccessTest Content Name";
+        String testContent = "DocumentAccessTest Content";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+        DocumentAccessAdd documentAccessAdd = new DocumentAccessAdd();
+        documentAccessAdd.setDocumentId(document.getDocumentId());
+        documentAccessAdd.setAccessMode(1L);
+        Long customerIds[] = {1L, 2L, 3L};
+        documentAccessAdd.setCustomerIds(customerIds);
+        Result<List<DocumentAccess>> addResult = rockieApi.addDocumentAccesses(documentAccessAdd);
+        assertNotNull(addResult);
+        assertTrue(addResult.getData().size() == 3);
+        DocumentAccessDelete documentAccessDelete = new DocumentAccessDelete();
+        documentAccessDelete.setDocumentId(document.getDocumentId());
+        Result<Boolean> deleteResult = rockieApi.deleteDocumentAccesses(documentAccessDelete);
+        assertNotNull(deleteResult);
+        assertTrue(deleteResult.getData().equals(Boolean.TRUE));
     }
 }

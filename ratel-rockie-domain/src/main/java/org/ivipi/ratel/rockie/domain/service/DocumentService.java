@@ -102,7 +102,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         }
         documents.getRecords().forEach(document -> {
             if (document.getDocumentName().equalsIgnoreCase(documentAdd.getDocumentName()) && !document.getDeleted()) {
-                throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+                throw RockieError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
             }
         });
         DocumentDo documentDo = convertDocumentAdd(documentAdd);
@@ -119,15 +119,14 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public void updateDocument(Auth auth, DocumentUpdate documentUpdate) {
         if (documentUpdate.getDocumentId() == null) {
-            throw SystemError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
-
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
         if (oldDocumentDo == null) {
-            throw SystemError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
-            throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+            throw RockieError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
         Page<Document> documents;
         if(documentUpdate.getFolderId() != null) {
@@ -137,7 +136,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         }
         documents.getRecords().forEach(document -> {
             if (!document.getDocumentId().equals(documentUpdate.getDocumentId()) && document.getDocumentName().equalsIgnoreCase(documentUpdate.getDocumentName()) && !document.getDeleted()) {
-                throw SystemError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
+                throw RockieError.DOCUMENT_DOCUMENT_NAME_EXISTS.newException();
             }
         });
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
@@ -150,15 +149,15 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public void deleteDocument(Auth auth, DocumentDelete documentUpdate) {
         if (documentUpdate.getDocumentId() == null) {
-            throw SystemError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
 
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
         if (oldDocumentDo == null) {
-            throw SystemError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
-            throw SystemError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+            throw RockieError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
         }
         DocumentDo documentDo = oldDocumentDo;
         documentDo.setDeleted(true);
