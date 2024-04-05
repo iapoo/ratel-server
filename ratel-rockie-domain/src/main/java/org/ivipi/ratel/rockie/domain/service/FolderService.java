@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.rockie.common.model.FolderDelete;
 import org.ivipi.ratel.rockie.common.model.FolderQuery;
+import org.ivipi.ratel.rockie.common.utils.RockieError;
 import org.ivipi.ratel.rockie.domain.entity.FolderDo;
 import org.ivipi.ratel.rockie.domain.mapper.FolderMapper;
 import org.ivipi.ratel.system.common.model.Auth;
@@ -109,16 +110,16 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         if (folderAdd.getParentId() != null) {
             Folder parentFolder = getFolder(folderAdd.getParentId());
             if (parentFolder == null || !parentFolder.getCustomerId().equals(auth.getOnlineCustomer().getCustomerId())) {
-                throw SystemError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
+                throw RockieError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
             Folder oldFolder = getFolder(folderAdd.getFolderName(), folderAdd.getParentId(), true);
             if (oldFolder != null) {
-                throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
+                throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
         } else {
             Folder oldFolder = getFolder(auth, folderAdd.getFolderName());
             if (oldFolder != null) {
-                throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
+                throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
         }
         FolderDo folderDo = convertFolderAdd(folderAdd);
@@ -133,31 +134,31 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
 
     public void updateFolder(Auth auth, FolderUpdate folderUpdate) {
         if (folderUpdate.getFolderId() == null) {
-            throw SystemError.FOLDER_FOLDER_ID_IS_NULL.newException();
+            throw RockieError.FOLDER_FOLDER_ID_IS_NULL.newException();
         }
         FolderDo oldFolderDo = getById(folderUpdate.getFolderId());
         if (oldFolderDo == null) {
-            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         if (oldFolderDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
-            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         if (oldFolderDo.getFolderName().equalsIgnoreCase(folderUpdate.getFolderName())) {
-            throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
+            throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
         }
         if(oldFolderDo.getParentId() != null) {
             Folder parentFolder = getFolder(oldFolderDo.getParentId());
             if (parentFolder == null) {
-                throw SystemError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
+                throw RockieError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
             Folder oldFolder = getFolder(folderUpdate.getFolderName(), oldFolderDo.getParentId(), true);
             if (oldFolder != null) {
-                throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
+                throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
         } else {
             Folder oldFolder = getFolder(auth, folderUpdate.getFolderName());
             if (oldFolder != null) {
-                throw SystemError.FOLDER_FOLDER_NAME_EXISTS.newException();
+                throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
         }
         FolderDo folderDo = convertFolderUpdate(folderUpdate, oldFolderDo);
@@ -167,14 +168,14 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
 
     public void deleteFolder(Auth auth, FolderDelete folderDelete) {
         if (folderDelete.getFolderId() == null) {
-            throw SystemError.FOLDER_FOLDER_ID_IS_NULL.newException();
+            throw RockieError.FOLDER_FOLDER_ID_IS_NULL.newException();
         }
         FolderDo oldFolderDo = getById(folderDelete.getFolderId());
         if (oldFolderDo == null) {
-            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         if (oldFolderDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
-            throw SystemError.FOLDER_FOLDER_NOT_FOUND.newException();
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         FolderDo folderDo = oldFolderDo;
         folderDo.setDeleted(true);

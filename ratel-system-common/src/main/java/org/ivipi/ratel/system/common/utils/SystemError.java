@@ -30,21 +30,8 @@ public enum SystemError {
     LICENSE_LICENSE_ID_IS_NULL("System", "003002", "License ID为空"),
     LICENSE_PRODUCT_ID_IS_NULL("System", "003002", "Product ID为空"),
     LICENSE_LICENSE_NOT_FOUND("System", "003002", "License未找到"),
-
-    DOCUMENT_DOCUMENT_NOT_FOUND("System", "003001", "Document未找到"),
-    DOCUMENT_DOCUMENT_ID_IS_NULL("System", "003002", "Document ID为空"),
-    DOCUMENT_CUSTOMER_IS_INVALID("System", "003003", "用户无效"),
-    DOCUMENT_CONTENT_IS_INVALID("System", "003004", "内容无效"),
-    DOCUMENT_FOLDER_NOT_FOUND("System", "003001", "Document Folder未找到"),
-    DOCUMENT_DOCUMENT_NAME_EXISTS("System", "003001", "Document已存在"),
-
     CONTENT_CONTENT_NOT_FOUND("System", "003001", "Document内容未找到"),
     CONTENT_CONTENT_ID_IS_NULL("System", "003002", "Document内容ID为空"),
-
-    FOLDER_FOLDER_ID_IS_NULL("System", "003001", "Folder ID为空"),
-    FOLDER_FOLDER_NOT_FOUND("System", "003001", "Folder未找到"),
-    FOLDER_PARENT_FOLDER_NOT_FOUND("System", "003001", "Parent Folder未找到"),
-    FOLDER_FOLDER_NAME_EXISTS("System", "003001", "Folder已存在"),
     ;
 
     private String service;

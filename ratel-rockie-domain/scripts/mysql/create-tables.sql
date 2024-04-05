@@ -53,3 +53,45 @@ create table if not exists content
     updated_date   timestamp    null,
     primary key (content_id)
 );
+
+create table if not exists folder_access
+(
+    folder_id      bigint       not null,
+    customer_id    bigint       not null,
+    access_mode    bigint       not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (folder_id,  customer_id)
+);
+
+create table if not exists folder_access_detail
+(
+    folder_id      bigint       not null,
+    customer_id    bigint       not null,
+    access_mode    bigint       not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (folder_id,  customer_id)
+);
+
+create table if not exists document_access
+(
+    document_id    bigint       not null,
+    customer_id    bigint       not null,
+    access_mode    bigint       not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (document_id, customer_id)
+);
