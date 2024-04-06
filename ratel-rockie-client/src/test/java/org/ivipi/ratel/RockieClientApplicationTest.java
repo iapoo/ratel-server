@@ -1,6 +1,7 @@
 package org.ivipi.ratel;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +88,11 @@ public class RockieClientApplicationTest {
 
     @BeforeEach
     public  void beforeEach(){
-
+//        try {
+//            Thread.sleep(60L);
+//        } catch (InterruptedException e) {
+//            //Nothing needed here
+//        }
     }
 
     @AfterAll
@@ -122,7 +127,7 @@ public class RockieClientApplicationTest {
     private String getTimeString() {
         String timeString;
         timeString = DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss");
-        return timeString;
+        return timeString + RandomUtil.randomInt(1, 9999999);
     }
 
     private String generateName() {
