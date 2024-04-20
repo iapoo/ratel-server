@@ -113,6 +113,9 @@ public class SystemController extends GenericController {
     @Audit
     public Result<CustomerInfo> info(Auth auth) {
         CustomerInfo customerInfo = customerService.getCustomerInfo(auth);
+        if(customerInfo != null) {
+            refreshLoginCustomer(auth.getToken(), auth.getOnlineCustomer());
+        }
         return Result.success(customerInfo);
     }
 
