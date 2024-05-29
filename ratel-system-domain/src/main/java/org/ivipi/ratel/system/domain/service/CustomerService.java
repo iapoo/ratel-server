@@ -9,6 +9,7 @@ import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
 import org.ivipi.ratel.system.common.model.CustomerInfo;
+import org.ivipi.ratel.system.common.model.CustomerSettings;
 import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerLicense;
 import org.ivipi.ratel.system.common.model.CustomerPage;
@@ -68,6 +69,12 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customerInfo;
     }
 
+
+    public CustomerSettings getCustomerSettings(Auth auth) {
+        CustomerDo customerDo = getById(auth.getOnlineCustomer().getCustomerId());
+        CustomerSettings customerSettings = convertCustomerDoToCustomerSettings(customerDo);
+        return customerSettings;
+    }
 
     public Customer getCustomer(String customerName, String customerPassword) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
@@ -137,6 +144,16 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         updateById(oldCustomerDo);
     }
 
+    public void updateSettings(Long customerId, CustomerSettings customerSettings) {
+        CustomerDo oldCustomerDo = getById(customerId);
+        if(oldCustomerDo == null) {
+            throw SystemError.CUSTOMER_CUSTOMER_IS_INVALID.newException();
+        }
+        oldCustomerDo.setSettings(customerSettings.getSettings());
+        oldCustomerDo.setUpdatedDate(LocalDateTime.now());
+        updateById(oldCustomerDo);
+    }
+
     private Customer convertCustomerDo(CustomerDo customerDo) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDo, customer);
@@ -148,6 +165,13 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         CustomerInfo customerInfo = new CustomerInfo();
         BeanUtils.copyProperties(customerDo, customerInfo);
         return customerInfo;
+    }
+
+
+    private CustomerSettings convertCustomerDoToCustomerSettings(CustomerDo customerDo) {
+        CustomerSettings customerSettings = new CustomerSettings();
+        BeanUtils.copyProperties(customerDo, customerSettings);
+        return customerSettings;
     }
 
     private CustomerDo convertCustomerAdd(CustomerAdd customerAdd) {

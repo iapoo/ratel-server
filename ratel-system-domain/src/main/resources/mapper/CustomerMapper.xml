@@ -14,6 +14,7 @@
         <result column="mobile" property="mobile"/>
         <result column="email" property="email"/>
         <result column="remark" property="remark"/>
+        <result column="settings" property="settings"/>
         <result column="enabled" property="enabled"/>
         <result column="deleted" property="deleted"/>
         <result column="effective_date" property="effectiveDate"/>
@@ -36,6 +37,7 @@
         <result column="mobile" property="mobile"/>
         <result column="email" property="email"/>
         <result column="remark" property="remark"/>
+        <result column="settings" property="settings"/>
         <result column="enabled" property="enabled"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
@@ -47,13 +49,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        customer_id, customer_name, customer_code, password, nick_name, id_card, telephone, mobile, email, remark,
+        customer_id, customer_name, customer_code, password, nick_name, id_card, telephone, mobile, email, remark,settings,
         enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
 
     <select id="getCustomers" resultMap="PageResultMap">
-        select customer_id, customer_name, customer_code, '********' as password, nick_name, id_card, telephone, mobile, email, remark,
+        select customer_id, customer_name, customer_code, '********' as password, nick_name, id_card, telephone, mobile, email, remark,settings,
         enabled,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from customer
         <if test="customerName != null">

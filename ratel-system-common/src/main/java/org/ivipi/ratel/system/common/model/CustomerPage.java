@@ -51,6 +51,12 @@ public class CustomerPage extends BasePage {
      */
     private String remark;
 
+
+    /**
+     * Settings
+     */
+    private String settings;
+
     /**
      * 是否启用
      */
