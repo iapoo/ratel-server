@@ -9,6 +9,7 @@ import org.ivipi.ratel.system.common.model.Auth;
 import org.ivipi.ratel.system.common.model.Customer;
 import org.ivipi.ratel.system.common.model.CustomerAdd;
 import org.ivipi.ratel.system.common.model.CustomerInfo;
+import org.ivipi.ratel.system.common.model.CustomerSettings;
 import org.ivipi.ratel.system.common.model.CustomerUpdate;
 import org.ivipi.ratel.system.common.model.CustomerPassword;
 import org.ivipi.ratel.system.common.model.Order;
@@ -92,6 +93,21 @@ public class SystemController extends GenericController {
         Long customerId = auth.getOnlineCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);
         return Result.success();
+    }
+
+    @PostMapping("updateSettings")
+    @Audit
+    public Result updateSettings(Auth auth, @RequestBody CustomerSettings customerSettings) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        customerService.updateSettings(customerId, customerSettings);
+        return Result.success();
+    }
+
+    @PostMapping("settings")
+    @Audit
+    public Result<CustomerSettings> settings(Auth auth) {
+        CustomerSettings customerSettings = customerService.getCustomerSettings(auth);
+        return Result.success(customerSettings);
     }
 
     @PostMapping("subscribe")

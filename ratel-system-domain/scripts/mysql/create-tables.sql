@@ -27,6 +27,7 @@ create table if not exists customer
     mobile         varchar(64)  null,
     email          varchar(64)  null,
     remark         varchar(512) null,
+    settings       text         null,
     enabled        bit          not null default 1,
     deleted        bit          not null default 0,
     effective_date timestamp    null,

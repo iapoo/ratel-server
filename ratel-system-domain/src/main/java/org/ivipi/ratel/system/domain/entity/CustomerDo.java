@@ -68,6 +68,11 @@ public class CustomerDo implements Serializable {
     private String remark;
 
     /**
+     * Settings
+     */
+    private String settings;
+
+    /**
      * 是否启用
      */
     private Boolean enabled;

@@ -59,4 +59,5 @@ public class CustomerInfo implements Serializable {
      * 是否启用
      */
     private Boolean enabled;
+
 }
