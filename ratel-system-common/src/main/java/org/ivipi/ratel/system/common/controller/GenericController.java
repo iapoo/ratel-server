@@ -1,5 +1,7 @@
 package org.ivipi.ratel.system.common.controller;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipi.ratel.system.common.model.OnlineCustomer;
 import org.ivipi.ratel.system.common.utils.SystemConstants;
@@ -7,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 
 @Slf4j

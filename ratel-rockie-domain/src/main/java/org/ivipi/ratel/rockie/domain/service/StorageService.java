@@ -3,6 +3,7 @@ package org.ivipi.ratel.rockie.domain.service;
 import cn.hutool.core.io.IoUtil;
 import io.minio.GetObjectArgs;
 import io.minio.PutObjectArgs;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.ivipi.ratel.rockie.common.utils.RockieError;
@@ -16,7 +17,6 @@ import io.minio.UploadObjectArgs;
 import io.minio.errors.MinioException;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;

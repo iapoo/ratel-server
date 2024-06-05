@@ -1,6 +1,7 @@
 package org.ivipi.ratel.rockie.server.config;
 
 import cn.hutool.core.util.StrUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,10 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.repository.query.DefaultParameters;
+import org.springframework.data.repository.query.ParametersSource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -87,7 +88,7 @@ public class ControllerAdvice {
                 }
                 customerId = onlineCustomer.getCustomerId();
                 customerName = onlineCustomer.getCustomerName();
-                DefaultParameters parameters = new DefaultParameters(method);
+                DefaultParameters parameters = new DefaultParameters(ParametersSource.of(method));
                 if (parameters.getNumberOfParameters() > 0) {
                     if (Auth.class == parameters.getParameter(0).getType()) {
                         auth = new Auth();
