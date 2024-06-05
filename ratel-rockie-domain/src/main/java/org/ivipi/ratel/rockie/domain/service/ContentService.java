@@ -66,7 +66,9 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         ContentDo contentDo = convertContentAdd(contentAdd);
         contentDo.setCreatedDate(LocalDateTime.now());
         contentDo.setUpdatedDate(LocalDateTime.now());
-        storageService.createObject(contentAdd.getContentName(), String.valueOf(folderId), auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        if(enableMinio) {
+            storageService.createObject(contentAdd.getContentName(), String.valueOf(folderId), auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        }
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");
         }
@@ -81,7 +83,9 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         }
         ContentDo contentDo = convertContentUpdate(contentUpdate, oldContentDo);
         contentDo.setUpdatedDate(LocalDateTime.now());
-        storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+        if(enableMinio) {
+            storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+        }
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");
         }
