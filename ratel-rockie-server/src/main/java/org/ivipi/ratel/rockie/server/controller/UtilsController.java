@@ -20,13 +20,14 @@ public class UtilsController {
     @Value("${ratel.rockie.google-font-api.key}")
     private String googleFontApiKey;
 
-    @Autowired
-    private GoogleFontApi googleFontApi;
+//    @Autowired
+//    private GoogleFontApi googleFontApi;
 
     @PostMapping("google-fonts")
     @Audit
     public Result<String> getFontUrl(Auth auth) {
-        String googleFonts =  googleFontApi.getFontInfo(googleFontApiKey);
+//        String googleFonts =  googleFontApi.getFontInfo(googleFontApiKey);
+        String googleFonts = "";
         return Result.success(googleFonts);
     }
 }

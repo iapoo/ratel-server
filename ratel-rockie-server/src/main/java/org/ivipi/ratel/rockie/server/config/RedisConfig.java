@@ -26,28 +26,28 @@ import java.time.Duration;
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 1800, redisNamespace = "ratel-system-server")
 public class RedisConfig {
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.redis.password}")
+    @Value("${spring.data.redis.password}")
     private String password;
 
-    @Value("${spring.redis.database}")
+    @Value("${spring.data.redis.database}")
     private int database;
 
-    @Value("${spring.redis.jedis.pool.max-active}")
+    @Value("${spring.data.redis.jedis.pool.max-active}")
     private int maxTotal;
 
-    @Value("${spring.redis.jedis.pool.max-idle}")
+    @Value("${spring.data.redis.jedis.pool.max-idle}")
     private int maxIdle;
 
-    @Value("${spring.redis.jedis.pool.min-idle}")
+    @Value("${spring.data.redis.jedis.pool.min-idle}")
     private int minIdle;
 
-    @Value("${spring.redis.jedis.pool.max-wait}")
+    @Value("${spring.data.redis.jedis.pool.max-wait}")
     private int maxWaitMillis;
 
 
