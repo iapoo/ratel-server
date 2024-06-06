@@ -1,4 +1,6 @@
 
+use ratel;
+
 create table if not exists product
 (
     product_id     bigint auto_increment,

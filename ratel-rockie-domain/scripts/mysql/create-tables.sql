@@ -1,3 +1,5 @@
+use ratel;
+
 create table if not exists folder
 (
     folder_id      bigint auto_increment,
@@ -41,7 +43,7 @@ create table if not exists content
 (
     content_id     bigint auto_increment,
     content_name   varchar(64)  not null,
-    content        text null,
+    content        longtext null,
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
