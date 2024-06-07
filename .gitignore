@@ -13,7 +13,7 @@ target/
 
 .DS_Store
 .vscode/
-
+logs/
 ### IntelliJ IDEA ###
 .idea
 *.iws
