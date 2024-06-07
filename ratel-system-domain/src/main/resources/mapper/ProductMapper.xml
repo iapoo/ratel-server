@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.system.domain.mapper.ProductMapper">
+<mapper namespace="org.ivipa.ratel.system.domain.mapper.ProductMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.ProductDo">
+    <resultMap id="BaseResultMap" type="org.ivipa.ratel.system.domain.entity.ProductDo">
         <id column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
@@ -17,7 +17,7 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.Product">
+    <resultMap id="PageResultMap" type="org.ivipa.ratel.system.common.model.Product">
         <id column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
         <result column="remark" property="remark"/>
