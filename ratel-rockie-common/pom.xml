@@ -4,24 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ivipi.ratel</groupId>
+    <groupId>org.ivipa.ratel</groupId>
     <artifactId>ratel-rockie-common</artifactId>
     <packaging>jar</packaging>
 
     <parent>
         <artifactId>ratel-server</artifactId>
-        <groupId>org.ivipi.ratel</groupId>
+        <groupId>org.ivipa.ratel</groupId>
         <version>1.0.0</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.ivipi.ratel</groupId>
+            <groupId>org.ivipa.ratel</groupId>
             <artifactId>ratel-common</artifactId>
             <version>${ratel-common.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.ivipi.ratel</groupId>
+            <groupId>org.ivipa.ratel</groupId>
             <artifactId>ratel-system-common</artifactId>
             <version>${ratel-system.version}</version>
         </dependency>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.rockie.domain.mapper.FolderAccessDetailMapper">
+<mapper namespace="org.ivipa.ratel.rockie.domain.mapper.FolderAccessDetailMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.FolderAccessDetailDo">
+    <resultMap id="BaseResultMap" type="org.ivipa.ratel.rockie.domain.entity.FolderAccessDetailDo">
         <result column="folder_id" property="folderId"/>
         <result column="customer_id" property="customerId"/>
         <result column="access_mode" property="accessMode"/>
@@ -16,7 +16,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.common.model.FolderAccessDetail">
+    <resultMap id="PageResultMap" type="org.ivipa.ratel.rockie.common.model.FolderAccessDetail">
         <result column="folder_id" property="folderId"/>
         <result column="customer_id" property="customerId"/>
         <result column="access_mode" property="accessMode"/>

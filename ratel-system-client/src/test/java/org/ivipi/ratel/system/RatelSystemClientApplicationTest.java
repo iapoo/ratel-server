@@ -1,27 +1,27 @@
-package org.ivipi.ratel.system;
+package org.ivipa.ratel.system;
 
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
-import org.ivipi.ratel.common.model.Result;
-import org.ivipi.ratel.system.client.api.SystemApi;
-import org.ivipi.ratel.system.client.api.TokenSignService;
-import org.ivipi.ratel.system.common.model.CustomerAdd;
-import org.ivipi.ratel.system.common.model.CustomerInfo;
-import org.ivipi.ratel.system.common.model.CustomerPassword;
-import org.ivipi.ratel.system.common.model.CustomerUpdate;
-import org.ivipi.ratel.system.common.model.License;
-import org.ivipi.ratel.system.common.model.LicenseAdd;
-import org.ivipi.ratel.system.common.model.LicensePage;
-import org.ivipi.ratel.system.common.model.Login;
-import org.ivipi.ratel.system.common.model.Order;
-import org.ivipi.ratel.system.common.model.Product;
-import org.ivipi.ratel.system.common.model.ProductAdd;
-import org.ivipi.ratel.system.common.model.ProductDelete;
-import org.ivipi.ratel.system.common.model.ProductPage;
-import org.ivipi.ratel.system.common.model.ProductUpdate;
+import org.ivipa.ratel.common.model.Result;
+import org.ivipa.ratel.system.client.api.SystemApi;
+import org.ivipa.ratel.system.client.api.TokenSignService;
+import org.ivipa.ratel.system.common.model.CustomerAdd;
+import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerPassword;
+import org.ivipa.ratel.system.common.model.CustomerUpdate;
+import org.ivipa.ratel.system.common.model.License;
+import org.ivipa.ratel.system.common.model.LicenseAdd;
+import org.ivipa.ratel.system.common.model.LicensePage;
+import org.ivipa.ratel.system.common.model.Login;
+import org.ivipa.ratel.system.common.model.Order;
+import org.ivipa.ratel.system.common.model.Product;
+import org.ivipa.ratel.system.common.model.ProductAdd;
+import org.ivipa.ratel.system.common.model.ProductDelete;
+import org.ivipa.ratel.system.common.model.ProductPage;
+import org.ivipa.ratel.system.common.model.ProductUpdate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@RetrofitScan("org.ivipi.ratel")
+@RetrofitScan("org.ivipa.ratel")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RatelSystemClientApplicationTest {

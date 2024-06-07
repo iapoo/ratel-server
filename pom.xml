@@ -9,7 +9,7 @@
         <version>3.3.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.ivipi.ratel</groupId>
+    <groupId>org.ivipa.ratel</groupId>
     <artifactId>ratel-server</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>

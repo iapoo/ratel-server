@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.rockie.domain.mapper.ContentMapper">
+<mapper namespace="org.ivipa.ratel.rockie.domain.mapper.ContentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.rockie.domain.entity.ContentDo">
+    <resultMap id="BaseResultMap" type="org.ivipa.ratel.rockie.domain.entity.ContentDo">
         <id column="content_id" property="contentId"/>
         <result column="content_name" property="contentName"/>
         <result column="content" property="content"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.rockie.common.model.Content">
+    <resultMap id="PageResultMap" type="org.ivipa.ratel.rockie.common.model.Content">
         <id column="content_id" property="contentId"/>
         <result column="content_name" property="contentName"/>
         <result column="content" property="content"/>

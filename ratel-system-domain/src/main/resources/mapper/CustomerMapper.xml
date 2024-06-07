@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipi.ratel.system.domain.mapper.CustomerMapper">
+<mapper namespace="org.ivipa.ratel.system.domain.mapper.CustomerMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipi.ratel.system.domain.entity.CustomerDo">
+    <resultMap id="BaseResultMap" type="org.ivipa.ratel.system.domain.entity.CustomerDo">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="customer_code" property="customerCode"/>
@@ -26,7 +26,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipi.ratel.system.common.model.Customer">
+    <resultMap id="PageResultMap" type="org.ivipa.ratel.system.common.model.Customer">
         <id column="customer_id" property="customerId"/>
         <result column="customer_name" property="customerName"/>
         <result column="customer_code" property="customerCode"/>
@@ -64,7 +64,7 @@
     </select>
 
 
-    <select id="getCustomerLicenseList" resultType="org.ivipi.ratel.system.common.model.CustomerLicense">
+    <select id="getCustomerLicenseList" resultType="org.ivipa.ratel.system.common.model.CustomerLicense">
         select
             c.customer_id as customerId, c.customer_name as customerName, c.nick_name as nickName,
             l.license_id as licenseId, l.license_name as licenseName
