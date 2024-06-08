@@ -1,8 +1,8 @@
-# Ratel Web
+# Ratel Server
 
-## About Ratel Web
+## About Ratel Server
 
-Ratel Web is frontend of Ratel. Ratel is general diagram editor. There are 3 sub projects: Ratel-Web(frontend), Ratel-Server(backend) and Ratel-deployment(deployment)
+Ratel Server is backend of Ratel. Ratel is general diagram editor. There are 3 sub projects: Ratel-Web(frontend), Ratel-Server(backend) and Ratel-deployment(deployment)
 
 ## Try
 
