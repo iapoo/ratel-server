@@ -2,7 +2,14 @@ package org.ivipa.ratel.system.common.utils;
 
 public class SystemUtils {
 
+
     public static boolean IsValidPassword(String password) {
+        if(password == null || password.length() < 128) {
+            return false;
+        }
+        return true;
+    }
+    public static boolean IsValidPasswordOld(String password) {
         if (password == null) {
             return false;
         }
