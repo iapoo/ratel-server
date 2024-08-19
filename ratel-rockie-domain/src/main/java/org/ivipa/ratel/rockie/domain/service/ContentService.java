@@ -26,14 +26,23 @@ import java.util.List;
 @Slf4j
 public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
+    private final static String OSS_TYPE_ALIYUN_OSS = "aliyun-oss";
+    private final static String OSS_TYPE_MINIO = "minio";
+
     @Value("${ratel.rockie.storage.enable-database}")
     private boolean enableDatabase;
 
-    @Value("${ratel.rockie.storage.enable-minio}")
-    private boolean enableMinio;
+    @Value("${ratel.rockie.storage.enable-oss}")
+    private boolean enableOss;
+
+    @Value("${ratel.rockie.oss.type}")
+    private String ossType;
 
     @Autowired
-    private StorageService storageService;
+    private MinioStorageService minioStorageService;
+
+    @Autowired
+    private AliyunOSSStorageService aliyunOSSStorageService;
 
     public Page<Content> getContentPage(ContentPage contentPageQuery) {
         Page<ContentDo> page = new Page<>(contentPageQuery.getPageNum(), contentPageQuery.getPageSize());
@@ -44,10 +53,19 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return contentPage;
     }
 
-    public Content getContent(Long contentId) {
+    public Content getContent(Auth auth, Long folderId, Long contentId) {
         ContentDo contentDo = getById(contentId);
+        String folder = folderId == null ? null : folderId.toString();
         if (contentDo == null) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if(enableOss) {
+            if(ossType.equals(OSS_TYPE_ALIYUN_OSS)) {
+                aliyunOSSStorageService.getObject(contentDo.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode());
+            }
+            if(ossType.equals(OSS_TYPE_MINIO)) {
+                minioStorageService.getObject(contentDo.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode());
+            }
         }
         return convertContentDo(contentDo);
 
@@ -66,8 +84,14 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         ContentDo contentDo = convertContentAdd(contentAdd);
         contentDo.setCreatedDate(LocalDateTime.now());
         contentDo.setUpdatedDate(LocalDateTime.now());
-        if(enableMinio) {
-            storageService.createObject(contentAdd.getContentName(), String.valueOf(folderId), auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+        String folder = folderId == null ? null : folderId.toString();
+        if(enableOss) {
+            if(ossType.equals(OSS_TYPE_MINIO)) {
+                minioStorageService.createObject(contentAdd.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+            }
+            if(ossType.equals(OSS_TYPE_ALIYUN_OSS)) {
+                aliyunOSSStorageService.createObject(contentAdd.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode(), contentAdd.getContent().getBytes());
+            }
         }
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");
@@ -76,15 +100,21 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
         return convertContentDo(contentDo);
     }
 
-    public Content updateContent(Auth auth, Long contentId, ContentUpdate contentUpdate) {
+    public Content updateContent(Auth auth, Long folderId, Long contentId, ContentUpdate contentUpdate) {
         ContentDo oldContentDo =  getById(contentId);
         if(oldContentDo == null) {
             throw SystemError.CONTENT_CONTENT_NOT_FOUND.newException();
         }
         ContentDo contentDo = convertContentUpdate(contentUpdate, oldContentDo);
+        String folder = folderId == null ? null : folderId.toString();
         contentDo.setUpdatedDate(LocalDateTime.now());
-        if(enableMinio) {
-            storageService.createObject(contentUpdate.getContentName(), "document", auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+        if(enableOss) {
+            if(ossType.equals(OSS_TYPE_MINIO)) {
+                minioStorageService.createObject(contentUpdate.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+            }
+            if(ossType.equals(OSS_TYPE_ALIYUN_OSS)) {
+                aliyunOSSStorageService.createObject(contentUpdate.getContentName(), folder, auth.getOnlineCustomer().getCustomerCode(), contentUpdate.getContent().getBytes());
+            }
         }
         if(!enableDatabase) {
             contentDo.setContent("Content is disabled");

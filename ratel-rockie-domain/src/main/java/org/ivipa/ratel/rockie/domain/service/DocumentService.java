@@ -55,7 +55,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         Document document = convertDocumentDo(documentDo);
-        Content content = contentService.getContent(document.getContentId());
+        Content content = contentService.getContent(auth, document.getFolderId(), document.getContentId());
         document.setContent(content);
         return document;
     }
@@ -140,7 +140,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
             }
         });
         DocumentDo documentDo = convertDocumentUpdate(documentUpdate, oldDocumentDo);
-        Content newContent = contentService.updateContent(auth, oldDocumentDo.getContentId(), documentUpdate.getContent());
+        Content newContent = contentService.updateContent(auth, documentDo.getFolderId(), oldDocumentDo.getContentId(), documentUpdate.getContent());
         documentDo.setContentId(newContent.getContentId());
         documentDo.setUpdatedDate(LocalDateTime.now());
         updateById(documentDo);
