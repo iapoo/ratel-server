@@ -6,12 +6,11 @@
     <parent>
         <artifactId>ratel-server</artifactId>
         <groupId>org.ivipa.ratel</groupId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <groupId>org.ivipa.ratel</groupId>
     <artifactId>ratel-system-common</artifactId>
-    <version>1.0.0</version>
     <packaging>jar</packaging>
 
 
@@ -19,7 +18,7 @@
         <dependency>
             <groupId>org.ivipa.ratel</groupId>
             <artifactId>ratel-common</artifactId>
-            <version>${ratel-common.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -11,19 +11,19 @@
     <parent>
         <artifactId>ratel-server</artifactId>
         <groupId>org.ivipa.ratel</groupId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.ivipa.ratel</groupId>
             <artifactId>ratel-rockie-domain</artifactId>
-            <version>${ratel-rockie.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ivipa.ratel</groupId>
             <artifactId>ratel-system-client</artifactId>
-            <version>${ratel-rockie.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
