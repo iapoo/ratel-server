@@ -14,14 +14,14 @@ public enum RockieError {
     DOCUMENT_DOCUMENT_NAME_EXISTS("System", "003001", "Document已存在"),
 
 
-    FOLDER_FOLDER_ID_IS_NULL("System", "003001", "Folder ID为空"),
-    FOLDER_FOLDER_NOT_FOUND("System", "003001", "Folder未找到"),
-    FOLDER_PARENT_FOLDER_NOT_FOUND("System", "003001", "Parent Folder未找到"),
-    FOLDER_FOLDER_NAME_EXISTS("System", "003001", "Folder已存在"),
+    FOLDER_FOLDER_ID_IS_NULL("System", "003001", "Folder ID is empty"),
+    FOLDER_FOLDER_NOT_FOUND("System", "003002", "Folder is not found"),
+    FOLDER_PARENT_FOLDER_NOT_FOUND("System", "003003", "Parent folder is not found"),
+    FOLDER_FOLDER_NAME_EXISTS("System", "003004", "Folder already exists"),
 
-    DOCUMENT_ACCESS_INVALID_DOCUMENT_ACCESS_REQUEST("System", "003001", "无效请求"),
-    DOCUMENT_ACCESS_DOCUMENT_ACCESS_NOT_FOUND("System", "003001", "无效请求"),
-    DOCUMENT_ACCESS_ACCESS_MODE_IS_INVALID("System", "003001", "无效访问模式");
+    DOCUMENT_ACCESS_INVALID_DOCUMENT_ACCESS_REQUEST("System", "003005", "Invalid document access request"),
+    DOCUMENT_ACCESS_DOCUMENT_ACCESS_NOT_FOUND("System", "003006", "Document access not found"),
+    DOCUMENT_ACCESS_ACCESS_MODE_IS_INVALID("System", "003007", "Document access mode is invalid"),;
 
     private String service;
     private String code;
