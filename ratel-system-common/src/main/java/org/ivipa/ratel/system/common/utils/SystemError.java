@@ -20,6 +20,7 @@ public enum SystemError {
     CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT("System", "001006", "密码无效"),
     CUSTOMER_CUSTOMER_NOT_FOUND("System", "001007", "用户未找到"),
     CUSTOMER_CUSTOMER_NAME_EXISTS("System", "001003", "名称已存在"),
+    CUSTOMER_EMAIL_EXISTS("System", "001003", "邮箱已占用"),
     CUSTOMER_CUSTOMER_NAME_CHANGE_NOT_ALLOWED("System", "001003", "名称不可修改"),
 
     PRODUCT_PRODUCT_NOT_FOUND("System", "003001", "Product未找到"),
@@ -32,6 +33,9 @@ public enum SystemError {
     LICENSE_LICENSE_NOT_FOUND("System", "003002", "License未找到"),
     CONTENT_CONTENT_NOT_FOUND("System", "003001", "Document内容未找到"),
     CONTENT_CONTENT_ID_IS_NULL("System", "003002", "Document内容ID为空"),
+
+    VERIFICATION_CODE_IS_INVALID("System", "003002", "验证码无效"),
+    VERIFICATION_CODE_NOT_FOUND("System", "003002", "验证码不正确"),
     ;
 
     private String service;

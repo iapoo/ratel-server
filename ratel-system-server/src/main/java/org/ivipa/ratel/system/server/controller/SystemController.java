@@ -1,6 +1,7 @@
 package org.ivipa.ratel.system.server.controller;
 
 import cn.hutool.core.util.IdUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.system.common.annoation.Audit;
@@ -15,9 +16,12 @@ import org.ivipa.ratel.system.common.model.CustomerPassword;
 import org.ivipa.ratel.system.common.model.Order;
 import org.ivipa.ratel.system.common.model.Login;
 import org.ivipa.ratel.system.common.model.OnlineCustomer;
+import org.ivipa.ratel.system.common.model.VerificationCode;
+import org.ivipa.ratel.system.common.model.VerificationMail;
 import org.ivipa.ratel.system.common.utils.SystemError;
 import org.ivipa.ratel.system.domain.service.CustomerService;
 import org.ivipa.ratel.system.domain.service.LicenseService;
+import org.ivipa.ratel.system.server.service.MailService;
 import org.ivipa.ratel.system.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,9 +43,13 @@ public class SystemController extends GenericController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private MailService mailService;
+
     @PostMapping("register")
     @Audit
     public Result register(@RequestBody CustomerAdd customerAdd) {
+        mailService.verifyMail(customerAdd.getEmail(), customerAdd.getCode());
         customerService.addCustomer(customerAdd);
         return Result.success();
     }
@@ -164,6 +172,13 @@ public class SystemController extends GenericController {
     public Result getProduct(Auth auth, @RequestBody CustomerPassword customerPassword) {
         Long customerId = auth.getOnlineCustomer().getCustomerId();
         customerService.updatePassword(customerId, customerPassword);
+        return Result.success();
+    }
+
+    @PostMapping("sendVerificationCode")
+    @Audit
+    public Result sendMail(Auth auth, @RequestBody VerificationMail verificationMail) throws MessagingException {
+        mailService.sendVerificationCode(verificationMail.getTo());
         return Result.success();
     }
 }

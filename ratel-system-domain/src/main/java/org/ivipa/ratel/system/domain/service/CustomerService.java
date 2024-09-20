@@ -63,6 +63,13 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customerDo;
     }
 
+    public CustomerDo getCustomerDoByEmail(String email) {
+        QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        CustomerDo customerDo = this.getOne(queryWrapper);
+        return customerDo;
+    }
+
     public CustomerInfo getCustomerInfo(Auth auth) {
         CustomerDo customerDo = getById(auth.getOnlineCustomer().getCustomerId());
         CustomerInfo customerInfo = convertCustomerDoToCustomerInfo(customerDo);
@@ -110,6 +117,10 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         CustomerDo oldCustomerDo = getCustomerDo(customerAdd.getCustomerName());
         if(oldCustomerDo != null) {
             throw SystemError.CUSTOMER_CUSTOMER_NAME_EXISTS.newException();
+        }
+        oldCustomerDo = getCustomerDoByEmail(customerAdd.getEmail());
+        if(oldCustomerDo != null) {
+            throw SystemError.CUSTOMER_EMAIL_EXISTS.newException();
         }
         customerDo = convertCustomerAdd(customerAdd);
         customerDo.setCustomerCode(IdUtil.simpleUUID());

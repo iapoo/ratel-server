@@ -39,7 +39,7 @@ import java.net.UnknownHostException;
 @Order(2)
 public class ControllerAdvice {
 
-    private final static String[] AUTH_IGNORE_LIST = {"/login", "/register"};
+    private final static String[] AUTH_IGNORE_LIST = {"/login", "/register", "/sendMail", "/sendVerificationCode", "/verifyCode"};
     private final static String[] AUDIT_IGNORE_LIST = {};
 
     @Value("${ratel.system.token.timeout}")

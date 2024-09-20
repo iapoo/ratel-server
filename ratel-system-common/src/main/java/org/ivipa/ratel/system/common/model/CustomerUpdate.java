@@ -32,11 +32,6 @@ public class CustomerUpdate implements Serializable {
     private String mobile;
 
     /**
-     * 电子邮箱
-     */
-    private String email;
-
-    /**
      * 备注说明
      */
     private String remark;

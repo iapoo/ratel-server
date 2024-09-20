@@ -60,4 +60,9 @@ public class CustomerAdd implements Serializable {
      */
     private Boolean enabled;
 
+    /**
+     * Email Verification Code
+     */
+    private String code;
+
 }

@@ -27,7 +27,7 @@ create table if not exists customer
     id_card        varchar(64)  null,
     telephone      varchar(64)  null,
     mobile         varchar(64)  null,
-    email          varchar(64)  null,
+    email          varchar(64)  not null,
     remark         varchar(512) null,
     settings       longtext         null,
     enabled        bit          not null default 1,
@@ -38,7 +38,9 @@ create table if not exists customer
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (customer_id)
+    primary key (customer_id),
+    unique key idx_customer_customer_name(customer_name),
+    unique key idx_customer_email(email)
 );
 
 create table if not exists license
