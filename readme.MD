@@ -6,9 +6,9 @@ Ratel Server is backend of Ratel. Ratel is general diagram editor. There are 3 s
 
 ## Try
 
-### Try online demo (in progress)
+### Try online site
 
-Try onelin demo.
+Try oneline site: <https://www.ivipa.com>.
 
 ### Try all-in-one docker
 
