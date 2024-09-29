@@ -32,16 +32,6 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     @Autowired
     private ContentService contentService;
 
-    public Page<Document> getDocumentPage(DocumentPage documentPageQuery) {
-        Page<DocumentDo> page = new Page<>(documentPageQuery.getPageNum(), documentPageQuery.getPageSize());
-        QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
-        Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
-        Page<Document> documentPage = new Page<>(documentPageQuery.getPageNum(), documentPageQuery.getPageSize());
-        documentPage.setRecords(convertDocumentDos(result.getRecords()));
-        return documentPage;
-    }
-
-
     public Page<Document> getDocuments(Auth auth, DocumentPage documentPage) {
         Page<Document> page = new Page<>(documentPage.getPageNum(), documentPage.getPageSize());
         List<Document> result = baseMapper.getDocuments(page, auth.getOnlineCustomer().getCustomerId(), documentPage.getFolderId());
@@ -51,7 +41,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     public Document getDocument(Auth auth, DocumentQuery documentQuery) {
         DocumentDo documentDo = getById(documentQuery.getDocumentId());
-        if (documentDo == null) {
+        if (documentDo == null || documentDo.getDeleted()) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         Document document = convertDocumentDo(documentDo);
@@ -65,6 +55,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_id", customerId);
         queryWrapper.eq("folder_id", folderId);
+        queryWrapper.eq("deleted", 0);
         Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
         Page<Document> documentPage = new Page<>(1, MAX_PAGE_SIZE);
         documentPage.setRecords(convertDocumentDos(result.getRecords()));
@@ -76,17 +67,10 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_id", customerId);
         queryWrapper.isNull("folder_id");
+        queryWrapper.eq("deleted", 0);
+
         Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
         Page<Document> documentPage = new Page<>(1, MAX_PAGE_SIZE);
-        documentPage.setRecords(convertDocumentDos(result.getRecords()));
-        return documentPage;
-    }
-
-    public Page<Document> getDocuments(int pageNum, int pageSize) {
-        Page<DocumentDo> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
-        Page<DocumentDo> result = baseMapper.selectPage(page, queryWrapper);
-        Page<Document> documentPage = new Page<>(pageNum, pageSize);
         documentPage.setRecords(convertDocumentDos(result.getRecords()));
         return documentPage;
     }
@@ -122,7 +106,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
             throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
-        if (oldDocumentDo == null) {
+        if (oldDocumentDo == null || oldDocumentDo.getDeleted()) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
@@ -150,10 +134,9 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     public void deleteDocument(Auth auth, DocumentDelete documentUpdate) {
         if (documentUpdate.getDocumentId() == null) {
             throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
-
         }
         DocumentDo oldDocumentDo = getById(documentUpdate.getDocumentId());
-        if (oldDocumentDo == null) {
+        if (oldDocumentDo == null || oldDocumentDo.getDeleted()) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
         if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {

@@ -4,17 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipa.ratel.rockie.common.model.Folder;
+import org.ivipa.ratel.rockie.common.model.FolderAdd;
 import org.ivipa.ratel.rockie.common.model.FolderDelete;
+import org.ivipa.ratel.rockie.common.model.FolderPage;
 import org.ivipa.ratel.rockie.common.model.FolderQuery;
+import org.ivipa.ratel.rockie.common.model.FolderUpdate;
 import org.ivipa.ratel.rockie.common.utils.RockieError;
 import org.ivipa.ratel.rockie.domain.entity.FolderDo;
 import org.ivipa.ratel.rockie.domain.mapper.FolderMapper;
 import org.ivipa.ratel.system.common.model.Auth;
-import org.ivipa.ratel.rockie.common.model.Folder;
-import org.ivipa.ratel.rockie.common.model.FolderAdd;
-import org.ivipa.ratel.rockie.common.model.FolderPage;
-import org.ivipa.ratel.rockie.common.model.FolderUpdate;
-import org.ivipa.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +23,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
-
-    public Page<FolderDo> getPage(int pageNum, int pageSize) {
-        Page<FolderDo> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<FolderDo> queryWrapper = new QueryWrapper<>();
-        Page<FolderDo> result = baseMapper.selectPage(page, queryWrapper);
-        return result;
-    }
-
 
     public Page<Folder> getFolders(Auth auth, FolderPage folderPage) {
         Page<Folder> page = new Page<>(folderPage.getPageNum(), folderPage.getPageSize());
@@ -46,12 +37,18 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
 
     public Folder getFolder(Long folderId) {
         FolderDo folderDo = getById(folderId);
+        if (folderDo == null || folderDo.getDeleted()) {
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
+        }
         Folder folder = convertFolderDo(folderDo);
         return folder;
     }
 
     public Folder getFolder(Auth auth, FolderQuery folderQuery) {
         FolderDo folderDo = getById(folderQuery.getFolderId());
+        if (folderDo == null || folderDo.getDeleted()) {
+            throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
+        }
         Folder folder = convertFolderDo(folderDo);
         return folder;
     }
@@ -60,6 +57,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         QueryWrapper<FolderDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("folder_name", folderName)
                 .eq("customer_id", auth.getOnlineCustomer().getCustomerId())
+                .eq("deleted", 0)
                 .isNull("parent_id");
         FolderDo folderDo = this.getOne(queryWrapper);
         if (folderDo != null) {
@@ -70,33 +68,11 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
         }
     }
 
-    public Folder getFolder(String folderName) {
-        QueryWrapper<FolderDo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("folder_name", folderName);
-        FolderDo folderDo = this.getOne(queryWrapper);
-        if (folderDo != null) {
-            Folder folder = convertFolderDo(folderDo);
-            return folder;
-        } else {
-            return null;
-        }
-    }
-
-    public Folder getAvailableFolder(Long folderId) {
-        Folder folder = getFolder(folderId);
-        if (folder.getEnabled() && !folder.getDeleted()) {
-            return folder;
-        }
-        return null;
-    }
-
-    public Folder getFolder(String folderName, Long parentId, boolean excludeDeleted) {
+    public Folder getFolder(String folderName, Long parentId) {
         QueryWrapper<FolderDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("folder_name", folderName);
         queryWrapper.eq("parent_id", parentId);
-        if(excludeDeleted) {
-            queryWrapper.eq("deleted", false);
-        }
+        queryWrapper.eq("deleted", false);
         FolderDo folderDo = this.getOne(queryWrapper);
         if (folderDo != null) {
             Folder folder = convertFolderDo(folderDo);
@@ -112,7 +88,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             if (parentFolder == null || !parentFolder.getCustomerId().equals(auth.getOnlineCustomer().getCustomerId())) {
                 throw RockieError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
-            Folder oldFolder = getFolder(folderAdd.getFolderName(), folderAdd.getParentId(), true);
+            Folder oldFolder = getFolder(folderAdd.getFolderName(), folderAdd.getParentId());
             if (oldFolder != null) {
                 throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
@@ -137,7 +113,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             throw RockieError.FOLDER_FOLDER_ID_IS_NULL.newException();
         }
         FolderDo oldFolderDo = getById(folderUpdate.getFolderId());
-        if (oldFolderDo == null) {
+        if (oldFolderDo == null || oldFolderDo.getDeleted()) {
             throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         if (oldFolderDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
@@ -151,7 +127,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             if (parentFolder == null) {
                 throw RockieError.FOLDER_PARENT_FOLDER_NOT_FOUND.newException();
             }
-            Folder oldFolder = getFolder(folderUpdate.getFolderName(), oldFolderDo.getParentId(), true);
+            Folder oldFolder = getFolder(folderUpdate.getFolderName(), oldFolderDo.getParentId());
             if (oldFolder != null) {
                 throw RockieError.FOLDER_FOLDER_NAME_EXISTS.newException();
             }
@@ -171,7 +147,7 @@ public class FolderService extends ServiceImpl<FolderMapper, FolderDo> {
             throw RockieError.FOLDER_FOLDER_ID_IS_NULL.newException();
         }
         FolderDo oldFolderDo = getById(folderDelete.getFolderId());
-        if (oldFolderDo == null) {
+        if (oldFolderDo == null || oldFolderDo.getDeleted()) {
             throw RockieError.FOLDER_FOLDER_NOT_FOUND.newException();
         }
         if (oldFolderDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {

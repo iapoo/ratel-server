@@ -65,7 +65,7 @@
                enabled,deleted,effective_date,expire_date,created_by, created_date, updated_by, updated_date
         from folder
         where
-            customer_id = #{customerId}
+            customer_id = #{customerId} and deleted  = 0
     </select>
 
 </mapper>

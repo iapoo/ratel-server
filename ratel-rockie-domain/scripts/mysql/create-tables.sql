@@ -97,3 +97,55 @@ create table if not exists document_access
     updated_date   timestamp    null,
     primary key (document_id, customer_id)
 );
+
+create table if not exists team
+(
+    team_id        bigint auto_increment,
+    team_name      varchar(64)  not null,
+    customer_id    bigint       not null,
+    remark         varchar(512) null,
+    enabled        int          not null default 1,
+    deleted        int          not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (team_id),
+    unique key idx_team_customer(customer_id, team_id),
+    key idx_team_team_name(customer_id, team_name)
+);
+
+create table if not exists team_member
+(
+    team_id        bigint       not null,
+    customer_id    bigint       not null,
+    member_type  bigint       not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (team_id, customer_id),
+    unique key idx_team_member(customer_id, team_id)
+);
+
+
+create table if not exists operator
+(
+    operator_id    bigint       auto_increment,
+    customer_id    bigint       not null,
+    operator_type  bigint       not null default 0,
+    deleted        int          not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (operator_id),
+    key idx_team_member(customer_id)
+);
+
