@@ -49,7 +49,7 @@ public class SystemController extends GenericController {
     @PostMapping("register")
     @Audit
     public Result register(@RequestBody CustomerAdd customerAdd) {
-        mailService.verifyMail(customerAdd.getEmail(), customerAdd.getCode());
+        //mailService.verifyMail(customerAdd.getEmail(), customerAdd.getCode());
         customerService.addCustomer(customerAdd);
         return Result.success();
     }

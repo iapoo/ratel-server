@@ -2,8 +2,11 @@ package org.ivipa.ratel;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.DigestAlgorithm;
+import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
+import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.client.api.RockieApi;
@@ -21,6 +24,24 @@ import org.ivipa.ratel.rockie.common.model.FolderAdd;
 import org.ivipa.ratel.rockie.common.model.FolderDelete;
 import org.ivipa.ratel.rockie.common.model.FolderPage;
 import org.ivipa.ratel.rockie.common.model.FolderUpdate;
+import org.ivipa.ratel.rockie.common.model.Operator;
+import org.ivipa.ratel.rockie.common.model.OperatorAdd;
+import org.ivipa.ratel.rockie.common.model.OperatorDelete;
+import org.ivipa.ratel.rockie.common.model.OperatorPage;
+import org.ivipa.ratel.rockie.common.model.OperatorQuery;
+import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
+import org.ivipa.ratel.rockie.common.model.Team;
+import org.ivipa.ratel.rockie.common.model.TeamAdd;
+import org.ivipa.ratel.rockie.common.model.TeamDelete;
+import org.ivipa.ratel.rockie.common.model.TeamMember;
+import org.ivipa.ratel.rockie.common.model.TeamMemberAdd;
+import org.ivipa.ratel.rockie.common.model.TeamMemberDelete;
+import org.ivipa.ratel.rockie.common.model.TeamMemberPage;
+import org.ivipa.ratel.rockie.common.model.TeamMemberQuery;
+import org.ivipa.ratel.rockie.common.model.TeamMemberUpdate;
+import org.ivipa.ratel.rockie.common.model.TeamPage;
+import org.ivipa.ratel.rockie.common.model.TeamQuery;
+import org.ivipa.ratel.rockie.common.model.TeamUpdate;
 import org.ivipa.ratel.system.client.api.SystemApi;
 import org.ivipa.ratel.system.client.api.TokenSignService;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
@@ -66,6 +87,7 @@ public class RockieClientApplicationTest {
     private Product testProduct;
     private License testLicense;
     private Folder testFolder;
+    private boolean enableLogout;
 
     @BeforeAll
     public void beforeAll(){
@@ -73,7 +95,9 @@ public class RockieClientApplicationTest {
         String name = generateName();
         String password = generatePassword();
 
+        enableLogout = false;
         register(name, password);
+        enableLogout = true;
         login(name, password);
         addTestProduct();
         addTestLicense();
@@ -92,9 +116,11 @@ public class RockieClientApplicationTest {
     @AfterAll
     public void afterAll(){
         log.info("End test now ...");
-        Result result = systemApi.logout();
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
+        if(enableLogout) {
+            Result result = systemApi.logout();
+            assertNotNull(result);
+            assertTrue(result.isSuccess());
+        }
 
     }
 
@@ -104,6 +130,7 @@ public class RockieClientApplicationTest {
     }
 
     private void login(String name, String password) {
+        log.info("Login is started");
         Login login = new Login();
         login.setName(name);
         login.setPassword(password);
@@ -132,16 +159,22 @@ public class RockieClientApplicationTest {
     }
 
     private void register(String name, String password) {
+        log.info("Register is started");
         CustomerAdd customerAdd = new CustomerAdd();
         customerAdd.setCustomerName(name);
         customerAdd.setPassword(password);
+        customerAdd.setEmail(name + "@test.com");
         Result result = systemApi.register(customerAdd);
+//        String token = result.getData().toString();
+//        log.info("Token is setup with value={}", token);
+//        tokenSignService.setToken(token);
         assertNotNull(result);
         assertTrue(result.isSuccess());
     }
 
     private String generatePassword() {
-        return "Password1";
+        Digester sha512 = new Digester(DigestAlgorithm.SHA512);
+        return sha512.digestHex("Password1");
     }
 
     private void addTestProduct() {
@@ -470,4 +503,408 @@ public class RockieClientApplicationTest {
         assertNotNull(deleteResult);
         assertTrue(deleteResult.getData().equals(Boolean.TRUE));
     }
+
+    private void addTeam(String teamName, boolean expectedResult) {
+        TeamAdd teamAdd = new TeamAdd();
+        teamAdd.setTeamName(teamName);
+        Result<Team> result = rockieApi.addTeam(teamAdd);
+        assertNotNull(result);
+        if(expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private Team checkTeam(String teamName) {
+        TeamPage teamPage = new TeamPage();
+        teamPage.setPageSize(99999);
+        Result<Page<Team>> teamResult = rockieApi.getTeams(teamPage);
+        assertNotNull(teamResult);
+        assertTrue(teamResult.isSuccess());
+        long size = teamResult.getData().getRecords().size();
+        boolean checkTeam = false;
+        Team team = null;
+        for(long i = 0; i < size; i++) {
+            Team theTeam = teamResult.getData().getRecords().get((int)i);
+            if(theTeam.getTeamName().equals(teamName)) {
+                checkTeam = true;
+                team = theTeam;
+            }
+        }
+        assertTrue(checkTeam);
+        return team;
+    }
+
+    @Test
+    public void testAddTeam() {
+        log.info("Test Add Team");
+        String testTeamName = "Test Add Team " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+    }
+
+    @Test
+    public void testGetTeam() {
+        log.info("Test Get Team");
+        String testTeamName = "Test Get Team " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long teamId = team.getTeamId();
+        TeamQuery teamQuery = new TeamQuery();
+        teamQuery.setTeamId(teamId);
+        Result<Team> result = rockieApi.getTeam(teamQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        team = result.getData();
+        assertNotNull(team);
+        assertTrue(teamId.equals(team.getTeamId()));
+    }
+
+    @Test
+    public void testGetTeams() {
+        log.info("Test Get Teams");
+        String testTeamName = "Test Get Teams " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long teamId = team.getTeamId();
+        TeamPage teamPage = new TeamPage();
+        Result<Page<Team>> result = rockieApi.getTeams(teamPage);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        Page<Team> page = result.getData();
+        assertNotNull(page);
+        assertTrue(page.getSize() > 0);
+    }
+
+    @Test
+    public void testUpdateTeam() {
+        log.info("Test Update Team");
+        String testTeamName = "Test Update Team " + getTimeString();
+        String testTeamNameUpdate = "Update of Test Update Team " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long teamId = team.getTeamId();
+        TeamUpdate teamUpdate = new TeamUpdate();
+        teamUpdate.setTeamId(teamId);
+        teamUpdate.setTeamName(testTeamNameUpdate);
+        Result updateResult = rockieApi.updateTeam(teamUpdate);
+        assertNotNull(updateResult);
+        assertTrue(updateResult.isSuccess());
+        TeamQuery teamQuery = new TeamQuery();
+        teamQuery.setTeamId(teamId);
+        Result<Team> result = rockieApi.getTeam(teamQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        team = result.getData();
+        assertNotNull(team);
+        assertTrue(teamId.equals(team.getTeamId()));
+        assertTrue(testTeamNameUpdate.equals(team.getTeamName()));
+
+    }
+
+    @Test
+    public void testDeleteTeam() {
+        log.info("Test Delete Team");
+        String testTeamName = "Test Delete Team " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long teamId = team.getTeamId();
+        TeamDelete teamDelete = new TeamDelete();
+        teamDelete.setTeamId(teamId);
+        Result deleteResult = rockieApi.deleteTeams(teamDelete);
+        assertNotNull(deleteResult);
+        assertTrue(deleteResult.isSuccess());
+        TeamQuery teamQuery = new TeamQuery();
+        teamQuery.setTeamId(teamId);
+        Result<Team> result = rockieApi.getTeam(teamQuery);
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        team = result.getData();
+        assertTrue(team == null);
+    }
+
+
+    private void addOperator(Long customerId, boolean expectedResult) {
+        OperatorAdd operatorAdd = new OperatorAdd();
+        operatorAdd.setCustomerId(customerId);
+        operatorAdd.setOperatorType(0L);
+        Result<Operator> result = rockieApi.addOperator(operatorAdd);
+        assertNotNull(result);
+        if(expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private Operator checkOperator(Long customerId) {
+        OperatorPage operatorPage = new OperatorPage();
+        operatorPage.setPageSize(99999);
+        Result<Page<Operator>> operatorResult = rockieApi.getOperators(operatorPage);
+        assertNotNull(operatorResult);
+        assertTrue(operatorResult.isSuccess());
+        long size = operatorResult.getData().getRecords().size();
+        boolean checkOperator = false;
+        Operator operator = null;
+        for(long i = 0; i < size; i++) {
+            Operator theOperator = operatorResult.getData().getRecords().get((int)i);
+            if(theOperator.getCustomerId().equals(customerId)) {
+                checkOperator = true;
+                operator = theOperator;
+            }
+        }
+        assertTrue(checkOperator);
+        return operator;
+    }
+
+    @Test
+    public void testAddOperator() {
+        log.info("Test Add Operator");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+    }
+
+    @Test
+    public void testGetOperator() {
+        log.info("Test Get Operator");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+        Long operatorId = operator.getOperatorId();
+        OperatorQuery operatorQuery = new OperatorQuery();
+        operatorQuery.setOperatorId(operatorId);
+        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        operator = result.getData();
+        assertNotNull(operator);
+        assertTrue(operatorId.equals(operator.getOperatorId()));
+    }
+
+    @Test
+    public void testGetOperators() {
+        log.info("Test Get Operators");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+        Long operatorId = operator.getOperatorId();
+        OperatorPage operatorPage = new OperatorPage();
+        Result<Page<Operator>> result = rockieApi.getOperators(operatorPage);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        Page<Operator> page = result.getData();
+        assertNotNull(page);
+        assertTrue(page.getSize() > 0);
+    }
+
+    @Test
+    public void testUpdateOperator() {
+        log.info("Test Update Operator");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+        Long operatorId = operator.getOperatorId();
+        OperatorUpdate operatorUpdate = new OperatorUpdate();
+        operatorUpdate.setOperatorId(operatorId);
+        operatorUpdate.setCustomerId(customerId);
+        operatorUpdate.setOperatorType(2L);
+        Result updateResult = rockieApi.updateOperator(operatorUpdate);
+        assertNotNull(updateResult);
+        assertTrue(updateResult.isSuccess());
+        OperatorQuery operatorQuery = new OperatorQuery();
+        operatorQuery.setOperatorId(operatorId);
+        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        operator = result.getData();
+        assertNotNull(operator);
+        assertTrue(operatorId.equals(operator.getOperatorId()));
+        assertTrue(operator.getOperatorType() == 2);
+
+    }
+
+    @Test
+    public void testDeleteOperator() {
+        log.info("Test Delete Operator");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+        Long operatorId = operator.getOperatorId();
+        OperatorDelete operatorDelete = new OperatorDelete();
+        operatorDelete.setOperatorId(operatorId);
+        Result deleteResult = rockieApi.deleteOperators(operatorDelete);
+        assertNotNull(deleteResult);
+        assertTrue(deleteResult.isSuccess());
+        OperatorQuery operatorQuery = new OperatorQuery();
+        operatorQuery.setOperatorId(operatorId);
+        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        operator = result.getData();
+        assertTrue(operator == null);
+    }
+
+
+    private void addTeamMember(Long teamId, Long customerId, boolean expectedResult) {
+        TeamMemberAdd teamMemberAdd = new TeamMemberAdd();
+        teamMemberAdd.setCustomerId(customerId);
+        teamMemberAdd.setTeamId(teamId);
+        teamMemberAdd.setMemberType(0L);
+        Result<TeamMember> result = rockieApi.addTeamMember(teamMemberAdd);
+        assertNotNull(result);
+        if(expectedResult) {
+            assertTrue(result.isSuccess());
+        } else {
+            assertFalse(result.isSuccess());
+        }
+    }
+
+    private TeamMember checkTeamMember(Long teamId, Long customerId) {
+        TeamMemberPage teamMemberPage = new TeamMemberPage();
+        teamMemberPage.setPageSize(99999);
+        teamMemberPage.setTeamId(teamId);
+        Result<Page<TeamMember>> teamMemberResult = rockieApi.getTeamMembers(teamMemberPage);
+        assertNotNull(teamMemberResult);
+        assertTrue(teamMemberResult.isSuccess());
+        long size = teamMemberResult.getData().getRecords().size();
+        boolean checkTeamMember = false;
+        TeamMember teamMember = null;
+        for(long i = 0; i < size; i++) {
+            TeamMember theTeamMember = teamMemberResult.getData().getRecords().get((int)i);
+            if(theTeamMember.getCustomerId().equals(customerId) && theTeamMember.getTeamId().equals(teamId)) {
+                checkTeamMember = true;
+                teamMember = theTeamMember;
+            }
+        }
+        assertTrue(checkTeamMember);
+        return teamMember;
+    }
+
+    @Test
+    public void testAddTeamMember() {
+        log.info("Test Add TeamMember");
+        String testTeamName = "Test Add TeamMember " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long customerId = testCustomerInfo.getCustomerId();
+        addTeamMember(team.getTeamId(), customerId, true);
+        TeamMember teamMember = checkTeamMember(team.getTeamId(), customerId);
+        assertNotNull(teamMember);
+    }
+
+    @Test
+    public void testGetTeamMember() {
+        log.info("Test Get TeamMember");
+        String testTeamName = "Test Get TeamMember " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long customerId = testCustomerInfo.getCustomerId();
+        addTeamMember(team.getTeamId(), customerId, true);
+        TeamMember teamMember = checkTeamMember(team.getTeamId(), customerId);
+        assertNotNull(teamMember);
+        TeamMemberQuery teamMemberQuery = new TeamMemberQuery();
+        teamMemberQuery.setTeamId(team.getTeamId());
+        teamMemberQuery.setCustomerId(customerId);
+        Result<TeamMember> result = rockieApi.getTeamMember(teamMemberQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        teamMember = result.getData();
+        assertNotNull(teamMember);
+        assertTrue(team.getTeamId().equals(teamMember.getTeamId()));
+        assertTrue(customerId.equals(teamMember.getCustomerId()));
+    }
+
+    @Test
+    public void testGetTeamMembers() {
+        log.info("Test Get TeamMembers");
+        String testTeamName = "Test Get TeamMembers " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long customerId = testCustomerInfo.getCustomerId();
+        addTeamMember(team.getTeamId(), customerId, true);
+        TeamMember teamMember = checkTeamMember(team.getTeamId(), customerId);
+        assertNotNull(teamMember);
+        TeamMemberPage teamMemberPage = new TeamMemberPage();
+        Result<Page<TeamMember>> result = rockieApi.getTeamMembers(teamMemberPage);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        Page<TeamMember> page = result.getData();
+        assertNotNull(page);
+        assertTrue(page.getSize() > 0);
+    }
+
+    @Test
+    public void testUpdateTeamMember() {
+        log.info("Test Update TeamMember");
+        String testTeamName = "Test Update TeamMember " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long customerId = testCustomerInfo.getCustomerId();
+        addTeamMember(team.getTeamId(), customerId, true);
+        TeamMember teamMember = checkTeamMember(team.getTeamId(), customerId);
+        assertNotNull(teamMember);
+        TeamMemberUpdate teamMemberUpdate = new TeamMemberUpdate();
+        teamMemberUpdate.setTeamId(team.getTeamId());
+        teamMemberUpdate.setCustomerId(customerId);
+        teamMemberUpdate.setMemberType(2L);
+        Result updateResult = rockieApi.updateTeamMember(teamMemberUpdate);
+        assertNotNull(updateResult);
+        assertTrue(updateResult.isSuccess());
+        TeamMemberQuery teamMemberQuery = new TeamMemberQuery();
+        teamMemberQuery.setTeamId(team.getTeamId());
+        teamMemberQuery.setCustomerId(customerId);
+        Result<TeamMember> result = rockieApi.getTeamMember(teamMemberQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        teamMember = result.getData();
+        assertNotNull(teamMember);
+        assertTrue(team.getTeamId().equals(teamMember.getTeamId()));
+        assertTrue(customerId.equals(teamMember.getCustomerId()));
+        assertTrue(teamMember.getMemberType().equals(2L));
+
+    }
+
+    @Test
+    public void testDeleteTeamMember() {
+        log.info("Test Delete TeamMember");
+        String testTeamName = "Test Delete TeamMember " + getTimeString();
+        addTeam(testTeamName, true);
+        Team team = checkTeam(testTeamName);
+        assertNotNull(team);
+        Long customerId = testCustomerInfo.getCustomerId();
+        addTeamMember(team.getTeamId(), customerId, true);
+        TeamMember teamMember = checkTeamMember(team.getTeamId(), customerId);
+        assertNotNull(teamMember);
+        TeamMemberDelete teamMemberDelete = new TeamMemberDelete();
+        teamMemberDelete.setTeamId(team.getTeamId());
+        teamMemberDelete.setCustomerId(customerId);
+        Result deleteResult = rockieApi.deleteTeamMembers(teamMemberDelete);
+        assertNotNull(deleteResult);
+        assertTrue(deleteResult.isSuccess());
+        TeamMemberQuery teamMemberQuery = new TeamMemberQuery();
+        teamMemberQuery.setTeamId(team.getTeamId());
+        teamMemberQuery.setCustomerId(customerId);
+        Result<TeamMember> result = rockieApi.getTeamMember(teamMemberQuery);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        teamMember = result.getData();
+        assertTrue(teamMember == null);
+    }
+
 }

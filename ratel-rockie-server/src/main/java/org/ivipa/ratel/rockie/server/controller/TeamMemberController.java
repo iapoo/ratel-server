@@ -50,9 +50,9 @@ public class TeamMemberController extends GenericController {
 
     @PostMapping("update")
     @Audit
-    public Result updateTeamMember(Auth auth, @RequestBody TeamMemberUpdate teamMemberUpdate) {
-        teamMemberService.updateTeamMember(auth, teamMemberUpdate);
-        return Result.success();
+    public Result<TeamMember> updateTeamMember(Auth auth, @RequestBody TeamMemberUpdate teamMemberUpdate) {
+        TeamMember teamMember = teamMemberService.updateTeamMember(auth, teamMemberUpdate);
+        return Result.success(teamMember);
     }
 
     @PostMapping("delete")

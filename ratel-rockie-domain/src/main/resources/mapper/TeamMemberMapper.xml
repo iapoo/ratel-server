@@ -6,7 +6,7 @@
     <resultMap id="BaseResultMap" type="org.ivipa.ratel.rockie.domain.entity.TeamMemberDo">
         <result column="team_id" property="teamId"/>
         <result column="customer_id" property="customerId"/>
-        <result column="customer_type" property="customerType"/>
+        <result column="member_type" property="memberType"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -19,7 +19,7 @@
     <resultMap id="PageResultMap" type="org.ivipa.ratel.rockie.common.model.TeamMember">
         <result column="team_id" property="teamId"/>
         <result column="customer_id" property="customerId"/>
-        <result column="customer_type" property="customerType"/>
+        <result column="member_type" property="memberType"/>
         <result column="effective_date" property="effectiveDate"/>
         <result column="expire_date" property="expireDate"/>
         <result column="created_by" property="createdBy"/>
@@ -30,7 +30,26 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        team_id, customer_id, customer_type, effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        team_id, customer_id, member_type, effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
+    <select id="getTeamMembers" resultMap="PageResultMap">
+        select team_id, customer_id, member_type, effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        from team_member
+        where
+            team_id = #{teamId}
+    </select>
+
+    <select id="getTeamMembersByCustomerId" resultMap="PageResultMap">
+        select team_id, customer_id, member_type, effective_date,expire_date,created_by, created_date, updated_by, updated_date
+        from team_member
+        where
+            customer_id = #{customerId}
+    </select>
+
+    <update id="updateTeamMember">
+        update team_member
+        set member_type = #{teamMember.memberType}
+        where team_id = #{teamMember.teamId} and customer_id = #{teamMember.customerId}
+    </update>
 </mapper>

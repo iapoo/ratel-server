@@ -33,7 +33,7 @@ public class TeamMemberService extends ServiceImpl<TeamMemberMapper, TeamMemberD
 
     public Page<TeamMember> getTeamMembers(Auth auth, TeamMemberPage teamMemberPage) {
         Page<TeamMember> page = new Page<>(teamMemberPage.getPageNum(), teamMemberPage.getPageSize());
-        List<TeamMember> result = baseMapper.getTeamMembers(page, auth.getOnlineCustomer().getCustomerId());
+        List<TeamMember> result = baseMapper.getTeamMembers(page, teamMemberPage.getTeamId());
         return page.setRecords(result);
     }
 
@@ -91,7 +91,7 @@ public class TeamMemberService extends ServiceImpl<TeamMemberMapper, TeamMemberD
         return teamMember;
     }
 
-    public void updateTeamMember(Auth auth, TeamMemberUpdate teamMemberUpdate) {
+    public TeamMember updateTeamMember(Auth auth, TeamMemberUpdate teamMemberUpdate) {
         if (teamMemberUpdate.getTeamId() == null || teamMemberUpdate.getCustomerId() == null || teamMemberUpdate.getMemberType() == null) {
             throw RockieError.TEAM_MEMBER_INVALID_TEAM_MEMBER_REQUEST.newException();
         }
@@ -103,10 +103,12 @@ public class TeamMemberService extends ServiceImpl<TeamMemberMapper, TeamMemberD
             throw RockieError.TEAM_MEMBER_TEAM_MEMBER_NOT_FOUND.newException();
         }
 
-        TeamMemberDo teamMemberDo = convertTeamMember(oldTeamMember);
-        teamMemberDo.setMemberType(teamMemberUpdate.getMemberType());
-        teamMemberDo.setUpdatedDate(LocalDateTime.now());
-        updateById(teamMemberDo);
+        oldTeamMember.setMemberType(teamMemberUpdate.getMemberType());
+        oldTeamMember.setUpdatedDate(LocalDateTime.now());
+        baseMapper.updateTeamMember(oldTeamMember);
+
+        TeamMember teamMember = getTeamMember(auth, teamMemberQuery);
+        return teamMember;
     }
 
 

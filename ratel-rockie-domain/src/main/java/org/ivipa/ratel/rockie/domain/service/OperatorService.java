@@ -4,25 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.ivipa.ratel.rockie.common.model.Folder;
-import org.ivipa.ratel.rockie.common.model.Operator;
 import org.ivipa.ratel.rockie.common.model.Operator;
 import org.ivipa.ratel.rockie.common.model.OperatorAdd;
 import org.ivipa.ratel.rockie.common.model.OperatorDelete;
 import org.ivipa.ratel.rockie.common.model.OperatorPage;
-import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
 import org.ivipa.ratel.rockie.common.model.OperatorQuery;
-import org.ivipa.ratel.rockie.common.model.Team;
-import org.ivipa.ratel.rockie.common.model.TeamQuery;
+import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
 import org.ivipa.ratel.rockie.common.utils.RockieConsts;
 import org.ivipa.ratel.rockie.common.utils.RockieError;
-import org.ivipa.ratel.rockie.domain.entity.FolderDo;
 import org.ivipa.ratel.rockie.domain.entity.OperatorDo;
 import org.ivipa.ratel.rockie.domain.entity.TeamDo;
 import org.ivipa.ratel.rockie.domain.mapper.OperatorMapper;
 import org.ivipa.ratel.system.common.model.Auth;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,9 +27,6 @@ import java.util.List;
 @Slf4j
 public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
 
-    @Autowired
-    private OperatorService operatorService;
-
     public Operator addOperator(Auth auth,  OperatorAdd operatorAdd) {
         if (operatorAdd.getCustomerId() == null) {
             throw RockieError.OPERATOR_INVALID_OPERATOR_REQUEST.newException();
@@ -43,7 +34,7 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         if(operatorAdd.getOperatorType() == null || operatorAdd.getOperatorType() < RockieConsts.OPERATOR_TYPE_MIN || operatorAdd.getOperatorType() > RockieConsts.OPERATOR_TYPE_MAX) {
             throw RockieError.OPERATOR_OPERATOR_TYPE_IS_INVALID.newException();
         }
-        Operator oldOperator = operatorService.getOperator(auth, operatorAdd.getCustomerId());
+        Operator oldOperator = getOperator(auth, operatorAdd.getCustomerId());
         if(oldOperator != null) {
             throw RockieError.OPERATOR_CUSTOMER_EXISTS.newException();
         }
@@ -106,12 +97,17 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         if(operatorUpdate.getOperatorType() == null || operatorUpdate.getOperatorType() < RockieConsts.OPERATOR_TYPE_MIN || operatorUpdate.getOperatorType() > RockieConsts.OPERATOR_TYPE_MAX) {
             throw RockieError.OPERATOR_OPERATOR_TYPE_IS_INVALID.newException();
         }
-        Operator oldOperator = operatorService.getOperator(auth, operatorUpdate.getCustomerId());
-        if(oldOperator != null) {
+
+        OperatorDo oldOperatorDo = getById(operatorUpdate.getOperatorId());
+        if (oldOperatorDo == null || oldOperatorDo.getDeleted()) {
+            throw RockieError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+        }
+        Operator oldCustomerOperator = getOperator(auth, operatorUpdate.getCustomerId());
+        if(oldCustomerOperator != null && oldCustomerOperator.getOperatorId() != operatorUpdate.getOperatorId()) {
             throw RockieError.OPERATOR_CUSTOMER_EXISTS.newException();
         }
-        OperatorDo operatorDo = convertOperatorUpdate(operatorUpdate);
-        this.save(operatorDo);
+        OperatorDo operatorDo = convertOperatorUpdate(oldOperatorDo, operatorUpdate);
+        updateById(operatorDo);
         Operator operator = convertOperatorDo(operatorDo);
         return operator;
     }
@@ -128,8 +124,7 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         return operators;
     }
 
-    private OperatorDo convertOperatorUpdate(OperatorUpdate operatorUpdate) {
-        OperatorDo operatorDo = new OperatorDo();
+    private OperatorDo convertOperatorUpdate(OperatorDo operatorDo, OperatorUpdate operatorUpdate) {
         BeanUtils.copyProperties(operatorUpdate, operatorDo);
         return operatorDo;
     }

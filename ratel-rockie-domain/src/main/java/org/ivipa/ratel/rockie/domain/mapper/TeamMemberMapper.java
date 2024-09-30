@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface TeamMemberMapper extends BaseMapper<TeamMemberDo> {
     List<TeamMember> getTeamMembers(IPage<TeamMember> page, @Param("teamId") Long teamId);
+    List<TeamMember> getTeamMembersByCustomerId(IPage<TeamMember> page, @Param("customerId") Long customerId);
+    void updateTeamMember(@Param("teamMember") TeamMember teamMember);
 }

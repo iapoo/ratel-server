@@ -1,8 +1,8 @@
 package org.ivipa.ratel.system.client.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.lianjiatech.retrofit.spring.boot.annotation.Intercept;
-import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitClient;
+import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
+import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
 import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
