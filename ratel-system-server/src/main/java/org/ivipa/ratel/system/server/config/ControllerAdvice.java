@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 
 /**
  * @program: rdf-platform-v2
@@ -71,6 +72,7 @@ public class ControllerAdvice {
         String ipAddress = getIpAddress(request);
         boolean ignored = false;
         token = request.getHeader(SystemConstants.TOKEN);
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
         for (String ignoreResource : AUTH_IGNORE_LIST) {
             if (resource.contains(ignoreResource)) {
                 ignored = true;
@@ -82,7 +84,7 @@ public class ControllerAdvice {
                 if (StrUtil.isEmpty(token)) {
                     throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
                 }
-                OnlineCustomer onlineCustomer = (OnlineCustomer)systemRedisTemplate.opsForValue().get(token);
+                OnlineCustomer onlineCustomer = (OnlineCustomer)systemRedisTemplate.opsForValue().get(tokenKey);
                 if (onlineCustomer == null) {
                     throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
                 }
@@ -97,6 +99,7 @@ public class ControllerAdvice {
                         joinPoint.getArgs()[0] = auth;
                     }
                 }
+                refreshLoginCustomer(token, onlineCustomer);
             }
             log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
             result = joinPoint.proceed(joinPoint.getArgs());
@@ -149,6 +152,13 @@ public class ControllerAdvice {
         // ipAddress = this.getRequest().getRemoteAddr();
 
         return ipAddress;
+    }
+
+
+    protected void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
+        //HashOperations hashOperations = systemRedisTemplate.opsForHash();
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        systemRedisTemplate.opsForValue().set(tokenKey, onlineCustomer, Duration.ofSeconds(tokenTimeout));
     }
 
     private void log(Long customerId, String customerName, String token, String resource, String ipAddress, boolean success) {

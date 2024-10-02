@@ -8,6 +8,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.ivipa.ratel.rockie.common.model.Operator;
+import org.ivipa.ratel.rockie.common.utils.RockieConsts;
+import org.ivipa.ratel.rockie.common.utils.RockieError;
 import org.ivipa.ratel.system.common.annoation.Audit;
 import org.ivipa.ratel.system.common.model.Auth;
 import org.ivipa.ratel.system.common.model.OnlineCustomer;
@@ -25,13 +28,8 @@ import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 
-/**
- * @program: rdf-platform-v2
- * @description: 操作日志增强类
- * @author: LiJiufan
- * @create: 2018-11-27 19:24
- **/
 
 @Component
 @Aspect
@@ -41,12 +39,16 @@ public class ControllerAdvice {
 
     private final static String[] AUTH_IGNORE_LIST = {};
     private final static String[] AUDIT_IGNORE_LIST = {};
+    private final static String[] OPERATION_LIST = {"/operator"};
 
     @Value("${ratel.system.token.timeout}")
     private int tokenTimeout;
 
     @Resource(name = "systemRedisTemplate")
     protected RedisTemplate systemRedisTemplate;
+
+    @Resource(name = "rockieRedisTemplate")
+    protected RedisTemplate rockieRedisTemplate;
 
     @Autowired
     private HttpServletRequest request;
@@ -71,6 +73,7 @@ public class ControllerAdvice {
         String ipAddress = getIpAddress(request);
         boolean ignored = false;
         token = request.getHeader(SystemConstants.TOKEN);
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
         for (String ignoreResource : AUTH_IGNORE_LIST) {
             if (resource.contains(ignoreResource)) {
                 ignored = true;
@@ -82,7 +85,7 @@ public class ControllerAdvice {
                 if (StrUtil.isEmpty(token)) {
                     throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
                 }
-                OnlineCustomer onlineCustomer = (OnlineCustomer)systemRedisTemplate.opsForValue().get(token);
+                OnlineCustomer onlineCustomer = (OnlineCustomer)systemRedisTemplate.opsForValue().get(tokenKey);
                 if (onlineCustomer == null) {
                     throw SystemError.SYSTEM_TOKEN_NOT_FOUND.newException();
                 }
@@ -96,6 +99,21 @@ public class ControllerAdvice {
                         auth.setOnlineCustomer(onlineCustomer);
                         joinPoint.getArgs()[0] = auth;
                     }
+                }
+                boolean isOperation = false;
+                String operationKey = RockieConsts.OPERATOR_PREFIX + customerId;
+                for(String operationResource: OPERATION_LIST) {
+                    if (resource.contains(operationResource)) {
+                        isOperation = true;
+                        break;
+                    }
+                }
+                if (isOperation) {
+                    Operator operator = (Operator)rockieRedisTemplate.opsForValue().get(operationKey);
+                    if (operator == null) {
+                        throw RockieError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+                    }
+                    refreshLoginOperation(customerId, operator);
                 }
             }
             log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
@@ -149,6 +167,12 @@ public class ControllerAdvice {
         // ipAddress = this.getRequest().getRemoteAddr();
 
         return ipAddress;
+    }
+
+
+    private void refreshLoginOperation(Long customerId, Operator operator) {
+        String key = RockieConsts.OPERATOR_PREFIX + operator.getCustomerId();
+        rockieRedisTemplate.opsForValue().set(key, operator, Duration.ofSeconds(tokenTimeout) );
     }
 
     private void log(Long customerId, String customerName, String token, String resource, String ipAddress, boolean success) {

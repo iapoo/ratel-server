@@ -115,5 +115,7 @@ public interface RockieApi {
     public Result updateOperator(@Body OperatorUpdate operatorUpdate);
     @POST("operator/delete")
     public Result deleteOperators(@Body OperatorDelete operatorDelete);
+    @POST("admin")
+    public Result admin();
 }
 

@@ -40,20 +40,24 @@ public abstract class GenericController {
 
     protected void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
         //HashOperations hashOperations = systemRedisTemplate.opsForHash();
-        systemRedisTemplate.opsForValue().set(token, onlineCustomer, Duration.ofSeconds(tokenTimeout));
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        systemRedisTemplate.opsForValue().set(tokenKey, onlineCustomer, Duration.ofSeconds(tokenTimeout));
     }
 
     protected boolean hasLoginCustomer(String token) {
-        OnlineCustomer onlineCustomer = (OnlineCustomer) systemRedisTemplate.opsForValue().get(token);
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        OnlineCustomer onlineCustomer = (OnlineCustomer) systemRedisTemplate.opsForValue().get(tokenKey);
         return onlineCustomer != null;
     }
 
     protected  void removeLoginCustomer(String token) {
-    systemRedisTemplate.opsForValue().getAndDelete(token);
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        systemRedisTemplate.opsForValue().getAndDelete(tokenKey);
     }
 
     protected OnlineCustomer getLoginCustomer(String token) {
-        Object loginCustomerValue = systemRedisTemplate.opsForValue().get(token);
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        Object loginCustomerValue = systemRedisTemplate.opsForValue().get(tokenKey);
         if(loginCustomerValue != null) {
             OnlineCustomer onlineCustomer = (OnlineCustomer)loginCustomerValue;
             refreshLoginCustomer(token, onlineCustomer);

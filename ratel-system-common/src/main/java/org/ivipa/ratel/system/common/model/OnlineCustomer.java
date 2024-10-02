@@ -16,5 +16,4 @@ public class OnlineCustomer implements Serializable {
     private String customerName;
 
     private String customerCode;
-
 }

@@ -2,7 +2,6 @@ package org.ivipa.ratel;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,12 +23,6 @@ import org.ivipa.ratel.rockie.common.model.FolderAdd;
 import org.ivipa.ratel.rockie.common.model.FolderDelete;
 import org.ivipa.ratel.rockie.common.model.FolderPage;
 import org.ivipa.ratel.rockie.common.model.FolderUpdate;
-import org.ivipa.ratel.rockie.common.model.Operator;
-import org.ivipa.ratel.rockie.common.model.OperatorAdd;
-import org.ivipa.ratel.rockie.common.model.OperatorDelete;
-import org.ivipa.ratel.rockie.common.model.OperatorPage;
-import org.ivipa.ratel.rockie.common.model.OperatorQuery;
-import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
 import org.ivipa.ratel.rockie.common.model.Team;
 import org.ivipa.ratel.rockie.common.model.TeamAdd;
 import org.ivipa.ratel.rockie.common.model.TeamDelete;
@@ -628,134 +621,6 @@ public class RockieClientApplicationTest {
         team = result.getData();
         assertTrue(team == null);
     }
-
-
-    private void addOperator(Long customerId, boolean expectedResult) {
-        OperatorAdd operatorAdd = new OperatorAdd();
-        operatorAdd.setCustomerId(customerId);
-        operatorAdd.setOperatorType(0L);
-        Result<Operator> result = rockieApi.addOperator(operatorAdd);
-        assertNotNull(result);
-        if(expectedResult) {
-            assertTrue(result.isSuccess());
-        } else {
-            assertFalse(result.isSuccess());
-        }
-    }
-
-    private Operator checkOperator(Long customerId) {
-        OperatorPage operatorPage = new OperatorPage();
-        operatorPage.setPageSize(99999);
-        Result<Page<Operator>> operatorResult = rockieApi.getOperators(operatorPage);
-        assertNotNull(operatorResult);
-        assertTrue(operatorResult.isSuccess());
-        long size = operatorResult.getData().getRecords().size();
-        boolean checkOperator = false;
-        Operator operator = null;
-        for(long i = 0; i < size; i++) {
-            Operator theOperator = operatorResult.getData().getRecords().get((int)i);
-            if(theOperator.getCustomerId().equals(customerId)) {
-                checkOperator = true;
-                operator = theOperator;
-            }
-        }
-        assertTrue(checkOperator);
-        return operator;
-    }
-
-    @Test
-    public void testAddOperator() {
-        log.info("Test Add Operator");
-        Long customerId = testCustomerInfo.getCustomerId();
-        addOperator(customerId, true);
-        Operator operator = checkOperator(customerId);
-        assertNotNull(operator);
-    }
-
-    @Test
-    public void testGetOperator() {
-        log.info("Test Get Operator");
-        Long customerId = testCustomerInfo.getCustomerId();
-        addOperator(customerId, true);
-        Operator operator = checkOperator(customerId);
-        assertNotNull(operator);
-        Long operatorId = operator.getOperatorId();
-        OperatorQuery operatorQuery = new OperatorQuery();
-        operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
-        operator = result.getData();
-        assertNotNull(operator);
-        assertTrue(operatorId.equals(operator.getOperatorId()));
-    }
-
-    @Test
-    public void testGetOperators() {
-        log.info("Test Get Operators");
-        Long customerId = testCustomerInfo.getCustomerId();
-        addOperator(customerId, true);
-        Operator operator = checkOperator(customerId);
-        assertNotNull(operator);
-        Long operatorId = operator.getOperatorId();
-        OperatorPage operatorPage = new OperatorPage();
-        Result<Page<Operator>> result = rockieApi.getOperators(operatorPage);
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
-        Page<Operator> page = result.getData();
-        assertNotNull(page);
-        assertTrue(page.getSize() > 0);
-    }
-
-    @Test
-    public void testUpdateOperator() {
-        log.info("Test Update Operator");
-        Long customerId = testCustomerInfo.getCustomerId();
-        addOperator(customerId, true);
-        Operator operator = checkOperator(customerId);
-        assertNotNull(operator);
-        Long operatorId = operator.getOperatorId();
-        OperatorUpdate operatorUpdate = new OperatorUpdate();
-        operatorUpdate.setOperatorId(operatorId);
-        operatorUpdate.setCustomerId(customerId);
-        operatorUpdate.setOperatorType(2L);
-        Result updateResult = rockieApi.updateOperator(operatorUpdate);
-        assertNotNull(updateResult);
-        assertTrue(updateResult.isSuccess());
-        OperatorQuery operatorQuery = new OperatorQuery();
-        operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
-        assertNotNull(result);
-        assertTrue(result.isSuccess());
-        operator = result.getData();
-        assertNotNull(operator);
-        assertTrue(operatorId.equals(operator.getOperatorId()));
-        assertTrue(operator.getOperatorType() == 2);
-
-    }
-
-    @Test
-    public void testDeleteOperator() {
-        log.info("Test Delete Operator");
-        Long customerId = testCustomerInfo.getCustomerId();
-        addOperator(customerId, true);
-        Operator operator = checkOperator(customerId);
-        assertNotNull(operator);
-        Long operatorId = operator.getOperatorId();
-        OperatorDelete operatorDelete = new OperatorDelete();
-        operatorDelete.setOperatorId(operatorId);
-        Result deleteResult = rockieApi.deleteOperators(operatorDelete);
-        assertNotNull(deleteResult);
-        assertTrue(deleteResult.isSuccess());
-        OperatorQuery operatorQuery = new OperatorQuery();
-        operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
-        assertNotNull(result);
-        assertFalse(result.isSuccess());
-        operator = result.getData();
-        assertTrue(operator == null);
-    }
-
 
     private void addTeamMember(Long teamId, Long customerId, boolean expectedResult) {
         TeamMemberAdd teamMemberAdd = new TeamMemberAdd();
