@@ -1,4 +1,4 @@
-package org.ivipa.ratel.rockie.domain.entity;
+package org.ivipa.ratel.system.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

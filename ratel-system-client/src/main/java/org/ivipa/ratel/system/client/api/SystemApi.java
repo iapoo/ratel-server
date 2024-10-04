@@ -13,6 +13,12 @@ import org.ivipa.ratel.system.common.model.LicenseAdd;
 import org.ivipa.ratel.system.common.model.LicensePage;
 import org.ivipa.ratel.system.common.model.LicenseUpdate;
 import org.ivipa.ratel.system.common.model.Login;
+import org.ivipa.ratel.system.common.model.Operator;
+import org.ivipa.ratel.system.common.model.OperatorAdd;
+import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorPage;
+import org.ivipa.ratel.system.common.model.OperatorQuery;
+import org.ivipa.ratel.system.common.model.OperatorUpdate;
 import org.ivipa.ratel.system.common.model.Order;
 import org.ivipa.ratel.system.common.model.Product;
 import org.ivipa.ratel.system.common.model.ProductAdd;
@@ -88,5 +94,21 @@ public interface SystemApi {
     @POST("license/update")
     Result updateLicense(@Body LicenseUpdate licenseUpdate);
 
+    @POST("operator/operators")
+    public Result<Page<Operator>> getOperators(@Body OperatorPage operatorPage);
+
+    @POST("operator/operator")
+    public Result<Operator> getOperator(@Body OperatorQuery operatorQuery);
+
+    @POST("operator/add")
+    public Result<Operator> addOperator(@Body OperatorAdd operatorAdd);
+
+    @POST("operator/update")
+    public Result updateOperator(@Body OperatorUpdate operatorUpdate);
+
+    @POST("operator/delete")
+    public Result deleteOperators(@Body OperatorDelete operatorDelete);
+    @POST("admin")
+    public Result admin();
 
 }

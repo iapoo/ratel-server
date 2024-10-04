@@ -1,15 +1,15 @@
-package org.ivipa.ratel.rockie.server.controller;
+package org.ivipa.ratel.system.server.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.ivipa.ratel.common.model.Result;
-import org.ivipa.ratel.rockie.common.model.Operator;
-import org.ivipa.ratel.rockie.common.model.OperatorAdd;
-import org.ivipa.ratel.rockie.common.model.OperatorDelete;
-import org.ivipa.ratel.rockie.common.model.OperatorPage;
-import org.ivipa.ratel.rockie.common.model.OperatorQuery;
-import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
-import org.ivipa.ratel.rockie.domain.service.OperatorService;
+import org.ivipa.ratel.system.common.model.Operator;
+import org.ivipa.ratel.system.common.model.OperatorAdd;
+import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorPage;
+import org.ivipa.ratel.system.common.model.OperatorQuery;
+import org.ivipa.ratel.system.common.model.OperatorUpdate;
+import org.ivipa.ratel.system.domain.service.OperatorService;
 import org.ivipa.ratel.system.common.annoation.Audit;
 import org.ivipa.ratel.system.common.controller.GenericController;
 import org.ivipa.ratel.system.common.model.Auth;

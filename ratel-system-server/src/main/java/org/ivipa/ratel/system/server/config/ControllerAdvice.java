@@ -9,10 +9,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.ivipa.ratel.system.common.annoation.Audit;
-import org.ivipa.ratel.system.common.model.OnlineCustomer;
 import org.ivipa.ratel.system.common.model.Auth;
-import org.ivipa.ratel.system.common.utils.SystemError;
+import org.ivipa.ratel.system.common.model.OnlineCustomer;
+import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.utils.SystemConstants;
+import org.ivipa.ratel.system.common.utils.SystemError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -42,6 +43,7 @@ public class ControllerAdvice {
 
     private final static String[] AUTH_IGNORE_LIST = {"/login", "/register", "/sendMail", "/sendVerificationCode", "/verifyCode"};
     private final static String[] AUDIT_IGNORE_LIST = {};
+    private final static String[] OPERATION_LIST = {"/operator"};
 
     @Value("${ratel.system.token.timeout}")
     private int tokenTimeout;
@@ -100,6 +102,22 @@ public class ControllerAdvice {
                     }
                 }
                 refreshLoginCustomer(token, onlineCustomer);
+
+                boolean isOperation = false;
+                String operationKey = SystemConstants.OPERATOR_PREFIX + customerId;
+                for(String operationResource: OPERATION_LIST) {
+                    if (resource.contains(operationResource)) {
+                        isOperation = true;
+                        break;
+                    }
+                }
+                if (isOperation) {
+                    Operator operator = (Operator)systemRedisTemplate.opsForValue().get(operationKey);
+                    if (operator == null) {
+                        throw SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+                    }
+                    refreshLoginOperation(customerId, operator);
+                }
             }
             log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
             result = joinPoint.proceed(joinPoint.getArgs());
@@ -159,6 +177,11 @@ public class ControllerAdvice {
         //HashOperations hashOperations = systemRedisTemplate.opsForHash();
         String tokenKey = SystemConstants.TOKEN_PREFIX + token;
         systemRedisTemplate.opsForValue().set(tokenKey, onlineCustomer, Duration.ofSeconds(tokenTimeout));
+    }
+
+    private void refreshLoginOperation(Long customerId, Operator operator) {
+        String key = SystemConstants.OPERATOR_PREFIX + operator.getCustomerId();
+        systemRedisTemplate.opsForValue().set(key, operator, Duration.ofSeconds(tokenTimeout) );
     }
 
     private void log(Long customerId, String customerName, String token, String resource, String ipAddress, boolean success) {

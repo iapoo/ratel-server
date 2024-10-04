@@ -121,7 +121,7 @@ create table if not exists team_member
 (
     team_id        bigint       not null,
     customer_id    bigint       not null,
-    member_type  bigint       not null default 0,
+    member_type    bigint       not null default 0,
     effective_date timestamp    null,
     expire_date    timestamp    null,
     created_by     bigint       null,

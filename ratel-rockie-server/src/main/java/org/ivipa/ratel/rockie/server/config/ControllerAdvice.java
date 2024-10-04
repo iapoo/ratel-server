@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.ivipa.ratel.rockie.common.model.Operator;
+import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.rockie.common.utils.RockieConsts;
 import org.ivipa.ratel.rockie.common.utils.RockieError;
 import org.ivipa.ratel.system.common.annoation.Audit;
@@ -39,16 +39,10 @@ public class ControllerAdvice {
 
     private final static String[] AUTH_IGNORE_LIST = {};
     private final static String[] AUDIT_IGNORE_LIST = {};
-    private final static String[] OPERATION_LIST = {"/operator"};
 
-    @Value("${ratel.system.token.timeout}")
-    private int tokenTimeout;
 
     @Resource(name = "systemRedisTemplate")
     protected RedisTemplate systemRedisTemplate;
-
-    @Resource(name = "rockieRedisTemplate")
-    protected RedisTemplate rockieRedisTemplate;
 
     @Autowired
     private HttpServletRequest request;
@@ -99,21 +93,6 @@ public class ControllerAdvice {
                         auth.setOnlineCustomer(onlineCustomer);
                         joinPoint.getArgs()[0] = auth;
                     }
-                }
-                boolean isOperation = false;
-                String operationKey = RockieConsts.OPERATOR_PREFIX + customerId;
-                for(String operationResource: OPERATION_LIST) {
-                    if (resource.contains(operationResource)) {
-                        isOperation = true;
-                        break;
-                    }
-                }
-                if (isOperation) {
-                    Operator operator = (Operator)rockieRedisTemplate.opsForValue().get(operationKey);
-                    if (operator == null) {
-                        throw RockieError.OPERATOR_OPERATOR_NOT_FOUND.newException();
-                    }
-                    refreshLoginOperation(customerId, operator);
                 }
             }
             log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
@@ -170,10 +149,6 @@ public class ControllerAdvice {
     }
 
 
-    private void refreshLoginOperation(Long customerId, Operator operator) {
-        String key = RockieConsts.OPERATOR_PREFIX + operator.getCustomerId();
-        rockieRedisTemplate.opsForValue().set(key, operator, Duration.ofSeconds(tokenTimeout) );
-    }
 
     private void log(Long customerId, String customerName, String token, String resource, String ipAddress, boolean success) {
 

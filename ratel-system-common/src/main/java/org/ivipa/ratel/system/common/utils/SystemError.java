@@ -36,6 +36,12 @@ public enum SystemError {
 
     VERIFICATION_CODE_IS_INVALID("System", "003002", "Verification code is invalid."),
     VERIFICATION_CODE_NOT_FOUND("System", "003002", "Verification code not found."),
+
+
+    OPERATOR_INVALID_OPERATOR_REQUEST("System", "003005", "Invalid operator request"),
+    OPERATOR_OPERATOR_TYPE_IS_INVALID("System", "003007", "Operator type is invalid"),
+    OPERATOR_CUSTOMER_EXISTS("System", "003001", "Customer already exists"),
+    OPERATOR_OPERATOR_NOT_FOUND("System", "003002", "Operator not found"),
     ;
 
     private String service;

@@ -1,4 +1,4 @@
-package org.ivipa.ratel.rockie.common.model;
+package org.ivipa.ratel.system.common.model;
 
 import lombok.Data;
 

@@ -19,12 +19,6 @@ import org.ivipa.ratel.rockie.common.model.FolderAdd;
 import org.ivipa.ratel.rockie.common.model.FolderDelete;
 import org.ivipa.ratel.rockie.common.model.FolderPage;
 import org.ivipa.ratel.rockie.common.model.FolderUpdate;
-import org.ivipa.ratel.rockie.common.model.Operator;
-import org.ivipa.ratel.rockie.common.model.OperatorAdd;
-import org.ivipa.ratel.rockie.common.model.OperatorDelete;
-import org.ivipa.ratel.rockie.common.model.OperatorPage;
-import org.ivipa.ratel.rockie.common.model.OperatorQuery;
-import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
 import org.ivipa.ratel.rockie.common.model.Team;
 import org.ivipa.ratel.rockie.common.model.TeamAdd;
 import org.ivipa.ratel.rockie.common.model.TeamDelete;
@@ -105,17 +99,5 @@ public interface RockieApi {
     public Result updateTeamMember(@Body TeamMemberUpdate teamMemberUpdate);
     @POST("teamMember/delete")
     public Result deleteTeamMembers(@Body TeamMemberDelete teamMemberDelete);
-    @POST("operator/operators")
-    public Result<Page<Operator>> getOperators(@Body OperatorPage operatorPage);
-    @POST("operator/operator")
-    public Result<Operator> getOperator(@Body OperatorQuery operatorQuery);
-    @POST("operator/add")
-    public Result<Operator> addOperator(@Body OperatorAdd operatorAdd);
-    @POST("operator/update")
-    public Result updateOperator(@Body OperatorUpdate operatorUpdate);
-    @POST("operator/delete")
-    public Result deleteOperators(@Body OperatorDelete operatorDelete);
-    @POST("admin")
-    public Result admin();
 }
 

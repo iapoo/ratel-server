@@ -10,29 +10,43 @@ import org.ivipa.ratel.system.common.model.Auth;
 import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerPassword;
 import org.ivipa.ratel.system.common.model.CustomerSettings;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
-import org.ivipa.ratel.system.common.model.CustomerPassword;
-import org.ivipa.ratel.system.common.model.Order;
 import org.ivipa.ratel.system.common.model.Login;
 import org.ivipa.ratel.system.common.model.OnlineCustomer;
-import org.ivipa.ratel.system.common.model.VerificationCode;
+import org.ivipa.ratel.system.common.model.Operator;
+import org.ivipa.ratel.system.common.model.Order;
 import org.ivipa.ratel.system.common.model.VerificationMail;
+import org.ivipa.ratel.system.common.utils.SystemConstants;
 import org.ivipa.ratel.system.common.utils.SystemError;
 import org.ivipa.ratel.system.domain.service.CustomerService;
 import org.ivipa.ratel.system.domain.service.LicenseService;
-import org.ivipa.ratel.system.server.service.MailService;
+import org.ivipa.ratel.system.domain.service.OperatorService;
 import org.ivipa.ratel.system.domain.service.ProductService;
+import org.ivipa.ratel.system.server.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import java.time.Duration;
+
 @RestController
 @RequestMapping("/")
 @Slf4j
 public class SystemController extends GenericController {
+
+
+    @Value("${ratel.system.token.timeout}")
+    private int tokenTimeout;
+
+    @Autowired
+    private OperatorService operatorService;
 
     @Autowired
     private CustomerService customerService;
@@ -45,6 +59,10 @@ public class SystemController extends GenericController {
 
     @Autowired
     private MailService mailService;
+
+
+    @Resource(name = "systemRedisTemplate")
+    protected RedisTemplate systemRedisTemplate;
 
     @PostMapping("register")
     @Audit
@@ -180,5 +198,25 @@ public class SystemController extends GenericController {
     public Result sendMail(Auth auth, @RequestBody VerificationMail verificationMail) throws MessagingException {
         mailService.sendVerificationCode(verificationMail.getTo());
         return Result.success();
+    }
+
+
+    @PostMapping("admin")
+    @Audit
+    public Result admin(Auth auth ) {
+        Long customerId = auth.getOnlineCustomer().getCustomerId();
+        Operator operator = operatorService.getOperator(auth, customerId);
+        refreshLoginOperation(customerId, operator);
+        if(operator != null) {
+            refreshLoginOperation(customerId, operator);
+            return Result.success();
+        } else {
+            return Result.error(SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException());
+        }
+    }
+
+    protected void refreshLoginOperation(Long customerId, Operator operator) {
+        String key = SystemConstants.OPERATOR_PREFIX + operator.getCustomerId();
+        systemRedisTemplate.opsForValue().set(key, operator, Duration.ofSeconds(tokenTimeout) );
     }
 }

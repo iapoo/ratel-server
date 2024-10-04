@@ -32,10 +32,6 @@ public enum RockieError {
     TEAM_MEMBER_INVALID_TEAM_MEMBER_REQUEST("System", "003001", "Team member request is invalid"),
     TEAM_MEMBER_TEAM_MEMBER_NOT_FOUND("System", "003002", "Team member not found"),
 
-    OPERATOR_INVALID_OPERATOR_REQUEST("System", "003005", "Invalid operator request"),
-    OPERATOR_OPERATOR_TYPE_IS_INVALID("System", "003007", "Operator type is invalid"),
-    OPERATOR_CUSTOMER_EXISTS("System", "003001", "Customer already exists"),
-    OPERATOR_OPERATOR_NOT_FOUND("System", "003002", "Operator not found"),
     ;
 
     private String service;

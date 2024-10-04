@@ -1,25 +1,23 @@
-package org.ivipa.ratel;
+package org.ivipa.ratel.system;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.common.model.Result;
-import org.ivipa.ratel.rockie.client.api.RockieApi;
-import org.ivipa.ratel.rockie.common.model.Operator;
-import org.ivipa.ratel.rockie.common.model.OperatorAdd;
-import org.ivipa.ratel.rockie.common.model.OperatorDelete;
-import org.ivipa.ratel.rockie.common.model.OperatorPage;
-import org.ivipa.ratel.rockie.common.model.OperatorQuery;
-import org.ivipa.ratel.rockie.common.model.OperatorUpdate;
 import org.ivipa.ratel.system.client.api.SystemApi;
 import org.ivipa.ratel.system.client.api.TokenSignService;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
 import org.ivipa.ratel.system.common.model.Login;
+import org.ivipa.ratel.system.common.model.Operator;
+import org.ivipa.ratel.system.common.model.OperatorAdd;
+import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorPage;
+import org.ivipa.ratel.system.common.model.OperatorQuery;
+import org.ivipa.ratel.system.common.model.OperatorUpdate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,13 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RetrofitScan("org.ivipa.ratel")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RockieClientOperatorTest {
+public class SystemClientOperatorTest {
 
     @Autowired
     private SystemApi systemApi;
-
-    @Autowired
-    private RockieApi rockieApi;
 
     @Autowired
     private TokenSignService tokenSignService;
@@ -110,7 +105,7 @@ public class RockieClientOperatorTest {
         if(!isAdmin) {
             testCustomerInfo = customerInfoResult.getData();
         } else {
-            Result adminResult = rockieApi.admin();
+            Result adminResult = systemApi.admin();
             assertNotNull(adminResult);
             assertTrue(adminResult.isSuccess());
         }
@@ -147,7 +142,7 @@ public class RockieClientOperatorTest {
         OperatorAdd operatorAdd = new OperatorAdd();
         operatorAdd.setCustomerId(customerId);
         operatorAdd.setOperatorType(0L);
-        Result<Operator> result = rockieApi.addOperator(operatorAdd);
+        Result<Operator> result = systemApi.addOperator(operatorAdd);
         assertNotNull(result);
         if(expectedResult) {
             assertTrue(result.isSuccess());
@@ -159,7 +154,7 @@ public class RockieClientOperatorTest {
     private Operator checkOperator(Long customerId) {
         OperatorPage operatorPage = new OperatorPage();
         operatorPage.setPageSize(99999);
-        Result<Page<Operator>> operatorResult = rockieApi.getOperators(operatorPage);
+        Result<Page<Operator>> operatorResult = systemApi.getOperators(operatorPage);
         assertNotNull(operatorResult);
         assertTrue(operatorResult.isSuccess());
         long size = operatorResult.getData().getRecords().size();
@@ -195,7 +190,7 @@ public class RockieClientOperatorTest {
         Long operatorId = operator.getOperatorId();
         OperatorQuery operatorQuery = new OperatorQuery();
         operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        Result<Operator> result = systemApi.getOperator(operatorQuery);
         assertNotNull(result);
         assertTrue(result.isSuccess());
         operator = result.getData();
@@ -212,7 +207,7 @@ public class RockieClientOperatorTest {
         assertNotNull(operator);
         Long operatorId = operator.getOperatorId();
         OperatorPage operatorPage = new OperatorPage();
-        Result<Page<Operator>> result = rockieApi.getOperators(operatorPage);
+        Result<Page<Operator>> result = systemApi.getOperators(operatorPage);
         assertNotNull(result);
         assertTrue(result.isSuccess());
         Page<Operator> page = result.getData();
@@ -232,12 +227,12 @@ public class RockieClientOperatorTest {
         operatorUpdate.setOperatorId(operatorId);
         operatorUpdate.setCustomerId(customerId);
         operatorUpdate.setOperatorType(2L);
-        Result updateResult = rockieApi.updateOperator(operatorUpdate);
+        Result updateResult = systemApi.updateOperator(operatorUpdate);
         assertNotNull(updateResult);
         assertTrue(updateResult.isSuccess());
         OperatorQuery operatorQuery = new OperatorQuery();
         operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        Result<Operator> result = systemApi.getOperator(operatorQuery);
         assertNotNull(result);
         assertTrue(result.isSuccess());
         operator = result.getData();
@@ -257,12 +252,12 @@ public class RockieClientOperatorTest {
         Long operatorId = operator.getOperatorId();
         OperatorDelete operatorDelete = new OperatorDelete();
         operatorDelete.setOperatorId(operatorId);
-        Result deleteResult = rockieApi.deleteOperators(operatorDelete);
+        Result deleteResult = systemApi.deleteOperators(operatorDelete);
         assertNotNull(deleteResult);
         assertTrue(deleteResult.isSuccess());
         OperatorQuery operatorQuery = new OperatorQuery();
         operatorQuery.setOperatorId(operatorId);
-        Result<Operator> result = rockieApi.getOperator(operatorQuery);
+        Result<Operator> result = systemApi.getOperator(operatorQuery);
         assertNotNull(result);
         assertFalse(result.isSuccess());
         operator = result.getData();

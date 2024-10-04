@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipa.ratel.rockie.domain.mapper.OperatorMapper">
+<mapper namespace="org.ivipa.ratel.system.domain.mapper.OperatorMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.ivipa.ratel.rockie.domain.entity.OperatorDo">
+    <resultMap id="BaseResultMap" type="org.ivipa.ratel.system.domain.entity.OperatorDo">
         <result column="operator_id" property="operatorId"/>
         <result column="customer_id" property="customerId"/>
         <result column="operator_type" property="operatorType"/>
@@ -16,7 +16,7 @@
     </resultMap>
 
 
-    <resultMap id="PageResultMap" type="org.ivipa.ratel.rockie.common.model.Operator">
+    <resultMap id="PageResultMap" type="org.ivipa.ratel.system.common.model.Operator">
         <result column="operator_id" property="operatorId"/>
         <result column="customer_id" property="customerId"/>
         <result column="operator_type" property="operatorType"/>
