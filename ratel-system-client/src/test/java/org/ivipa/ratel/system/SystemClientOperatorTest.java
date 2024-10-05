@@ -15,6 +15,7 @@ import org.ivipa.ratel.system.common.model.Login;
 import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.model.OperatorAdd;
 import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorDetail;
 import org.ivipa.ratel.system.common.model.OperatorPage;
 import org.ivipa.ratel.system.common.model.OperatorQuery;
 import org.ivipa.ratel.system.common.model.OperatorUpdate;
@@ -214,6 +215,24 @@ public class SystemClientOperatorTest {
         assertNotNull(page);
         assertTrue(page.getSize() > 0);
     }
+
+    @Test
+    public void testGetOperatorDetails() {
+        log.info("Test Get OperatorDetails");
+        Long customerId = testCustomerInfo.getCustomerId();
+        addOperator(customerId, true);
+        Operator operator = checkOperator(customerId);
+        assertNotNull(operator);
+        Long operatorId = operator.getOperatorId();
+        OperatorPage operatorPage = new OperatorPage();
+        Result<Page<OperatorDetail>> result = systemApi.getOperatorDetails(operatorPage);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        Page<OperatorDetail> page = result.getData();
+        assertNotNull(page);
+        assertTrue(page.getSize() > 0);
+    }
+
 
     @Test
     public void testUpdateOperator() {

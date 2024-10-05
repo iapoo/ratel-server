@@ -33,4 +33,18 @@
         operator_id, customer_id, access_mode, effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
 
+
+    <select id="getOperatorDetails" resultType="org.ivipa.ratel.system.common.model.OperatorDetail">
+        select o.operator_id, o.operator_type, o.customer_id, c.customer_name, c.email
+        from
+            operator o inner join customer c on o.customer_id = c.customer_id
+        where 1 = 1
+        <if test="customerName != null">
+            and c.customer_name like CONCAT('%', #{customerName}, '%')
+        </if>
+        <if test="email != null">
+            and c.email like CONCAT('%', #{email}, '%')
+        </if>
+    </select>
+
 </mapper>

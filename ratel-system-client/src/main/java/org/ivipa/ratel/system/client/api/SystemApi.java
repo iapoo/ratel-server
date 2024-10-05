@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
 import org.ivipa.ratel.common.model.Result;
+import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
+import org.ivipa.ratel.system.common.model.CustomerDelete;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerPassword;
+import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
 import org.ivipa.ratel.system.common.model.License;
 import org.ivipa.ratel.system.common.model.LicenseAdd;
@@ -16,6 +20,7 @@ import org.ivipa.ratel.system.common.model.Login;
 import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.model.OperatorAdd;
 import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorDetail;
 import org.ivipa.ratel.system.common.model.OperatorPage;
 import org.ivipa.ratel.system.common.model.OperatorQuery;
 import org.ivipa.ratel.system.common.model.OperatorUpdate;
@@ -97,6 +102,9 @@ public interface SystemApi {
     @POST("operator/operators")
     public Result<Page<Operator>> getOperators(@Body OperatorPage operatorPage);
 
+    @POST("operator/operatorDetails")
+    public Result<Page<OperatorDetail>> getOperatorDetails(@Body OperatorPage operatorPage);
+
     @POST("operator/operator")
     public Result<Operator> getOperator(@Body OperatorQuery operatorQuery);
 
@@ -108,6 +116,22 @@ public interface SystemApi {
 
     @POST("operator/delete")
     public Result deleteOperators(@Body OperatorDelete operatorDelete);
+
+    @POST("customer/customers")
+    public Result<Page<Customer>> getCustomers(@Body CustomerPage customerPage);
+
+    @POST("customer/customer")
+    public Result<Customer> getCustomer(@Body CustomerQuery customerQuery);
+
+    @POST("customer/add")
+    public Result<Customer> addCustomer(@Body CustomerAdd customerAdd);
+
+    @POST("customer/update")
+    public Result updateCustomer(@Body CustomerUpdate customerUpdate);
+
+    @POST("customer/delete")
+    public Result deleteCustomers(@Body CustomerDelete customerDelete);
+
     @POST("admin")
     public Result admin();
 

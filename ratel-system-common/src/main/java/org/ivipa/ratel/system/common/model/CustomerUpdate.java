@@ -12,6 +12,11 @@ public class CustomerUpdate implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Customer Id
+     */
+    private Long customerId;
+
+    /**
      * 昵称
      */
     private String nickName;

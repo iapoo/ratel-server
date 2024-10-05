@@ -43,7 +43,7 @@ public class ControllerAdvice {
 
     private final static String[] AUTH_IGNORE_LIST = {"/login", "/register", "/sendMail", "/sendVerificationCode", "/verifyCode"};
     private final static String[] AUDIT_IGNORE_LIST = {};
-    private final static String[] OPERATION_LIST = {"/operator"};
+    private final static String[] OPERATION_LIST = {"/operator/", "/customer/"};
 
     @Value("${ratel.system.token.timeout}")
     private int tokenTimeout;

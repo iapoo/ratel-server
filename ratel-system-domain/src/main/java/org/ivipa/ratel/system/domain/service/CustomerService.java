@@ -8,14 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.system.common.model.Auth;
 import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
+import org.ivipa.ratel.system.common.model.CustomerDelete;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerSettings;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
 import org.ivipa.ratel.system.common.model.CustomerLicense;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerPassword;
+import org.ivipa.ratel.system.common.model.Operator;
+import org.ivipa.ratel.system.common.model.OperatorDelete;
 import org.ivipa.ratel.system.common.utils.SystemError;
 import org.ivipa.ratel.system.common.utils.SystemUtils;
+import org.ivipa.ratel.system.domain.entity.OperatorDo;
 import org.ivipa.ratel.system.domain.mapper.CustomerMapper;
 import org.ivipa.ratel.system.domain.entity.CustomerDo;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +49,30 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
     }
 
 
-    public Customer getCustomer(String customerName) {
+
+    public Customer getCustomer(CustomerQuery customerQuery) {
+        CustomerDo customerDo = getById(customerQuery.getCustomerId());
+        if (customerDo == null || customerDo.getDeleted()) {
+            throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
+        }
+        Customer customer = convertCustomerDo(customerDo);
+        return customer;
+    }
+
+    public Customer getCustomer(Auth auth,  Long customerId) {
+        QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("customer_id", customerId);
+        queryWrapper.eq("deleted", false);
+        CustomerDo customerDo = this.getOne(queryWrapper);
+        if(customerDo != null) {
+            Customer customer = convertCustomerDo(customerDo);
+            return customer;
+        } else {
+            return null;
+        }
+    }
+
+    public Customer getCustomerByCustomerName(String customerName) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_name", customerName);
         CustomerDo customerDo = this.getOne(queryWrapper);
@@ -104,7 +132,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return result;
     }
 
-    public void addCustomer(CustomerAdd customerAdd) {
+    public Customer addCustomer(CustomerAdd customerAdd) {
         CustomerDo customerDo;
 
         String password = customerAdd.getPassword();
@@ -127,8 +155,29 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         customerDo.setCreatedDate(LocalDateTime.now());
         customerDo.setUpdatedDate(LocalDateTime.now());
         save(customerDo);
+        Customer customer = convertCustomerDo(customerDo);
+        return customer;
     }
 
+    /**
+     * Operator update customer
+     * @param customerUpdate
+     */
+    public void updateCustomer(CustomerUpdate customerUpdate) {
+        CustomerDo oldCustomerDo = getById(customerUpdate.getCustomerId());
+        if(oldCustomerDo == null) {
+            throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
+        }
+        CustomerDo customerDo = convertCustomerUpdate(customerUpdate, oldCustomerDo);
+        customerDo.setUpdatedDate(LocalDateTime.now());
+        updateById(customerDo);
+    }
+
+    /**
+     * Customer update this
+     * @param auth
+     * @param customerUpdate
+     */
     public void updateCustomer(Auth auth, CustomerUpdate customerUpdate) {
         CustomerDo oldCustomerDo = getById(auth.getOnlineCustomer().getCustomerId());
         if(oldCustomerDo == null) {
@@ -136,6 +185,20 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         }
         CustomerDo customerDo = convertCustomerUpdate(customerUpdate, oldCustomerDo);
         customerDo.setUpdatedDate(LocalDateTime.now());
+        updateById(customerDo);
+    }
+
+    public void deleteCustomer(CustomerDelete customerDelete) {
+        if (customerDelete.getCustomerId() == null) {
+            throw SystemError.CUSTOMER_CUSTOMER_IS_INVALID.newException();
+        }
+        CustomerDo oldCustomerDo = getById(customerDelete.getCustomerId());
+        if (oldCustomerDo == null || oldCustomerDo.getDeleted()) {
+            throw SystemError.CUSTOMER_CUSTOMER_NOT_FOUND.newException();
+        }
+
+        CustomerDo customerDo = oldCustomerDo;
+        customerDo.setDeleted(true);
         updateById(customerDo);
     }
 

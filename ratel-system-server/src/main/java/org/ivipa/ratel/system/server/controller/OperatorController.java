@@ -6,6 +6,7 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.model.OperatorAdd;
 import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorDetail;
 import org.ivipa.ratel.system.common.model.OperatorPage;
 import org.ivipa.ratel.system.common.model.OperatorQuery;
 import org.ivipa.ratel.system.common.model.OperatorUpdate;
@@ -31,6 +32,13 @@ public class OperatorController extends GenericController {
     @Audit
     public Result<Page<Operator>> getOperators(Auth auth, @RequestBody OperatorPage operatorPage) {
         Page<Operator> customers = operatorService.getOperators(auth, operatorPage);
+        return Result.success(customers);
+    }
+
+    @PostMapping("operatorDetails")
+    @Audit
+    public Result<Page<OperatorDetail>> getOperatorDetails(Auth auth, @RequestBody OperatorPage operatorPage) {
+        Page<OperatorDetail> customers = operatorService.getOperatorDetails(auth, operatorPage);
         return Result.success(customers);
     }
 

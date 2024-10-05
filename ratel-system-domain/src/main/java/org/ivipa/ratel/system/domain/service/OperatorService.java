@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.model.OperatorAdd;
 import org.ivipa.ratel.system.common.model.OperatorDelete;
+import org.ivipa.ratel.system.common.model.OperatorDetail;
 import org.ivipa.ratel.system.common.model.OperatorPage;
 import org.ivipa.ratel.system.common.model.OperatorQuery;
 import org.ivipa.ratel.system.common.model.OperatorUpdate;
@@ -83,9 +84,18 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
     public Page<Operator> getOperators(Auth auth, OperatorPage operatorPageQuery) {
         Page<OperatorDo> page = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
         QueryWrapper<OperatorDo> queryWrapper = new QueryWrapper<>();
-        Page<OperatorDo> result = this.baseMapper.selectPage(page, queryWrapper);
+        Page<OperatorDo> result = baseMapper.selectPage(page, queryWrapper);
         Page<Operator> operatorPage = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
         operatorPage.setRecords(convertOperatorDos(result.getRecords()));
+        return operatorPage;
+    }
+
+    public Page<OperatorDetail> getOperatorDetails(Auth auth, OperatorPage operatorPageQuery) {
+        Page<OperatorDetail> page = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
+        QueryWrapper<OperatorDo> queryWrapper = new QueryWrapper<>();
+        List<OperatorDetail> result = baseMapper.getOperatorDetails(page, operatorPageQuery.getCustomerName(), operatorPageQuery.getEmail());
+        Page<OperatorDetail> operatorPage = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
+        operatorPage.setRecords(result);
         return operatorPage;
     }
 

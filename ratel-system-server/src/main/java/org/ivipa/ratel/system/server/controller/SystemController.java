@@ -10,6 +10,7 @@ import org.ivipa.ratel.system.common.model.Auth;
 import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerLicense;
 import org.ivipa.ratel.system.common.model.CustomerPassword;
 import org.ivipa.ratel.system.common.model.CustomerSettings;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.Duration;
+import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -198,6 +200,13 @@ public class SystemController extends GenericController {
     public Result sendMail(Auth auth, @RequestBody VerificationMail verificationMail) throws MessagingException {
         mailService.sendVerificationCode(verificationMail.getTo());
         return Result.success();
+    }
+
+    @PostMapping("customerLicenses")
+    @Audit
+    public Result<List<CustomerLicense>> getCustomerLicenses() {
+        List<CustomerLicense> customerLicenseList = customerService.getCustomerLicenseList();
+        return Result.success(customerLicenseList);
     }
 
 
