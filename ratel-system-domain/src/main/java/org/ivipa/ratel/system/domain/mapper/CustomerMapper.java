@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface CustomerMapper extends BaseMapper<CustomerDo> {
     List<Customer> getCustomers(IPage<Customer> page, @Param("customerName")String customerName);
+    List<Customer> getOperatorCustomers(IPage<Customer> page, @Param("like")String like, @Param("excludedOperatorId")Long excludedOperatorId);
     List<CustomerLicense> getCustomerLicenseList();
 }

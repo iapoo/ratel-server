@@ -7,6 +7,7 @@ import org.ivipa.ratel.system.common.model.Auth;
 import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerDelete;
+import org.ivipa.ratel.system.common.model.CustomerOperatorPage;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
@@ -28,6 +29,13 @@ public class CustomerController {
     @Audit
     public Result<Page<Customer>> getCustomers(@RequestBody CustomerPage customerPage) {
         Page<Customer> customers = customerService.getCustomers(customerPage);
+        return Result.success(customers);
+    }
+
+    @PostMapping("operatorCustomers")
+    @Audit
+    public Result<Page<Customer>> getOperatorCustomers(@RequestBody CustomerOperatorPage customerOperatorPage) {
+        Page<Customer> customers = customerService.getOperatorCustomers(customerOperatorPage);
         return Result.success(customers);
     }
 

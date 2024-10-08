@@ -64,6 +64,21 @@
         </if>
     </select>
 
+    <select id="getOperatorCustomers" resultMap="PageResultMap">
+        select c.customer_id, c.customer_name, c.customer_code, '********' as password, c.nick_name, c.id_card, c.telephone, c.mobile, c.email, c.remark,settings,
+        c.enabled,c.effective_date,c.expire_date,c.created_by, c.created_date, c.updated_by, c.updated_date
+        from customer c
+        left join operator o on o.customer_id = c.customer_id
+        where
+          o.operator_id is null
+          and c.deleted = 0
+        <if test="like != null">
+            and ((c.customer_name like concat('%', #{like}, '%')) or (c.email like concat('%', #{like}, '%')))
+        </if>
+        <if test="excludedOperatorId != null">
+            and o.operator_id != #{excludedOperatorId}
+        </if>
+    </select>
 
     <select id="getCustomerLicenseList" resultType="org.ivipa.ratel.system.common.model.CustomerLicense">
         select

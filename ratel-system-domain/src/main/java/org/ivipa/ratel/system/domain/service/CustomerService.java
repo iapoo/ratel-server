@@ -10,17 +10,15 @@ import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerDelete;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerOperatorPage;
 import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerSettings;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
 import org.ivipa.ratel.system.common.model.CustomerLicense;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerPassword;
-import org.ivipa.ratel.system.common.model.Operator;
-import org.ivipa.ratel.system.common.model.OperatorDelete;
 import org.ivipa.ratel.system.common.utils.SystemError;
 import org.ivipa.ratel.system.common.utils.SystemUtils;
-import org.ivipa.ratel.system.domain.entity.OperatorDo;
 import org.ivipa.ratel.system.domain.mapper.CustomerMapper;
 import org.ivipa.ratel.system.domain.entity.CustomerDo;
 import org.springframework.beans.BeanUtils;
@@ -41,14 +39,17 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return result;
     }
 
-
     public Page<Customer> getCustomers(CustomerPage customerPage) {
         Page<Customer> page = new Page<>(customerPage.getPageNum(), customerPage.getPageSize());
         List<Customer> result = baseMapper.getCustomers(page, customerPage.getCustomerName());
         return page.setRecords(result);
     }
 
-
+    public Page<Customer> getOperatorCustomers(CustomerOperatorPage customerOperatorPage) {
+        Page<Customer> page = new Page<>(customerOperatorPage.getPageNum(), customerOperatorPage.getPageSize());
+        List<Customer> result = baseMapper.getOperatorCustomers(page, customerOperatorPage.getLike(), customerOperatorPage.getExcludedOperatorId());
+        return page.setRecords(result);
+    }
 
     public Customer getCustomer(CustomerQuery customerQuery) {
         CustomerDo customerDo = getById(customerQuery.getCustomerId());

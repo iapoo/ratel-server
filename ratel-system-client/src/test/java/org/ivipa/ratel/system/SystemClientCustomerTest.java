@@ -13,6 +13,7 @@ import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerDelete;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerOperatorPage;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
@@ -185,6 +186,25 @@ public class SystemClientCustomerTest {
         assertNotNull(customer);
         CustomerPage customerPage = new CustomerPage();
         Result<Page<Customer>> result = systemApi.getCustomers(customerPage);
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        Page<Customer> page = result.getData();
+        assertNotNull(page);
+        assertTrue(page.getSize() > 0);
+    }
+
+    @Test
+    public void testGetOperatorCustomers() {
+        log.info("Test Get OperatorCustomers");
+        String customerName = generateName();
+        String customerPassword = generatePassword();
+        addCustomer(customerName, customerPassword, true);
+        Customer customer = checkCustomer(customerName);
+        assertNotNull(customer);
+        CustomerOperatorPage customerOperatorPage = new CustomerOperatorPage();
+        customerOperatorPage.setLike("c");
+        customerOperatorPage.setExcludedOperatorId(1L);
+        Result<Page<Customer>> result = systemApi.getOperatorCustomers(customerOperatorPage);
         assertNotNull(result);
         assertTrue(result.isSuccess());
         Page<Customer> page = result.getData();

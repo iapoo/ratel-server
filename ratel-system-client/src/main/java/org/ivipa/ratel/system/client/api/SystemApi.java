@@ -8,6 +8,7 @@ import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.model.CustomerAdd;
 import org.ivipa.ratel.system.common.model.CustomerDelete;
 import org.ivipa.ratel.system.common.model.CustomerInfo;
+import org.ivipa.ratel.system.common.model.CustomerOperatorPage;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerPassword;
 import org.ivipa.ratel.system.common.model.CustomerQuery;
@@ -119,6 +120,9 @@ public interface SystemApi {
 
     @POST("customer/customers")
     public Result<Page<Customer>> getCustomers(@Body CustomerPage customerPage);
+
+    @POST("customer/operatorCustomers")
+    public Result<Page<Customer>> getOperatorCustomers(@Body CustomerOperatorPage customerOperatorPage);
 
     @POST("customer/customer")
     public Result<Customer> getCustomer(@Body CustomerQuery customerQuery);
