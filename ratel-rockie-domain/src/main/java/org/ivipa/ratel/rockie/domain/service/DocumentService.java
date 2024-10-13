@@ -11,10 +11,13 @@ import org.ivipa.ratel.rockie.common.model.DocumentDelete;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
+import org.ivipa.ratel.rockie.common.model.OperatorDocument;
+import org.ivipa.ratel.rockie.common.model.OperatorDocumentPage;
 import org.ivipa.ratel.rockie.common.utils.RockieError;
 import org.ivipa.ratel.rockie.domain.entity.DocumentDo;
 import org.ivipa.ratel.rockie.domain.mapper.DocumentMapper;
 import org.ivipa.ratel.system.common.model.Auth;
+import org.ivipa.ratel.system.common.utils.SystemConstants;
 import org.ivipa.ratel.system.common.utils.SystemError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,17 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         return page.setRecords(result);
     }
 
+    public Page<OperatorDocument> getOperatorDocuments(Auth auth, OperatorDocumentPage operatorDocumentPage) {
+        if(auth.getOperator() == null) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= SystemConstants.OPERATOR_TYPE_CUSTOMER_OPERATION) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        Page<OperatorDocument> page = new Page<>(operatorDocumentPage.getPageNum(), operatorDocumentPage.getPageSize());
+        List<OperatorDocument> result = baseMapper.getOperatorDocuments(page, operatorDocumentPage.getLike());
+        return page.setRecords(result);
+    }
 
     public Document getDocument(Auth auth, DocumentQuery documentQuery) {
         DocumentDo documentDo = getById(documentQuery.getDocumentId());

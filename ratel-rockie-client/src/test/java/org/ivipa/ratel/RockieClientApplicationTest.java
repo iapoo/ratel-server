@@ -398,6 +398,18 @@ public class RockieClientApplicationTest {
         addDocument(testDocumentName, testContentName, testContent, false);
     }
 
+    @Test
+    public void testGetOperatorDocuments() {
+        log.info("Test Get Operator documents");
+        String testDocumentName = "Test Get Operator Documents" + getTimeString();
+        String testContentName = "Test Content Name";
+        String testContent = "Test Content of document";
+        addDocument(testDocumentName, testContentName, testContent, true);
+        Document document = checkDocument(testDocumentName);
+        assertNotNull(document);
+
+    }
+
     private List<DocumentAccess> addDocumentAccesses() {
       return null;
     }

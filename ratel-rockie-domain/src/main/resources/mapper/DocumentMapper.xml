@@ -37,6 +37,20 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
+    <resultMap id="OperatorDocumentPage" type="org.ivipa.ratel.rockie.common.model.OperatorDocument">
+        <id column="document_id" property="documentId"/>
+        <result column="document_name" property="documentName"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="email" property="email"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         document_id, document_name, customer_id, content_id, folder_id, remark,
@@ -56,6 +70,21 @@
         <if test="folderId != null ">
             and folder_id = #{folderId}
         </if>
+
+    </select>
+
+    <select id="getOperatorDocuments" resultMap="OperatorDocumentPage">
+        select d.document_id, d.document_name, d.customer_id, c.customer_name, c.email, c.nick_name,
+        d.created_by, d.created_date, d.updated_by, d.updated_date
+        from
+            document d
+            inner join customer c on d.customer_id = c.customer_id
+        where
+            d.deleted = 0
+            <if test="like != null ">
+                and ((c.customer_name like concat('%', #{like}, '%')) or (c.email like concat('%', #{like}, '%')))
+            </if>
+        order by d.updated_date desc
 
     </select>
 

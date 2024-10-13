@@ -9,6 +9,8 @@ import org.ivipa.ratel.rockie.common.model.DocumentDelete;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
+import org.ivipa.ratel.rockie.common.model.OperatorDocument;
+import org.ivipa.ratel.rockie.common.model.OperatorDocumentPage;
 import org.ivipa.ratel.rockie.domain.service.DocumentService;
 import org.ivipa.ratel.system.common.annoation.Audit;
 import org.ivipa.ratel.system.common.controller.GenericController;
@@ -30,8 +32,15 @@ public class DocumentController extends GenericController {
     @PostMapping("documents")
     @Audit
     public Result<Page<Document>> getDocuments(Auth auth, @RequestBody DocumentPage documentPage) {
-        Page<Document> customers = documentService.getDocuments(auth, documentPage);
-        return Result.success(customers);
+        Page<Document> documents = documentService.getDocuments(auth, documentPage);
+        return Result.success(documents);
+    }
+
+    @PostMapping("operatorDocuments")
+    @Audit
+    public Result<Page<OperatorDocument>> getOperatorDocuments(Auth auth, @RequestBody OperatorDocumentPage operatorDocumentPage) {
+        Page<OperatorDocument> operatorDocuments = documentService.getOperatorDocuments(auth, operatorDocumentPage);
+        return Result.success(operatorDocuments);
     }
 
     @PostMapping("document")

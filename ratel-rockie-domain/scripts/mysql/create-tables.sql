@@ -36,7 +36,8 @@ create table if not exists document
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (document_id)
+    primary key (document_id),
+    key idx_document_updated_date(updated_date desc)
 );
 
 create table if not exists content

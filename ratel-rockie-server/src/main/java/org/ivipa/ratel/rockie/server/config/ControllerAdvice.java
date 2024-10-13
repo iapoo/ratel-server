@@ -39,7 +39,10 @@ public class ControllerAdvice {
 
     private final static String[] AUTH_IGNORE_LIST = {};
     private final static String[] AUDIT_IGNORE_LIST = {};
+    private final static String[] OPERATION_LIST = {"/document/operatorDocuments"};
 
+    @Value("${ratel.system.token.timeout}")
+    private int tokenTimeout;
 
     @Resource(name = "systemRedisTemplate")
     protected RedisTemplate systemRedisTemplate;
@@ -94,7 +97,28 @@ public class ControllerAdvice {
                         joinPoint.getArgs()[0] = auth;
                     }
                 }
+                refreshLoginCustomer(token, onlineCustomer);
+
+                boolean isOperation = false;
+                String operationKey = SystemConstants.OPERATOR_PREFIX + customerId;
+                for(String operationResource: OPERATION_LIST) {
+                    if (resource.contains(operationResource)) {
+                        isOperation = true;
+                        break;
+                    }
+                }
+                if (isOperation) {
+                    Operator operator = (Operator)systemRedisTemplate.opsForValue().get(operationKey);
+                    if (operator == null) {
+                        throw SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+                    }
+                    if(auth != null) {
+                        auth.setOperator(operator);
+                    }
+                    refreshLoginOperation(customerId, operator);
+                }
             }
+
             log.info("User access : [customerId={}, customerName={}, token={}, resource={}, ipAddress={}], isLog={}", customerId, customerName, token, resource, ipAddress, isLog);
             result = joinPoint.proceed(joinPoint.getArgs());
             if (isLog) {
@@ -154,4 +178,14 @@ public class ControllerAdvice {
 
     }
 
+    private void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
+        //HashOperations hashOperations = systemRedisTemplate.opsForHash();
+        String tokenKey = SystemConstants.TOKEN_PREFIX + token;
+        systemRedisTemplate.opsForValue().set(tokenKey, onlineCustomer, Duration.ofSeconds(tokenTimeout));
+    }
+
+    private void refreshLoginOperation(Long customerId, Operator operator) {
+        String key = SystemConstants.OPERATOR_PREFIX + operator.getCustomerId();
+        systemRedisTemplate.opsForValue().set(key, operator, Duration.ofSeconds(tokenTimeout) );
+    }
 }

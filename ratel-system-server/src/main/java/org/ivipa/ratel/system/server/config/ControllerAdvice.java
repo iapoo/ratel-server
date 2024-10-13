@@ -176,7 +176,7 @@ public class ControllerAdvice {
     }
 
 
-    protected void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
+    private void refreshLoginCustomer(String token, OnlineCustomer onlineCustomer) {
         //HashOperations hashOperations = systemRedisTemplate.opsForHash();
         String tokenKey = SystemConstants.TOKEN_PREFIX + token;
         systemRedisTemplate.opsForValue().set(tokenKey, onlineCustomer, Duration.ofSeconds(tokenTimeout));

@@ -19,6 +19,8 @@ import org.ivipa.ratel.rockie.common.model.FolderAdd;
 import org.ivipa.ratel.rockie.common.model.FolderDelete;
 import org.ivipa.ratel.rockie.common.model.FolderPage;
 import org.ivipa.ratel.rockie.common.model.FolderUpdate;
+import org.ivipa.ratel.rockie.common.model.OperatorDocument;
+import org.ivipa.ratel.rockie.common.model.OperatorDocumentPage;
 import org.ivipa.ratel.rockie.common.model.Team;
 import org.ivipa.ratel.rockie.common.model.TeamAdd;
 import org.ivipa.ratel.rockie.common.model.TeamDelete;
@@ -55,6 +57,9 @@ public interface RockieApi {
 
     @POST("document/documents")
     Result<Page<Document>> getDocuments(@Body DocumentPage documentPage);
+
+    @POST("document/operatorDocuments")
+    Result<Page<OperatorDocument>> getOperatorDocuments(@Body OperatorDocumentPage operatorDocumentPage);
 
     @POST("document/add")
     Result addDocument(@Body DocumentAdd documentAdd);
