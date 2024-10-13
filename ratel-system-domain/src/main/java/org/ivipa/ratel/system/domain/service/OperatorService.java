@@ -8,6 +8,7 @@ import org.ivipa.ratel.system.common.model.Operator;
 import org.ivipa.ratel.system.common.model.OperatorAdd;
 import org.ivipa.ratel.system.common.model.OperatorDelete;
 import org.ivipa.ratel.system.common.model.OperatorDetail;
+import org.ivipa.ratel.system.common.model.OperatorDetailPage;
 import org.ivipa.ratel.system.common.model.OperatorPage;
 import org.ivipa.ratel.system.common.model.OperatorQuery;
 import org.ivipa.ratel.system.common.model.OperatorUpdate;
@@ -33,6 +34,15 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         }
         if(operatorAdd.getOperatorType() == null || operatorAdd.getOperatorType() < SystemConstants.OPERATOR_TYPE_MIN || operatorAdd.getOperatorType() > SystemConstants.OPERATOR_TYPE_MAX) {
             throw SystemError.OPERATOR_OPERATOR_TYPE_IS_INVALID.newException();
+        }
+        if(auth.getOperator() == null) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= SystemConstants.OPERATOR_TYPE_CUSTOMER_OPERATION) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= operatorAdd.getOperatorType()) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
         }
         Operator oldOperator = getOperator(auth, operatorAdd.getCustomerId());
         if(oldOperator != null) {
@@ -75,6 +85,15 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         if (oldOperatorDo == null || oldOperatorDo.getDeleted()) {
             throw SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException();
         }
+        if(auth.getOperator() == null) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= SystemConstants.OPERATOR_TYPE_CUSTOMER_OPERATION) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= oldOperatorDo.getOperatorType()) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
 
         OperatorDo operatorDo = oldOperatorDo;
         operatorDo.setDeleted(true);
@@ -90,13 +109,10 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         return operatorPage;
     }
 
-    public Page<OperatorDetail> getOperatorDetails(Auth auth, OperatorPage operatorPageQuery) {
-        Page<OperatorDetail> page = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
-        QueryWrapper<OperatorDo> queryWrapper = new QueryWrapper<>();
-        List<OperatorDetail> result = baseMapper.getOperatorDetails(page, operatorPageQuery.getCustomerName(), operatorPageQuery.getEmail());
-        Page<OperatorDetail> operatorPage = new Page<>(operatorPageQuery.getPageNum(), operatorPageQuery.getPageSize());
-        operatorPage.setRecords(result);
-        return operatorPage;
+    public Page<OperatorDetail> getOperatorDetails(Auth auth, OperatorDetailPage operatorDetailPage) {
+        Page<OperatorDetail> page = new Page<>(operatorDetailPage.getPageNum(), operatorDetailPage.getPageSize());
+        List<OperatorDetail> result = baseMapper.getOperatorDetails(page, operatorDetailPage.getLike());
+        return page.setRecords(result);
     }
 
     public Operator updateOperator(Auth auth, OperatorUpdate operatorUpdate) {
@@ -106,10 +122,23 @@ public class OperatorService extends ServiceImpl<OperatorMapper, OperatorDo> {
         if(operatorUpdate.getOperatorType() == null || operatorUpdate.getOperatorType() < SystemConstants.OPERATOR_TYPE_MIN || operatorUpdate.getOperatorType() > SystemConstants.OPERATOR_TYPE_MAX) {
             throw SystemError.OPERATOR_OPERATOR_TYPE_IS_INVALID.newException();
         }
+        if(auth.getOperator() == null) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= SystemConstants.OPERATOR_TYPE_CUSTOMER_OPERATION) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= operatorUpdate.getOperatorType()) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
+
 
         OperatorDo oldOperatorDo = getById(operatorUpdate.getOperatorId());
         if (oldOperatorDo == null || oldOperatorDo.getDeleted()) {
             throw SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+        }
+        if(auth.getOperator().getOperatorType() <= oldOperatorDo.getOperatorType()) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
         }
         Operator oldCustomerOperator = getOperator(auth, operatorUpdate.getCustomerId());
         if(oldCustomerOperator != null && oldCustomerOperator.getOperatorId() != operatorUpdate.getOperatorId()) {

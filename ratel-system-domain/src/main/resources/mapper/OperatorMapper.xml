@@ -38,12 +38,9 @@
         select o.operator_id, o.operator_type, o.customer_id, c.customer_name, c.email
         from
             operator o inner join customer c on o.customer_id = c.customer_id
-        where 1 = 1
-        <if test="customerName != null">
-            and c.customer_name like CONCAT('%', #{customerName}, '%')
-        </if>
-        <if test="email != null">
-            and c.email like CONCAT('%', #{email}, '%')
+        where o.deleted = 0
+        <if test="like != null">
+            and (c.customer_name like CONCAT('%', #{like}, '%') or c.email like CONCAT('%', #{like}, '%'))
         </if>
     </select>
 

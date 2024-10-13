@@ -20,6 +20,7 @@ public class Auth implements Serializable {
 
     private OnlineCustomer onlineCustomer;
 
+    private Operator operator;
 
 
 }

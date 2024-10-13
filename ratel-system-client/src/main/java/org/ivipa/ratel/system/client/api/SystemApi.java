@@ -35,6 +35,8 @@ import org.ivipa.ratel.system.common.model.ProductUpdate;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
+import java.util.Properties;
+
 @RetrofitClient(baseUrl = "${retrofit.system.baseUrl}")
 @Intercept(handler = TokenSignInterceptor.class, include = {"/**"})
 public interface SystemApi {
@@ -139,4 +141,6 @@ public interface SystemApi {
     @POST("admin")
     public Result admin();
 
+    @POST("properties")
+    public Result<Properties> properties();
 }

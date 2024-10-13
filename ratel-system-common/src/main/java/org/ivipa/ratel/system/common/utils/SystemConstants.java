@@ -3,7 +3,8 @@ package org.ivipa.ratel.system.common.utils;
 public class SystemConstants {
 
     public final static long OPERATOR_TYPE_MIN = 0;
-    public final static long OPERATOR_TYPE_MAX = 2;
+    public final static long OPERATOR_TYPE_MAX = 4;
+    public final static long OPERATOR_TYPE_CUSTOMER_OPERATION = 2;
 
     public final static String TOKEN = "Token";
 

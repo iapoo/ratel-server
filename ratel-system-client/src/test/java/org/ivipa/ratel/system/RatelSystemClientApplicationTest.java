@@ -2,6 +2,8 @@ package org.ivipa.ratel.system;
 
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.crypto.digest.DigestAlgorithm;
+import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -114,13 +118,15 @@ public class RatelSystemClientApplicationTest {
         CustomerAdd customerAdd = new CustomerAdd();
         customerAdd.setCustomerName(name);
         customerAdd.setPassword(password);
+        customerAdd.setEmail(name + "@test.com");
         Result result = systemApi.register(customerAdd);
         assertNotNull(result);
         assertTrue(result.isSuccess());
     }
 
     private String generatePassword() {
-        return "Password1";
+        Digester sha512 = new Digester(DigestAlgorithm.SHA512);
+        return sha512.digestHex("Password1");
     }
 
     private void addTestProduct() {
@@ -285,4 +291,12 @@ public class RatelSystemClientApplicationTest {
         //addLicense(testProduct.getProductId(), false);
     }
 
+    @Test
+    public void testProperties() {
+        log.info("Test add license");
+        Result<Properties> propertiesResult = systemApi.properties();
+        assertNotNull(propertiesResult);
+        assertTrue(propertiesResult.isSuccess());
+        assertTrue(propertiesResult.getData().size() > 0);
+    }
 }

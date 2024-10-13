@@ -41,7 +41,7 @@ import java.time.Duration;
 @Order(2)
 public class ControllerAdvice {
 
-    private final static String[] AUTH_IGNORE_LIST = {"/login", "/register", "/sendMail", "/sendVerificationCode", "/verifyCode"};
+    private final static String[] AUTH_IGNORE_LIST = {"/login", "/register", "/sendMail", "/sendVerificationCode", "/verifyCode", "/properties"};
     private final static String[] AUDIT_IGNORE_LIST = {};
     private final static String[] OPERATION_LIST = {"/operator/", "/customer/"};
 
@@ -115,6 +115,9 @@ public class ControllerAdvice {
                     Operator operator = (Operator)systemRedisTemplate.opsForValue().get(operationKey);
                     if (operator == null) {
                         throw SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException();
+                    }
+                    if(auth != null) {
+                        auth.setOperator(operator);
                     }
                     refreshLoginOperation(customerId, operator);
                 }

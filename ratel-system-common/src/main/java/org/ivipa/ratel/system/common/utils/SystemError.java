@@ -15,6 +15,7 @@ public enum SystemError {
     CUSTOMER_CUSTOMER_ID_IS_NOT_NULL("System", "001001", "ID is not null"),
     CUSTOMER_CUSTOMER_ID_IS_NULL("System", "001002", "ID is null"),
     CUSTOMER_CUSTOMER_NAME_IS_NULL("System", "001003", "Customer name is null"),
+    CUSTOMER_CUSTOMER_EMAIL_IS_NULL("System", "001003", "Customer email is null"),
     CUSTOMER_CUSTOMER_PASSWORD_IS_INVALID("System", "001004", "Invalid password."),
     CUSTOMER_CUSTOMER_IS_INVALID("System", "001005", "Customer is invalid"),
     CUSTOMER_CUSTOMER_PASSWORD_IS_INCORRECT("System", "001006", "Password is incorrect."),
@@ -42,6 +43,7 @@ public enum SystemError {
     OPERATOR_OPERATOR_TYPE_IS_INVALID("System", "003007", "Operator type is invalid"),
     OPERATOR_CUSTOMER_EXISTS("System", "003001", "Customer already exists"),
     OPERATOR_OPERATOR_NOT_FOUND("System", "003002", "Operator not found"),
+    AUTH_INSUFFICIENT_PERMISSION("System", "003005", "Insufficient permission, operation denied"),
     ;
 
     private String service;

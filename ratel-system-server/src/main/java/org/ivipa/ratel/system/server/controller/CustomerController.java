@@ -11,6 +11,7 @@ import org.ivipa.ratel.system.common.model.CustomerOperatorPage;
 import org.ivipa.ratel.system.common.model.CustomerPage;
 import org.ivipa.ratel.system.common.model.CustomerQuery;
 import org.ivipa.ratel.system.common.model.CustomerUpdate;
+import org.ivipa.ratel.system.common.model.CustomerUpdateEx;
 import org.ivipa.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,43 +28,43 @@ public class CustomerController {
 
     @PostMapping("customers")
     @Audit
-    public Result<Page<Customer>> getCustomers(@RequestBody CustomerPage customerPage) {
-        Page<Customer> customers = customerService.getCustomers(customerPage);
+    public Result<Page<Customer>> getCustomers(Auth auth, @RequestBody CustomerPage customerPage) {
+        Page<Customer> customers = customerService.getCustomersEx(auth, customerPage);
         return Result.success(customers);
     }
 
     @PostMapping("operatorCustomers")
     @Audit
-    public Result<Page<Customer>> getOperatorCustomers(@RequestBody CustomerOperatorPage customerOperatorPage) {
-        Page<Customer> customers = customerService.getOperatorCustomers(customerOperatorPage);
+    public Result<Page<Customer>> getOperatorCustomers(Auth auth, @RequestBody CustomerOperatorPage customerOperatorPage) {
+        Page<Customer> customers = customerService.getOperatorCustomersEx(auth, customerOperatorPage);
         return Result.success(customers);
     }
 
     @PostMapping("customer")
     @Audit
     public Result<Customer> getCustomer(Auth auth, @RequestBody CustomerQuery customerQuery) {
-        Customer customer = customerService.getCustomer(customerQuery);
+        Customer customer = customerService.getCustomerEx(auth, customerQuery);
         return Result.success(customer);
     }
 
     @PostMapping("add")
     @Audit
     public Result<Customer> addCustomer(Auth auth, @RequestBody CustomerAdd customerAdd) {
-        Customer customer = customerService.addCustomer(customerAdd);
+        Customer customer = customerService.addCustomerEx(auth, customerAdd);
         return Result.success(customer);
     }
 
     @PostMapping("update")
     @Audit
-    public Result updateCustomer(Auth auth, @RequestBody CustomerUpdate customerUpdate) {
-        customerService.updateCustomer(customerUpdate);
+    public Result updateCustomer(Auth auth, @RequestBody CustomerUpdateEx customerUpdateEx) {
+        customerService.updateCustomerEx(auth, customerUpdateEx);
         return Result.success();
     }
 
     @PostMapping("delete")
     @Audit
     public Result deleteCustomers(Auth auth, @RequestBody CustomerDelete customerDelete) {
-        customerService.deleteCustomer(customerDelete);
+        customerService.deleteCustomerEx(auth, customerDelete);
         return Result.success();
     }
 

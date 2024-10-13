@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.List;
+import java.util.Properties;
 
 @RestController
 @RequestMapping("/")
@@ -46,6 +47,9 @@ public class SystemController extends GenericController {
 
     @Value("${ratel.system.token.timeout}")
     private int tokenTimeout;
+
+    @Value("${ratel.system.enable-mail-validation}")
+    private boolean enableMailValidation;
 
     @Autowired
     private OperatorService operatorService;
@@ -69,7 +73,9 @@ public class SystemController extends GenericController {
     @PostMapping("register")
     @Audit
     public Result register(@RequestBody CustomerAdd customerAdd) {
-        //mailService.verifyMail(customerAdd.getEmail(), customerAdd.getCode());
+        if(enableMailValidation) {
+            mailService.verifyMail(customerAdd.getEmail(), customerAdd.getCode());
+        }
         customerService.addCustomer(customerAdd);
         return Result.success();
     }
@@ -222,6 +228,15 @@ public class SystemController extends GenericController {
         } else {
             return Result.error(SystemError.OPERATOR_OPERATOR_NOT_FOUND.newException());
         }
+    }
+
+
+    @PostMapping("properties")
+    @Audit
+    public Result<Properties> properties(Auth auth ) {
+        Properties properties = new Properties();
+        properties.setProperty("enable-mail-validation", String.valueOf(enableMailValidation));
+        return Result.success(properties);
     }
 
     protected void refreshLoginOperation(Long customerId, Operator operator) {
