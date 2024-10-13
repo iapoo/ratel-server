@@ -20,6 +20,8 @@ public class OperatorDocument implements Serializable {
 
     private String documentName;
 
+    private Long folderId;
+
     private Long customerId;
 
     private String customerName;
