@@ -19,14 +19,6 @@ public class TeamMemberAdd implements Serializable {
     /**
      * Customer Id
      */
-    private Long customerId;
-
-    /**
-     * Member Type
-     */
-    private Long memberType;
-
-
-
+    private String customerName;
 
 }

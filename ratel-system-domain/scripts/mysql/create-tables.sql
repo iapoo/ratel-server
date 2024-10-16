@@ -59,3 +59,21 @@ create table if not exists license
     updated_date   timestamp    null,
     primary key (license_id)
 );
+
+
+create table if not exists operator
+(
+    operator_id    bigint       auto_increment,
+    customer_id    bigint       not null,
+    operator_type  bigint       not null default 0,
+    deleted        int          not null default 0,
+    effective_date timestamp    null,
+    expire_date    timestamp    null,
+    created_by     bigint       null,
+    created_date   timestamp    null,
+    updated_by     bigint       null,
+    updated_date   timestamp    null,
+    primary key (operator_id),
+    key idx_team_member(customer_id)
+);
+

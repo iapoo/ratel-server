@@ -16,7 +16,8 @@ create table if not exists folder
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (folder_id)
+    primary key (folder_id),
+    unique key idx_folder_customer(customer_id, folder_id)
 );
 
 
@@ -37,7 +38,8 @@ create table if not exists document
     updated_by     bigint       null,
     updated_date   timestamp    null,
     primary key (document_id),
-    key idx_document_updated_date(updated_date desc)
+    key idx_document_updated_date(updated_date desc),
+    unique key idx_document_customer(customer_id, document_id)
 );
 
 create table if not exists content
@@ -68,7 +70,8 @@ create table if not exists folder_access
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (folder_id,  customer_id)
+    primary key (folder_id,  customer_id).
+    unique key idx_folder_access(customer_id, folder_id)
 );
 
 create table if not exists folder_access_detail
@@ -82,7 +85,8 @@ create table if not exists folder_access_detail
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (folder_id,  customer_id)
+    primary key (folder_id,  customer_id),
+    unique key idx_folder_access_detail(customer_id, folder_id)
 );
 
 create table if not exists document_access
@@ -96,7 +100,8 @@ create table if not exists document_access
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (document_id, customer_id)
+    primary key (document_id, customer_id),
+    unique key idx_document_access(customer_id, document_id)
 );
 
 create table if not exists team
@@ -133,20 +138,17 @@ create table if not exists team_member
     unique key idx_team_member(customer_id, team_id)
 );
 
-
-create table if not exists operator
+create table if not exists document_team_access
 (
-    operator_id    bigint       auto_increment,
-    customer_id    bigint       not null,
-    operator_type  bigint       not null default 0,
-    deleted        int          not null default 0,
+    document_id    bigint       not null,
+    team_id        bigint       not null,
+    access_mode    bigint       not null default 0,
     effective_date timestamp    null,
     expire_date    timestamp    null,
     created_by     bigint       null,
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (operator_id),
-    key idx_team_member(customer_id)
+    primary key (document_id, team_id),
+    unique key idx_document_team(team_id, document_id)
 );
-

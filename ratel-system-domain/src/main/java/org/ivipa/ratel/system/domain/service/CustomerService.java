@@ -111,6 +111,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
     public CustomerDo getCustomerDo(String customerName) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_name", customerName);
+        queryWrapper.eq("deleted", 0);
         CustomerDo customerDo = this.getOne(queryWrapper);
         return customerDo;
     }
@@ -118,6 +119,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
     public CustomerDo getCustomerDoByEmail(String email) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", email);
+        queryWrapper.eq("deleted", 0);
         CustomerDo customerDo = this.getOne(queryWrapper);
         return customerDo;
     }

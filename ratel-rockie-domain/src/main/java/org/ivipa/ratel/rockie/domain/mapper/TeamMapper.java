@@ -9,5 +9,5 @@ import org.ivipa.ratel.rockie.domain.entity.TeamDo;
 import java.util.List;
 
 public interface TeamMapper extends BaseMapper<TeamDo> {
-    List<Team> getTeams(IPage<Team> page, @Param("customerId") Long customerId);
+    List<Team> getTeams(IPage<Team> page, @Param("customerId") Long customerId, @Param("teamName") String teamName);
 }

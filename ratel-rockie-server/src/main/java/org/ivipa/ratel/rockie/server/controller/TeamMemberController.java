@@ -6,6 +6,8 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.common.model.TeamMember;
 import org.ivipa.ratel.rockie.common.model.TeamMemberAdd;
 import org.ivipa.ratel.rockie.common.model.TeamMemberDelete;
+import org.ivipa.ratel.rockie.common.model.TeamMemberDetail;
+import org.ivipa.ratel.rockie.common.model.TeamMemberDetailPage;
 import org.ivipa.ratel.rockie.common.model.TeamMemberPage;
 import org.ivipa.ratel.rockie.common.model.TeamMemberQuery;
 import org.ivipa.ratel.rockie.common.model.TeamMemberUpdate;
@@ -30,8 +32,15 @@ public class TeamMemberController extends GenericController {
     @PostMapping("teamMembers")
     @Audit
     public Result<Page<TeamMember>> getTeamMembers(Auth auth, @RequestBody TeamMemberPage teamMemberPage) {
-        Page<TeamMember> customers = teamMemberService.getTeamMembers(auth, teamMemberPage);
-        return Result.success(customers);
+        Page<TeamMember> teamMembers = teamMemberService.getTeamMembers(auth, teamMemberPage);
+        return Result.success(teamMembers);
+    }
+
+    @PostMapping("teamMemberDetails")
+    @Audit
+    public Result<Page<TeamMemberDetail>> getTeamMemberDetails(Auth auth, @RequestBody TeamMemberDetailPage teamMemberDetailPage) {
+        Page<TeamMemberDetail> teamMemberDetails = teamMemberService.getTeamMemberDetails(auth, teamMemberDetailPage);
+        return Result.success(teamMemberDetails);
     }
 
     @PostMapping("teamMember")

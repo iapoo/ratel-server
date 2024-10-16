@@ -28,6 +28,22 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
+    <resultMap id="TeamMemberDetailPage" type="org.ivipa.ratel.rockie.common.model.TeamMemberDetail">
+        <result column="team_id" property="teamId"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="team_name" property="teamName"/>
+        <result column="email" property="customerEmail"/>
+        <result column="nick_name" property="customerNickname"/>
+        <result column="member_type" property="memberType"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         team_id, customer_id, member_type, effective_date,expire_date,created_by, created_date, updated_by, updated_date
@@ -38,6 +54,20 @@
         from team_member
         where
             team_id = #{teamId}
+    </select>
+
+    <select id="getTeamMemberDetails" resultMap="TeamMemberDetailPage">
+        select
+            tm.team_id, tm.customer_id, c.customer_name, c.email, c.nick_name, t.team_name, tm.member_type, tm.effective_date,tm.expire_date,tm.created_by, tm.created_date, tm.updated_by, tm.updated_date
+        from
+            team_member tm
+            inner join customer c on tm.customer_id = c.customer_id
+            inner join team t on tm.team_id = t.team_id
+        where
+            tm.team_id = #{teamId}
+            <if test="like != null ">
+                and ((c.customer_name like concat('%', #{like}, '%')) or (c.email like concat('%', #{like}, '%')))
+            </if>
     </select>
 
     <select id="getTeamMembersByCustomerId" resultMap="PageResultMap">

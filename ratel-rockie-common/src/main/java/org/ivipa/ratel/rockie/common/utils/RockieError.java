@@ -31,6 +31,9 @@ public enum RockieError {
     TEAM_MEMBER_TEAM_MEMBER_EXISTS("System", "003001", "Team member already exists"),
     TEAM_MEMBER_INVALID_TEAM_MEMBER_REQUEST("System", "003001", "Team member request is invalid"),
     TEAM_MEMBER_TEAM_MEMBER_NOT_FOUND("System", "003002", "Team member not found"),
+    TEAM_MEMBER_TEAM_NOT_FOUND("System", "003002", "Team not found"),
+    TEAM_MEMBER_CUSTOMER_NOT_FOUND("System", "003002", "Customer not found"),
+    TEAM_MEMBER_CUSTOMER_INVALID("System", "003003", "Invalid customer"),
 
     ;
 

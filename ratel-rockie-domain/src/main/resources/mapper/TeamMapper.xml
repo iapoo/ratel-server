@@ -46,7 +46,9 @@
         from team
         where
             customer_id = #{customerId} and deleted = 0
-
+            <if test="teamName != null ">
+                and team_name like concat('%', #{teamName}, '%')
+            </if>
     </select>
 
 </mapper>

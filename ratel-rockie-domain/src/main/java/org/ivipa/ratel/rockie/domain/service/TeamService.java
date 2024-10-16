@@ -28,15 +28,11 @@ public class TeamService extends ServiceImpl<TeamMapper, TeamDo> {
 
     private final static int MAX_PAGE_SIZE = 99999999;
 
-    @Autowired
-    private ContentService contentService;
-
     public Page<Team> getTeams(Auth auth, TeamPage teamPage) {
         Page<Team> page = new Page<>(teamPage.getPageNum(), teamPage.getPageSize());
-        List<Team> result = baseMapper.getTeams(page, auth.getOnlineCustomer().getCustomerId());
+        List<Team> result = baseMapper.getTeams(page, auth.getOnlineCustomer().getCustomerId(), teamPage.getTeamName());
         return page.setRecords(result);
     }
-
 
     public Page<Team> getTeams(Long customerId) {
         Page<TeamDo> page = new Page<>(1, MAX_PAGE_SIZE);

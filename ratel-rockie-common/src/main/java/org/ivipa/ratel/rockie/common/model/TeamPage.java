@@ -8,4 +8,5 @@ public class TeamPage extends BasePage {
 
     private static final long serialVersionUID = 3905614198292431469L;
 
+    private String teamName;
 }

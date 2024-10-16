@@ -7,13 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.rockie.common.model.TeamMember;
 import org.ivipa.ratel.rockie.common.model.TeamMemberAdd;
 import org.ivipa.ratel.rockie.common.model.TeamMemberDelete;
+import org.ivipa.ratel.rockie.common.model.TeamMemberDetail;
+import org.ivipa.ratel.rockie.common.model.TeamMemberDetailPage;
 import org.ivipa.ratel.rockie.common.model.TeamMemberPage;
 import org.ivipa.ratel.rockie.common.model.TeamMemberQuery;
 import org.ivipa.ratel.rockie.common.model.TeamMemberUpdate;
 import org.ivipa.ratel.rockie.common.utils.RockieError;
+import org.ivipa.ratel.rockie.domain.entity.TeamDo;
 import org.ivipa.ratel.rockie.domain.entity.TeamMemberDo;
 import org.ivipa.ratel.rockie.domain.mapper.TeamMemberMapper;
 import org.ivipa.ratel.system.common.model.Auth;
+import org.ivipa.ratel.system.common.utils.SystemError;
+import org.ivipa.ratel.system.domain.entity.CustomerDo;
+import org.ivipa.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,11 +35,20 @@ public class TeamMemberService extends ServiceImpl<TeamMemberMapper, TeamMemberD
     private final static int MAX_PAGE_SIZE = 99999999;
 
     @Autowired
-    private ContentService contentService;
+    private CustomerService customerService;
+
+    @Autowired
+    private TeamService teamService;
 
     public Page<TeamMember> getTeamMembers(Auth auth, TeamMemberPage teamMemberPage) {
         Page<TeamMember> page = new Page<>(teamMemberPage.getPageNum(), teamMemberPage.getPageSize());
         List<TeamMember> result = baseMapper.getTeamMembers(page, teamMemberPage.getTeamId());
+        return page.setRecords(result);
+    }
+
+    public Page<TeamMemberDetail> getTeamMemberDetails(Auth auth, TeamMemberDetailPage teamMemberDetailPage) {
+        Page<TeamMemberDetail> page = new Page<>(teamMemberDetailPage.getPageNum(), teamMemberDetailPage.getPageSize());
+        List<TeamMemberDetail> result = baseMapper.getTeamMemberDetails(page, teamMemberDetailPage.getTeamId(), teamMemberDetailPage.getLike());
         return page.setRecords(result);
     }
 
@@ -74,16 +89,26 @@ public class TeamMemberService extends ServiceImpl<TeamMemberMapper, TeamMemberD
     public TeamMember addTeamMember(Auth auth, TeamMemberAdd teamMemberAdd) {
         Page<TeamMember> teamMembers;
 
+        TeamDo teamDo = teamService.getById(teamMemberAdd.getTeamId());
+        if(teamDo == null) {
+            throw RockieError.TEAM_MEMBER_TEAM_NOT_FOUND.newException();
+        }
+        if(teamDo.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
+            throw RockieError.TEAM_MEMBER_CUSTOMER_INVALID.newException();
+        }
+        CustomerDo customerDO = customerService.getCustomerDo(teamMemberAdd.getCustomerName());
+        if(customerDO == null) {
+            throw RockieError.TEAM_MEMBER_CUSTOMER_NOT_FOUND.newException();
+        }
         teamMembers = getTeamMembersByTeamId(teamMemberAdd.getTeamId());
         teamMembers.getRecords().forEach(teamMember -> {
-            if (teamMember.getCustomerId().equals(teamMemberAdd.getCustomerId())) {
+            if (teamMember.getCustomerId().equals(customerDO.getCustomerId())) {
                 throw RockieError.TEAM_MEMBER_TEAM_MEMBER_EXISTS.newException();
             }
         });
         TeamMemberDo teamMemberDo = convertTeamMemberAdd(teamMemberAdd);
-        teamMemberDo.setCustomerId(teamMemberAdd.getCustomerId());
+        teamMemberDo.setCustomerId(customerDO.getCustomerId());
         teamMemberDo.setTeamId(teamMemberAdd.getTeamId());
-        teamMemberDo.setMemberType(teamMemberAdd.getMemberType());
         teamMemberDo.setCreatedDate(LocalDateTime.now());
         teamMemberDo.setUpdatedDate(LocalDateTime.now());
         save(teamMemberDo);
