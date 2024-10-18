@@ -22,6 +22,11 @@ public enum RockieError {
     DOCUMENT_ACCESS_INVALID_DOCUMENT_ACCESS_REQUEST("System", "003005", "Invalid document access request"),
     DOCUMENT_ACCESS_DOCUMENT_ACCESS_NOT_FOUND("System", "003006", "Document access not found"),
     DOCUMENT_ACCESS_ACCESS_MODE_IS_INVALID("System", "003007", "Document access mode is invalid"),
+    DOCUMENT_ACCESS_CUSTOMER_NOT_FOUND("System", "003002", "Customer not found"),
+
+    DOCUMENT_TEAM_ACCESS_INVALID_DOCUMENT_TEAM_ACCESS_REQUEST("System", "003005", "Invalid document team access request"),
+    DOCUMENT_TEAM_ACCESS_DOCUMENT_TEAM_ACCESS_NOT_FOUND("System", "003006", "Document team access not found"),
+    DOCUMENT_TEAM_ACCESS_ACCESS_MODE_IS_INVALID("System", "003007", "Document team access mode is invalid"),
 
     TEAM_TEAM_NOT_FOUND("System", "003002", "Team not found"),
     TEAM_TEAM_NAME_EXISTS("System", "003001", "Team already exists"),

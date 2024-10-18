@@ -6,6 +6,8 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.common.model.Document;
 import org.ivipa.ratel.rockie.common.model.DocumentAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLinkDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLinkUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
@@ -66,8 +68,22 @@ public class DocumentController extends GenericController {
 
     @PostMapping("delete")
     @Audit
-    public Result deleteDocuments(Auth auth, @RequestBody DocumentDelete documentDelete) {
+    public Result deleteDocument(Auth auth, @RequestBody DocumentDelete documentDelete) {
         documentService.deleteDocument(auth, documentDelete);
+        return Result.success();
+    }
+
+    @PostMapping("updateLink")
+    @Audit
+    public Result updateDocumentLink(Auth auth, @RequestBody DocumentLinkUpdate documentUpdate) {
+        documentService.updateDocumentLink(auth, documentUpdate);
+        return Result.success();
+    }
+
+    @PostMapping("deleteLink")
+    @Audit
+    public Result deleteDocumentLink(Auth auth, @RequestBody DocumentLinkDelete documentDelete) {
+        documentService.deleteDocumentLink(auth, documentDelete);
         return Result.success();
     }
 

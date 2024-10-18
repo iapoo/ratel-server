@@ -46,6 +46,8 @@ public class DocumentDo implements Serializable {
      */
     private String remark;
 
+    private String linkCode;
+
     /**
      * 是否启用
      */

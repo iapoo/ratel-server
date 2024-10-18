@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.ivipa.ratel.rockie.domain.mapper.DocumentAccessDetailMapper">
+<mapper namespace="org.ivipa.ratel.rockie.domain.mapper.DocumentAccessMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="org.ivipa.ratel.rockie.domain.entity.DocumentAccessDo">
@@ -28,9 +28,44 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
+    <resultMap id="DocumentAccessDetail" type="org.ivipa.ratel.rockie.common.model.DocumentAccessDetail">
+        <result column="document_id" property="documentId"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="email" property="customerEmail"/>
+        <result column="nick_name" property="customerNickname"/>
+        <result column="access_mode" property="accessMode"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         document_id, customer_id, access_mode, effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
+
+    <select id="getDocumentAccessDetails" resultMap="DocumentAccessDetail">
+        select
+            da.document_id, da.customer_id, c.customer_name, c.email, c.nick_name,da.access_mode, da.effective_date,
+            da.expire_date, da.created_by, da.created_date, da.updated_by, da.updated_date
+        from
+            document_access da
+            inner join customer c on da.customer_id = c.customer_id
+        where
+            da.document_id = #{documentId}
+            and c.deleted = 0
+            <if test="like != null ">
+                and ((c.customer_name like concat('%', #{like}, '%')) or (c.email like concat('%', #{like}, '%')))
+            </if>
+        order by
+            c.customer_name
+    </select>
+
+
 
 </mapper>

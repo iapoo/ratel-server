@@ -14,7 +14,7 @@ public class DocumentAccessUpdate implements Serializable {
 
     private Long documentId;
 
-    private Long customerIds[];
+    private Long customerId;
 
     private Long accessMode;
 

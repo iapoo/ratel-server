@@ -7,13 +7,13 @@ import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class DocumentAccessAdd implements Serializable {
+public class DocumentTeamAccessAdd implements Serializable {
 
-    private static final long serialVersionUID = -8144565338803107996L;
+    private static final long serialVersionUID = 2862215551712950323L;
 
     private Long documentId;
 
-    private String customerName;
+    private Long teamId;
 
     private Long accessMode;
 

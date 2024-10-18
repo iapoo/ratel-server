@@ -6,6 +6,8 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.common.model.DocumentAccess;
 import org.ivipa.ratel.rockie.common.model.DocumentAccessAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentAccessDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentAccessDetail;
+import org.ivipa.ratel.rockie.common.model.DocumentAccessDetailPage;
 import org.ivipa.ratel.rockie.common.model.DocumentAccessPage;
 import org.ivipa.ratel.rockie.common.model.DocumentAccessUpdate;
 import org.ivipa.ratel.rockie.domain.service.DocumentAccessService;
@@ -21,25 +23,32 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("document-access")
+@RequestMapping("documentAccess")
 public class DocumentAccessController extends GenericController {
 
     @Autowired
     private DocumentAccessService documentAccessService;
 
 
-    @PostMapping("document-accesses")
+    @PostMapping("documentAccesses")
     @Audit
     public Result<Page<DocumentAccess>> getDocumentAccesses(Auth auth, @RequestBody DocumentAccessPage documentAccessPage) {
         Page<DocumentAccess> page = documentAccessService.getDocumentAccesses(auth, documentAccessPage);
         return Result.success(page);
     }
 
+    @PostMapping("documentAccessDetails")
+    @Audit
+    public Result<Page<DocumentAccessDetail>> getDocumentAccessDetails(Auth auth, @RequestBody DocumentAccessDetailPage documentAccessDetailPage) {
+        Page<DocumentAccessDetail> page = documentAccessService.getDocumentAccessDetails(auth, documentAccessDetailPage);
+        return Result.success(page);
+    }
+
     @PostMapping("add")
     @Audit
-    public Result<List<DocumentAccess>> addDocumentAccess(Auth auth, @RequestBody DocumentAccessAdd documentAccessAdd) {
-        List<DocumentAccess> documentAccessList = documentAccessService.addDocumentAccesses(auth, documentAccessAdd);
-        return Result.success(documentAccessList);
+    public Result<DocumentAccess> addDocumentAccess(Auth auth, @RequestBody DocumentAccessAdd documentAccessAdd) {
+        DocumentAccess documentAccess = documentAccessService.addDocumentAccess(auth, documentAccessAdd);
+        return Result.success(documentAccess);
     }
 
     @PostMapping("update")

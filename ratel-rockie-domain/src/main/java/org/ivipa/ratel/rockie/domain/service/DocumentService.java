@@ -1,5 +1,6 @@
 package org.ivipa.ratel.rockie.domain.service;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,6 +9,8 @@ import org.ivipa.ratel.rockie.common.model.Content;
 import org.ivipa.ratel.rockie.common.model.Document;
 import org.ivipa.ratel.rockie.common.model.DocumentAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLinkDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLinkUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
@@ -108,6 +111,7 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         documentDo.setContentId(newContent.getContentId());
         documentDo.setCustomerId(auth.getOnlineCustomer().getCustomerId());
         documentDo.setDocumentId(null);
+        documentDo.setLinkCode(IdUtil.simpleUUID());
         documentDo.setCreatedDate(LocalDateTime.now());
         documentDo.setUpdatedDate(LocalDateTime.now());
         save(documentDo);
@@ -145,6 +149,23 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
 
+    public void updateDocumentLink(Auth auth, DocumentLinkUpdate documentLinkUpdate) {
+        if (documentLinkUpdate.getDocumentId() == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+        }
+        DocumentDo oldDocumentDo = getById(documentLinkUpdate.getDocumentId());
+        if (oldDocumentDo == null || oldDocumentDo.getDeleted()) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
+            throw RockieError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+        }
+
+        DocumentDo documentDo = convertDocumentLinkUpdate(documentLinkUpdate, oldDocumentDo);
+        documentDo.setUpdatedDate(LocalDateTime.now());
+        updateById(documentDo);
+    }
+
     public void deleteDocument(Auth auth, DocumentDelete documentUpdate) {
         if (documentUpdate.getDocumentId() == null) {
             throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
@@ -158,6 +179,23 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         }
         DocumentDo documentDo = oldDocumentDo;
         documentDo.setDeleted(true);
+        updateById(documentDo);
+    }
+
+    public void deleteDocumentLink(Auth auth, DocumentLinkDelete documentLinkUpdate) {
+        if (documentLinkUpdate.getDocumentId() == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+        }
+        DocumentDo oldDocumentDo = getById(documentLinkUpdate.getDocumentId());
+        if (oldDocumentDo == null || oldDocumentDo.getDeleted()) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
+            throw RockieError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+        }
+        DocumentDo documentDo = oldDocumentDo;
+        documentDo.setExpireDate(null);
+        documentDo.setEffectiveDate(null);
         updateById(documentDo);
     }
 
@@ -179,6 +217,12 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         Document document = new Document();
         BeanUtils.copyProperties(documentDo, document);
         return document;
+    }
+
+
+    private DocumentDo convertDocumentLinkUpdate(DocumentLinkUpdate documentLinkUpdate, DocumentDo oldDocumentDo) {
+        BeanUtils.copyProperties(documentLinkUpdate, oldDocumentDo);
+        return oldDocumentDo;
     }
 
     private DocumentDo convertDocumentUpdate(DocumentUpdate documentUpdate, DocumentDo oldDocumentDo) {

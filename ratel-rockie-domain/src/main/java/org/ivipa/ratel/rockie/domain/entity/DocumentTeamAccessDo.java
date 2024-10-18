@@ -1,5 +1,6 @@
-package org.ivipa.ratel.rockie.common.model;
+package org.ivipa.ratel.rockie.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -11,51 +12,18 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class Document implements Serializable {
+@TableName("document_team_access")
+public class DocumentTeamAccessDo implements Serializable {
 
-
-    private static final long serialVersionUID = 3988514216105102376L;
+    private static final long serialVersionUID = 1069672647171498688L;
     /**
-     * id 自增主键
+     * document id
      */
     private Long documentId;
 
-    /**
-     * 用户名
-     */
-    private String documentName;
+    private Long teamId;
 
-    private Long customerId;
-    /**
-     * 密码
-     */
-    private Long folderId;
-
-    /**
-     * 备注说明
-     */
-    private String remark;
-
-    private String linkCode;
-
-    /**
-     * 文档内容
-     */
-    private Content content;
-
-
-    private Long contentId;
-
-    /**
-     * 是否启用
-     */
-    private Boolean enabled;
-
-    /**
-     * 是否删除
-     */
-    private Boolean deleted;
-
+    private Long accessMode;
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
     @JsonSerialize(using =  StandardLocalDateTime.StandardLocalDateTimeSerializer.class)

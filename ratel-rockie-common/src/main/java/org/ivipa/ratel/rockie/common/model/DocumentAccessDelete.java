@@ -13,4 +13,6 @@ public class DocumentAccessDelete implements Serializable {
 
     private Long documentId;
 
+    private Long customerId;
+
 }

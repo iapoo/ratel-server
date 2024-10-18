@@ -20,7 +20,6 @@ create table if not exists folder
     unique key idx_folder_customer(customer_id, folder_id)
 );
 
-
 create table if not exists document
 (
     document_id    bigint auto_increment,
@@ -31,6 +30,7 @@ create table if not exists document
     remark         varchar(512) null,
     enabled        int          not null default 1,
     deleted        int          not null default 0,
+    link_code      varchar(64)  null,
     effective_date timestamp    null,
     expire_date    timestamp    null,
     created_by     bigint       null,
@@ -39,7 +39,8 @@ create table if not exists document
     updated_date   timestamp    null,
     primary key (document_id),
     key idx_document_updated_date(updated_date desc),
-    unique key idx_document_customer(customer_id, document_id)
+    unique key idx_document_customer(customer_id, document_id),
+    unique key idx_document_link_code(link_code)
 );
 
 create table if not exists content
@@ -70,7 +71,7 @@ create table if not exists folder_access
     created_date   timestamp    null,
     updated_by     bigint       null,
     updated_date   timestamp    null,
-    primary key (folder_id,  customer_id).
+    primary key (folder_id,  customer_id),
     unique key idx_folder_access(customer_id, folder_id)
 );
 

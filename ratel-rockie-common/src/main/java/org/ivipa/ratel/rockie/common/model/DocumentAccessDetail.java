@@ -11,50 +11,24 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class Document implements Serializable {
+public class DocumentAccessDetail implements Serializable {
 
 
-    private static final long serialVersionUID = 3988514216105102376L;
+    private static final long serialVersionUID = 8056299211545944805L;
     /**
      * id 自增主键
      */
     private Long documentId;
 
-    /**
-     * 用户名
-     */
-    private String documentName;
-
     private Long customerId;
-    /**
-     * 密码
-     */
-    private Long folderId;
 
-    /**
-     * 备注说明
-     */
-    private String remark;
+    private Long accessMode;
 
-    private String linkCode;
+    private String customerName;
 
-    /**
-     * 文档内容
-     */
-    private Content content;
+    private String customerEmail;
 
-
-    private Long contentId;
-
-    /**
-     * 是否启用
-     */
-    private Boolean enabled;
-
-    /**
-     * 是否删除
-     */
-    private Boolean deleted;
+    private String customerNickname;
 
 
     @JsonDeserialize(using = StandardLocalDateTime.StandardLocalDateTimeDeserializer.class)
