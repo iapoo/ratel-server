@@ -6,6 +6,8 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccess;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDetail;
+import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDetailPage;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessPage;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessUpdate;
 import org.ivipa.ratel.rockie.domain.service.DocumentTeamAccessService;
@@ -21,17 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("document-team-access")
+@RequestMapping("documentTeamAccess")
 public class DocumentTeamAccessController extends GenericController {
 
     @Autowired
     private DocumentTeamAccessService documentTeamAccessService;
 
 
-    @PostMapping("document-team-accesses")
+    @PostMapping("documentTeamAccesses")
     @Audit
     public Result<Page<DocumentTeamAccess>> getDocumentTeamAccesses(Auth auth, @RequestBody DocumentTeamAccessPage documentTeamAccessPage) {
         Page<DocumentTeamAccess> page = documentTeamAccessService.getDocumentTeamAccesses(auth, documentTeamAccessPage);
+        return Result.success(page);
+    }
+
+    @PostMapping("documentTeamAccessDetails")
+    @Audit
+    public Result<Page<DocumentTeamAccessDetail>> getDocumentTeamAccessDetails(Auth auth, @RequestBody DocumentTeamAccessDetailPage documentTeamAccessDetailPage) {
+        Page<DocumentTeamAccessDetail> page = documentTeamAccessService.getDocumentTeamAccessDetails(auth, documentTeamAccessDetailPage);
         return Result.success(page);
     }
 

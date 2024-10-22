@@ -9,6 +9,8 @@ import org.ivipa.ratel.rockie.common.model.DocumentQuery;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccess;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDetail;
+import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDetailPage;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessPage;
 import org.ivipa.ratel.rockie.common.model.DocumentTeamAccessUpdate;
 import org.ivipa.ratel.rockie.common.utils.RockieConsts;
@@ -44,6 +46,8 @@ public class DocumentTeamAccessService extends ServiceImpl<DocumentTeamAccessMap
         if(documentTeamAccessAdd.getAccessMode() == null || documentTeamAccessAdd.getAccessMode() < RockieConsts.ACCESS_MODE_MIN || documentTeamAccessAdd.getAccessMode() > RockieConsts.ACCESS_MODE_MAX) {
             throw RockieError.DOCUMENT_TEAM_ACCESS_ACCESS_MODE_IS_INVALID.newException();
         }
+
+        //DocumentTeamAccessDo oldDocumentTeamAccessDo =
 
         List<DocumentTeamAccessDo> documentTeamAccessDos = convertDocumentTeamAccessAdd(documentTeamAccessAdd);
         this.saveBatch(documentTeamAccessDos);
@@ -88,24 +92,20 @@ public class DocumentTeamAccessService extends ServiceImpl<DocumentTeamAccessMap
         return documentTeamAccessPageResult;
     }
 
-    public Page<DocumentTeamAccess> getDocumentTeamAccessDetails(Auth auth, DocumentTeamAccessPage documentTeamAccessPage) {
-        if (documentTeamAccessPage.getDocumentId() == null) {
+    public Page<DocumentTeamAccessDetail> getDocumentTeamAccessDetails(Auth auth, DocumentTeamAccessDetailPage documentTeamAccessDetailPage) {
+        if (documentTeamAccessDetailPage.getDocumentId() == null) {
             throw RockieError.DOCUMENT_TEAM_ACCESS_INVALID_DOCUMENT_TEAM_ACCESS_REQUEST.newException();
         }
         DocumentQuery documentQuery = new DocumentQuery();
-        documentQuery.setDocumentId(documentTeamAccessPage.getDocumentId());
+        documentQuery.setDocumentId(documentTeamAccessDetailPage.getDocumentId());
         Document document = documentService.getDocument(auth, documentQuery);
         if(document == null || document.getCustomerId() != auth.getOnlineCustomer().getCustomerId()) {
             throw RockieError.DOCUMENT_TEAM_ACCESS_DOCUMENT_TEAM_ACCESS_NOT_FOUND.newException();
         }
 
-        Page<DocumentTeamAccessDo> page = new Page<>(documentTeamAccessPage.getPageNum(), documentTeamAccessPage.getPageSize());
-        QueryWrapper<DocumentTeamAccessDo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("document_id", documentTeamAccessPage.getDocumentId());
-        Page<DocumentTeamAccessDo> result = this.page(page, queryWrapper);
-        Page<DocumentTeamAccess> documentTeamAccessPageResult = new Page<>(documentTeamAccessPage.getPageNum(), documentTeamAccessPage.getPageSize());
-        documentTeamAccessPageResult.setRecords(convertDocumentTeamAccessDos(result.getRecords()));
-        return documentTeamAccessPageResult;
+        Page<DocumentTeamAccessDetail> page = new Page<>(documentTeamAccessDetailPage.getPageNum(), documentTeamAccessDetailPage.getPageSize());
+        List<DocumentTeamAccessDetail> result = baseMapper.getDocumentTeamAccessDetails(page, documentTeamAccessDetailPage.getDocumentId(), documentTeamAccessDetailPage.getLike());
+        return page.setRecords(result);
     }
 
     public List<DocumentTeamAccess> updateDocumentTeamAccesses(Auth auth, DocumentTeamAccessUpdate documentTeamAccessUpdate) {

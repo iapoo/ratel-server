@@ -28,9 +28,42 @@
         <result column="updated_date" property="updatedDate"/>
     </resultMap>
 
+
+    <resultMap id="DocumentTeamAccessDetail" type="org.ivipa.ratel.rockie.common.model.DocumentTeamAccessDetail">
+        <result column="document_id" property="documentId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="team_name" property="teamName"/>
+        <result column="access_mode" property="accessMode"/>
+        <result column="effective_date" property="effectiveDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_date" property="updatedDate"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         document_id, team_id, access_mode, effective_date,expire_date,created_by, created_date, updated_by, updated_date
     </sql>
+
+
+    <select id="getDocumentTeamAccessDetails" resultMap="DocumentTeamAccessDetail">
+        select
+        dta.document_id, dta.team_id, t.team_name, dta.access_mode, dta.effective_date,
+        dta.expire_date, dta.created_by, dta.created_date, dta.updated_by, dta.updated_date
+        from
+            document_team_access dta
+            inner join team t on dta.team_id = t.team_id
+        where
+            dta.document_id = #{documentId}
+            and t.deleted = 0
+            <if test="like != null ">
+                and t.team_name like concat('%', #{like}, '%')
+            </if>
+        order by
+            t.team_name
+    </select>
+
 
 </mapper>
