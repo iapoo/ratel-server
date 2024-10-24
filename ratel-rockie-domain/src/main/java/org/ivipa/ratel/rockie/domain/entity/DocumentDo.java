@@ -48,6 +48,11 @@ public class DocumentDo implements Serializable {
 
     private String linkCode;
 
+    private Long shareStatus;
+
+    private Long shareCodeStatus;
+
+    private String shareCode;
     /**
      * 是否启用
      */

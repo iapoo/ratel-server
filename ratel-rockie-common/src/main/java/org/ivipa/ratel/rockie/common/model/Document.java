@@ -38,6 +38,13 @@ public class Document implements Serializable {
 
     private String linkCode;
 
+    private Long shareStatus;
+
+    private Long shareCodeStatus;
+
+    private String shareCode;
+
+
     /**
      * 文档内容
      */

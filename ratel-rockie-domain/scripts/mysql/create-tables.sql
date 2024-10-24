@@ -31,6 +31,8 @@ create table if not exists document
     enabled        int          not null default 1,
     deleted        int          not null default 0,
     link_code      varchar(64)  null,
+    shared         int          not null default 0,
+    access_code    varchar(64)  null,
     effective_date timestamp    null,
     expire_date    timestamp    null,
     created_by     bigint       null,

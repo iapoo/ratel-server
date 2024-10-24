@@ -12,6 +12,7 @@ public enum RockieError {
     DOCUMENT_CONTENT_IS_INVALID("System", "003004", "Invalid content"),
     DOCUMENT_FOLDER_NOT_FOUND("System", "003001", "Document folder not found"),
     DOCUMENT_DOCUMENT_NAME_EXISTS("System", "003001", "Document exists already"),
+    DOCUMENT_LINK_CODE_IS_EMPTY("System", "003002", "Link is empty"),
 
 
     FOLDER_FOLDER_ID_IS_NULL("System", "003001", "Folder ID is empty"),

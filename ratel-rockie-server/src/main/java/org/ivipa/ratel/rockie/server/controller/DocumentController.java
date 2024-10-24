@@ -6,10 +6,12 @@ import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.rockie.common.model.Document;
 import org.ivipa.ratel.rockie.common.model.DocumentAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLink;
 import org.ivipa.ratel.rockie.common.model.DocumentLinkDelete;
 import org.ivipa.ratel.rockie.common.model.DocumentLinkUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
+import org.ivipa.ratel.rockie.common.model.DocumentShareUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
 import org.ivipa.ratel.rockie.common.model.OperatorDocument;
 import org.ivipa.ratel.rockie.common.model.OperatorDocumentPage;
@@ -52,6 +54,13 @@ public class DocumentController extends GenericController {
         return Result.success(document);
     }
 
+    @PostMapping("link")
+    @Audit
+    public Result<Document> getDocumentByLink(Auth auth, @RequestBody DocumentLink documentLink) {
+        Document document = documentService.getDocumentByLink(auth, documentLink);
+        return Result.success(document);
+    }
+
     @PostMapping("add")
     @Audit
     public Result<Document> addDocument(Auth auth, @RequestBody DocumentAdd documentAdd) {
@@ -63,6 +72,13 @@ public class DocumentController extends GenericController {
     @Audit
     public Result updateDocument(Auth auth, @RequestBody DocumentUpdate documentUpdate) {
         documentService.updateDocument(auth, documentUpdate);
+        return Result.success();
+    }
+
+    @PostMapping("share")
+    @Audit
+    public Result shareDocument(Auth auth, @RequestBody DocumentShareUpdate documentShareUpdate) {
+        documentService.updateDocumentShare(auth, documentShareUpdate);
         return Result.success();
     }
 

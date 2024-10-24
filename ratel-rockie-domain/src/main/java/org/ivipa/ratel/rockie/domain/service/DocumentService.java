@@ -9,10 +9,12 @@ import org.ivipa.ratel.rockie.common.model.Content;
 import org.ivipa.ratel.rockie.common.model.Document;
 import org.ivipa.ratel.rockie.common.model.DocumentAdd;
 import org.ivipa.ratel.rockie.common.model.DocumentDelete;
+import org.ivipa.ratel.rockie.common.model.DocumentLink;
 import org.ivipa.ratel.rockie.common.model.DocumentLinkDelete;
 import org.ivipa.ratel.rockie.common.model.DocumentLinkUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentPage;
 import org.ivipa.ratel.rockie.common.model.DocumentQuery;
+import org.ivipa.ratel.rockie.common.model.DocumentShareUpdate;
 import org.ivipa.ratel.rockie.common.model.DocumentUpdate;
 import org.ivipa.ratel.rockie.common.model.OperatorDocument;
 import org.ivipa.ratel.rockie.common.model.OperatorDocumentPage;
@@ -57,10 +59,35 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     }
 
     public Document getDocument(Auth auth, DocumentQuery documentQuery) {
+        if (documentQuery == null || documentQuery.getDocumentId() == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+        }
         DocumentDo documentDo = getById(documentQuery.getDocumentId());
         if (documentDo == null || documentDo.getDeleted()) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
+        Document document = convertDocumentDo(documentDo);
+        if(Boolean.TRUE.equals(documentQuery.getWithContent())) {
+            Content content = contentService.getContent(auth, document.getFolderId(), document.getContentId());
+            document.setContent(content);
+        }
+        return document;
+    }
+
+    public Document getDocumentByLink(Auth auth, DocumentLink documentLink) {
+        if (documentLink == null || documentLink.getLinkCode() == null) {
+            throw RockieError.DOCUMENT_LINK_CODE_IS_EMPTY.newException();
+        }
+
+        Page<DocumentDo> page = new Page<>(1, MAX_PAGE_SIZE);
+        QueryWrapper<DocumentDo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("link_code", documentLink.getLinkCode());
+        queryWrapper.eq("deleted", 0);
+        DocumentDo documentDo = baseMapper.selectOne(queryWrapper);
+        if (documentDo == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+
         Document document = convertDocumentDo(documentDo);
         Content content = contentService.getContent(auth, document.getFolderId(), document.getContentId());
         document.setContent(content);
@@ -148,7 +175,6 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         updateById(documentDo);
     }
 
-
     public void updateDocumentLink(Auth auth, DocumentLinkUpdate documentLinkUpdate) {
         if (documentLinkUpdate.getDocumentId() == null) {
             throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
@@ -162,6 +188,23 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         }
 
         DocumentDo documentDo = convertDocumentLinkUpdate(documentLinkUpdate, oldDocumentDo);
+        documentDo.setUpdatedDate(LocalDateTime.now());
+        updateById(documentDo);
+    }
+
+    public void updateDocumentShare(Auth auth, DocumentShareUpdate documentShareUpdate) {
+        if (documentShareUpdate.getDocumentId() == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_ID_IS_NULL.newException();
+        }
+        DocumentDo oldDocumentDo = getById(documentShareUpdate.getDocumentId());
+        if (oldDocumentDo == null || oldDocumentDo.getDeleted()) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if (!auth.getOnlineCustomer().getCustomerId().equals(oldDocumentDo.getCustomerId())) {
+            throw RockieError.DOCUMENT_CUSTOMER_IS_INVALID.newException();
+        }
+
+        DocumentDo documentDo = convertDocumentShareUpdate(documentShareUpdate, oldDocumentDo);
         documentDo.setUpdatedDate(LocalDateTime.now());
         updateById(documentDo);
     }
@@ -222,6 +265,11 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
 
     private DocumentDo convertDocumentLinkUpdate(DocumentLinkUpdate documentLinkUpdate, DocumentDo oldDocumentDo) {
         BeanUtils.copyProperties(documentLinkUpdate, oldDocumentDo);
+        return oldDocumentDo;
+    }
+
+    private DocumentDo convertDocumentShareUpdate(DocumentShareUpdate documentShareUpdate, DocumentDo oldDocumentDo) {
+        BeanUtils.copyProperties(documentShareUpdate, oldDocumentDo);
         return oldDocumentDo;
     }
 
