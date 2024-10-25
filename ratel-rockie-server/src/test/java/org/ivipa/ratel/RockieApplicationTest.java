@@ -3,7 +3,7 @@ package org.ivipa.ratel;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
+import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitScan;
 import lombok.extern.slf4j.Slf4j;
 import org.ivipa.ratel.common.model.Result;
 import org.ivipa.ratel.system.client.api.SystemApi;
