@@ -97,4 +97,21 @@
 
     </select>
 
+
+    <select id="getDocumentWithPermission" resultMap="PageResultMap">
+        select d.document_id, d.document_name, d.customer_id, d.content_id, d.folder_id, d.remark, d.link_code,
+               d.share_status, d.share_code, d.share_code_status,d.enabled, d.effective_date,
+               d.expire_date,d.created_by, d.created_date, d.updated_by, d.updated_date
+        from
+            document d
+            left join document_access da on d.document_id = da.document_id
+            left join document_team_access dta on d.document_id = dta.document_id
+            left join team_member tm on dta.team_id = tm.team_id
+        where
+            d.deleted = 0
+            and d.document_id = ${documentId}
+            and (da.customer_id = #{customerId} or tm.customer_id = #{customerId} or d.customer_id =  ${customerId})
+
+    </select>
+
 </mapper>

@@ -83,7 +83,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, CustomerDo> {
         return customer;
     }
 
-    public Customer getCustomer(Auth auth,  Long customerId) {
+    public Customer getCustomer(Long customerId) {
         QueryWrapper<CustomerDo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("customer_id", customerId);
         queryWrapper.eq("deleted", false);

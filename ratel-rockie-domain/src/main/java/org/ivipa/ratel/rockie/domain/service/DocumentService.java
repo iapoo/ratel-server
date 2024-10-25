@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.ivipa.ratel.common.utils.StringUtils;
 import org.ivipa.ratel.rockie.common.model.Content;
 import org.ivipa.ratel.rockie.common.model.Document;
 import org.ivipa.ratel.rockie.common.model.DocumentAdd;
@@ -22,8 +23,10 @@ import org.ivipa.ratel.rockie.common.utils.RockieError;
 import org.ivipa.ratel.rockie.domain.entity.DocumentDo;
 import org.ivipa.ratel.rockie.domain.mapper.DocumentMapper;
 import org.ivipa.ratel.system.common.model.Auth;
+import org.ivipa.ratel.system.common.model.Customer;
 import org.ivipa.ratel.system.common.utils.SystemConstants;
 import org.ivipa.ratel.system.common.utils.SystemError;
+import org.ivipa.ratel.system.domain.service.CustomerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,8 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
     private final static int MAX_PAGE_SIZE = 99999999;
     @Autowired
     private ContentService contentService;
+    @Autowired
+    private CustomerService customerService;
 
     public Page<Document> getDocuments(Auth auth, DocumentPage documentPage) {
         Page<Document> page = new Page<>(documentPage.getPageNum(), documentPage.getPageSize());
@@ -87,11 +92,51 @@ public class DocumentService extends ServiceImpl<DocumentMapper, DocumentDo> {
         if (documentDo == null) {
             throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
         }
-
+        boolean hasPermission = hasPermission(auth, documentDo, documentLink);
+        if (!hasPermission) {
+            throw SystemError.AUTH_INSUFFICIENT_PERMISSION.newException();
+        }
         Document document = convertDocumentDo(documentDo);
-        Content content = contentService.getContent(auth, document.getFolderId(), document.getContentId());
+        Customer customer = customerService.getCustomer(document.getCustomerId());
+        Content content = contentService.getContentByLink(customer.getCustomerCode(), document.getFolderId(), document.getContentId());
         document.setContent(content);
         return document;
+    }
+
+    private boolean  hasPermission(Auth auth, DocumentDo documentDo, DocumentLink documentLink) {
+        boolean result = false;
+        //Public share
+        if(documentDo.getShareStatus() != null && documentDo.getShareStatus() == 1L) {
+            if((documentDo.getShareCodeStatus() != null && documentDo.getShareCodeStatus() == 1L && documentDo.getShareCode() != null && documentDo.getShareCode().equals(documentLink.getShareCode()))
+                    || (documentDo.getShareCodeStatus() == null || documentDo.getShareCodeStatus() == 0L)) {
+                LocalDateTime now = LocalDateTime.now();
+                if(documentDo.getEffectiveDate() != null && documentDo.getExpireDate() != null) {
+                    if(now.isAfter(documentDo.getEffectiveDate()) && now.isBefore(documentDo.getExpireDate())) {
+                        result = true;
+                    }
+                } else if(documentDo.getEffectiveDate() != null) {
+                    if(now.isAfter(documentDo.getEffectiveDate())) {
+                        result = true;
+                    }
+                } else if(documentDo.getExpireDate() != null) {
+                    if(now.isBefore(documentDo.getExpireDate())) {
+                        result = true;
+                    }
+                } else {
+                    result = true;
+                }
+            }
+        }
+        //Invitation
+        //Team share
+        if(!result) {
+            List<Document> documents = baseMapper.getDocumentWithPermission(documentDo.getDocumentId(), auth.getOnlineCustomer().getCustomerId());
+            if(documents.size() > 0) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     public Page<Document> getDocuments(Long customerId, Long folderId) {

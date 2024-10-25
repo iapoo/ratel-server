@@ -12,4 +12,5 @@ import java.util.List;
 public interface DocumentMapper extends BaseMapper<DocumentDo> {
     List<Document> getDocuments(IPage<Document> page, @Param("customerId") Long customerId, @Param("folderId")Long folderId);
     List<OperatorDocument> getOperatorDocuments(IPage<OperatorDocument> page, @Param("like") String like);
+    List<Document> getDocumentWithPermission(@Param("documentId") Long documentId, @Param("customerId") Long customerId);
 }

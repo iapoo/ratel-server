@@ -71,6 +71,24 @@ public class ContentService extends ServiceImpl<ContentMapper, ContentDo> {
 
     }
 
+    public Content getContentByLink(String customerCode, Long folderId, Long contentId) {
+        ContentDo contentDo = getById(contentId);
+        String folder = folderId == null ? null : folderId.toString();
+        if (contentDo == null) {
+            throw RockieError.DOCUMENT_DOCUMENT_NOT_FOUND.newException();
+        }
+        if(enableOss) {
+            if(ossType.equals(OSS_TYPE_ALIYUN_OSS)) {
+                aliyunOSSStorageService.getObject(contentDo.getContentName(), folder, customerCode);
+            }
+            if(ossType.equals(OSS_TYPE_MINIO)) {
+                minioStorageService.getObject(contentDo.getContentName(), folder, customerCode);
+            }
+        }
+        return convertContentDo(contentDo);
+
+    }
+
     public Page<Content> getContents(int pageNum, int pageSize) {
         Page<ContentDo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<ContentDo> queryWrapper = new QueryWrapper<>();
