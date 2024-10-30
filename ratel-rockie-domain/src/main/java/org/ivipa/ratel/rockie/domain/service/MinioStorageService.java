@@ -119,7 +119,8 @@ public class MinioStorageService {
                             .build());
             return IoUtil.readBytes(stream);
         } catch (Exception e) {
-            throw RockieError.STORAGE_CREATE_DOCUMENT_EXCEPTION.newException();
+            log.error(e.getMessage());
+            throw RockieError.STORAGE_GET_DOCUMENT_EXCEPTION.newException();
         }
     }
 
